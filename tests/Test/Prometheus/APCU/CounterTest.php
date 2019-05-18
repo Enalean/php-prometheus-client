@@ -1,18 +1,20 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Test\Prometheus\APCU;
 
 use Prometheus\Storage\APCU;
-use Test\Prometheus\AbstractCounterTest;
+use Test\Prometheus\CounterBaseTest;
 
 /**
  * See https://prometheus.io/docs/instrumenting/exposition_formats/
+ *
  * @requires extension apcu
  */
-class CounterTest extends AbstractCounterTest
+class CounterTest extends CounterBaseTest
 {
-    public function configureAdapter()
+    public function configureAdapter() : void
     {
         $this->adapter = new APCU();
         $this->adapter->flushAPC();

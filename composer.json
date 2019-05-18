@@ -15,6 +15,7 @@
         "guzzlehttp/guzzle": "^6.2"
     },
     "require-dev": {
+        "doctrine/coding-standard": "^6.0",
         "phpunit/phpunit": "^8.1"
     },
     "suggest": {
@@ -31,5 +32,8 @@
             "Test\\Prometheus\\": "tests/Test/Prometheus/"
         }
     },
-    "license": "Apache-2.0"
+    "license": "Apache-2.0",
+    "config": {
+        "sort-packages": true
+    }
 }

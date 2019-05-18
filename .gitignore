@@ -5,3 +5,4 @@
 /.idea/
 composer.lock
 composer.phar
+.phpcs-cache

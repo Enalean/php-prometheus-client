@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Test\Prometheus\InMemory;
 
 use Prometheus\Storage\InMemory;
-use Test\Prometheus\AbstractCollectorRegistryTest;
+use Test\Prometheus\CollectorRegistryBaseTest;
 
-class CollectorRegistryTest extends AbstractCollectorRegistryTest
+class CollectorRegistryTest extends CollectorRegistryBaseTest
 {
-    public function configureAdapter()
+    public function configureAdapter() : void
     {
         $this->adapter = new InMemory();
         $this->adapter->flushMemory();

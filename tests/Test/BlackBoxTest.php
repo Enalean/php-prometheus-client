@@ -1,34 +1,36 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Test;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Promise;
+use PHPUnit\Framework\TestCase;
+use function getenv;
+use function microtime;
 
-class BlackBoxTest extends \PHPUnit\Framework\TestCase
+class BlackBoxTest extends TestCase
 {
-    /**
-     * @var Client
-     */
+    /** @var Client */
     private $client;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $adapter;
 
     protected function setUp() : void
     {
         $this->adapter = getenv('ADAPTER');
-        $this->client = new Client(['base_uri' => 'http://nginx:80/']);
+        $this->client  = new Client(['base_uri' => 'http://nginx:80/']);
         $this->client->get('/examples/flush_adapter.php?adapter=' . $this->adapter);
     }
 
     /**
      * @test
      */
-    public function gaugesShouldBeOverwritten()
+    public function gaugesShouldBeOverwritten() : void
     {
-        $start = microtime(true);
+        $start    = microtime(true);
         $promises = [
             $this->client->getAsync('/examples/some_gauge.php?c=0&adapter=' . $this->adapter),
             $this->client->getAsync('/examples/some_gauge.php?c=1&adapter=' . $this->adapter),
@@ -41,7 +43,7 @@ class BlackBoxTest extends \PHPUnit\Framework\TestCase
         echo "\ntime: " . ($end - $start) . "\n";
 
         $metricsResult = $this->client->get('/examples/metrics.php?adapter=' . $this->adapter);
-        $body = (string)$metricsResult->getBody();
+        $body          = (string) $metricsResult->getBody();
         echo "\nbody: " . $body . "\n";
         $this->assertThat(
             $body,
@@ -56,14 +58,14 @@ class BlackBoxTest extends \PHPUnit\Framework\TestCase
     /**
      * @test
      */
-    public function countersShouldIncrementAtomically()
+    public function countersShouldIncrementAtomically() : void
     {
-        $start = microtime(true);
+        $start    = microtime(true);
         $promises = [];
-        $sum = 0;
+        $sum      = 0;
         for ($i = 0; $i < 1100; $i++) {
             $promises[] =  $this->client->getAsync('/examples/some_counter.php?c=' . $i . '&adapter=' . $this->adapter);
-            $sum += $i;
+            $sum       += $i;
         }
 
         Promise\settle($promises)->wait();
@@ -71,7 +73,7 @@ class BlackBoxTest extends \PHPUnit\Framework\TestCase
         echo "\ntime: " . ($end - $start) . "\n";
 
         $metricsResult = $this->client->get('/examples/metrics.php?adapter=' . $this->adapter);
-        $body = (string)$metricsResult->getBody();
+        $body          = (string) $metricsResult->getBody();
 
         $this->assertThat($body, $this->stringContains('test_some_counter{type="blue"} ' . $sum));
     }
@@ -79,9 +81,9 @@ class BlackBoxTest extends \PHPUnit\Framework\TestCase
     /**
      * @test
      */
-    public function histogramsShouldIncrementAtomically()
+    public function histogramsShouldIncrementAtomically() : void
     {
-        $start = microtime(true);
+        $start    = microtime(true);
         $promises = [
             $this->client->getAsync('/examples/some_histogram.php?c=0&adapter=' . $this->adapter),
             $this->client->getAsync('/examples/some_histogram.php?c=1&adapter=' . $this->adapter),
@@ -100,7 +102,7 @@ class BlackBoxTest extends \PHPUnit\Framework\TestCase
         echo "\ntime: " . ($end - $start) . "\n";
 
         $metricsResult = $this->client->get('/examples/metrics.php?adapter=' . $this->adapter);
-        $body = (string)$metricsResult->getBody();
+        $body          = (string) $metricsResult->getBody();
 
         $this->assertThat($body, $this->stringContains(<<<EOF
 test_some_histogram_bucket{type="blue",le="0.1"} 1

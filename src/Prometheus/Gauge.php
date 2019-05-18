@@ -1,72 +1,81 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Prometheus;
-
 
 use Prometheus\Storage\Adapter;
 
 class Gauge extends Collector
 {
-    const TYPE = 'gauge';
+    public const TYPE = 'gauge';
 
     /**
-     * @param double $value e.g. 123
-     * @param array $labels e.g. ['status', 'opcode']
+     * @param float    $value  e.g. 123
+     * @param string[] $labels e.g. ['status', 'opcode']
      */
-    public function set($value, $labels = array())
+    public function set(float $value, array $labels = []) : void
     {
         $this->assertLabelsAreDefinedCorrectly($labels);
 
         $this->storageAdapter->updateGauge(
-            array(
+            [
                 'name' => $this->getName(),
                 'help' => $this->getHelp(),
                 'type' => $this->getType(),
                 'labelNames' => $this->getLabelNames(),
                 'labelValues' => $labels,
                 'value' => $value,
-                'command' => Adapter::COMMAND_SET
-            )
+                'command' => Adapter::COMMAND_SET,
+            ]
         );
     }
 
-    /**
-     * @return string
-     */
-    public function getType()
+    public function getType() : string
     {
         return self::TYPE;
     }
 
-    public function inc($labels = array())
+    /**
+     * @param string[] $labels e.g. ['status', 'opcode']
+     */
+    public function inc(array $labels = []) : void
     {
         $this->incBy(1, $labels);
     }
 
-    public function incBy($value, $labels = array())
+    /**
+     * @param string[] $labels e.g. ['status', 'opcode']
+     */
+    public function incBy(float $value, array $labels = []) : void
     {
         $this->assertLabelsAreDefinedCorrectly($labels);
 
         $this->storageAdapter->updateGauge(
-            array(
+            [
                 'name' => $this->getName(),
                 'help' => $this->getHelp(),
                 'type' => $this->getType(),
                 'labelNames' => $this->getLabelNames(),
                 'labelValues' => $labels,
                 'value' => $value,
-                'command' => Adapter::COMMAND_INCREMENT_FLOAT
-            )
+                'command' => Adapter::COMMAND_INCREMENT_FLOAT,
+            ]
         );
     }
 
-    public function dec($labels = array())
+    /**
+     * @param string[] $labels e.g. ['status', 'opcode']
+     */
+    public function dec(array $labels = []) : void
     {
         $this->decBy(1, $labels);
     }
 
-    public function decBy($value, $labels = array())
+    /**
+     * @param string[] $labels e.g. ['status', 'opcode']
+     */
+    public function decBy(float $value, array $labels = []) : void
     {
         $this->incBy(-$value, $labels);
     }

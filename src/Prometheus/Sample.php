@@ -1,45 +1,50 @@
 <?php
 
-namespace Prometheus;
+declare(strict_types=1);
 
+namespace Prometheus;
 
 class Sample
 {
+    /** @var string */
     private $name;
+    /** @var string[] */
     private $labelNames;
+    /** @var string[] */
     private $labelValues;
+    /** @var int|double */
     private $value;
 
+    /**
+     * @param array<string, int|double|array> $data
+     */
     public function __construct(array $data)
     {
-        $this->name = $data['name'];
-        $this->labelNames = $data['labelNames'];
-        $this->labelValues = $data['labelValues'];
-        $this->value = $data['value'];
+        $this->name        = $data['name'];
+        $this->labelNames  = (array) $data['labelNames'];
+        $this->labelValues = (array) $data['labelValues'];
+        $this->value       = $data['value'];
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName() : string
     {
         return $this->name;
     }
 
     /**
-     * @return array
+     * @return string[]
      */
-    public function getLabelNames()
+    public function getLabelNames() : array
     {
-        return (array)$this->labelNames;
+        return $this->labelNames;
     }
 
     /**
-     * @return array
+     * @return string[]
      */
-    public function getLabelValues()
+    public function getLabelValues() : array
     {
-        return (array)$this->labelValues;
+        return $this->labelValues;
     }
 
     /**
@@ -50,11 +55,8 @@ class Sample
         return $this->value;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasLabelNames()
+    public function hasLabelNames() : bool
     {
-        return !empty($this->labelNames);
+        return ! empty($this->labelNames);
     }
 }

@@ -1,32 +1,32 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Test\Prometheus\Redis;
 
-use function class_exists;
 use Prometheus\CollectorRegistry;
 use Prometheus\Counter;
 use Prometheus\Gauge;
 use Prometheus\Histogram;
 use Prometheus\RenderTextFormat;
 use Prometheus\Storage\Redis;
-use Test\Prometheus\AbstractCollectorRegistryTest;
+use Test\Prometheus\CollectorRegistryBaseTest;
 
 /**
  * @requires extension redis
  */
-class CollectorRegistryTest extends AbstractCollectorRegistryTest
+class CollectorRegistryTest extends CollectorRegistryBaseTest
 {
-    public function configureAdapter()
+    public function configureAdapter() : void
     {
-        $this->adapter = new Redis(array('host' => REDIS_HOST));
+        $this->adapter = new Redis(['host' => REDIS_HOST]);
         $this->adapter->flushRedis();
     }
 
     /**
      * @test
      */
-    public function itShouldOnlyFlushMetricData()
+    public function itShouldOnlyFlushMetricData() : void
     {
         $redis = new \Redis();
         $redis->connect(REDIS_HOST);
@@ -39,13 +39,13 @@ class CollectorRegistryTest extends AbstractCollectorRegistryTest
         $counterRedisKey = 'PROMETHEUS_' . Counter::TYPE . Redis::PROMETHEUS_METRIC_KEYS_SUFFIX;
         $this->assertEquals(['PROMETHEUS_:counter:test_some_counter'], $redis->sMembers($counterRedisKey));
 
-        $gauge = $registry->registerGauge('test', 'some_gauge', 'this is for testing', array('foo'));
-        $gauge->set(35, array('bar'));
+        $gauge = $registry->registerGauge('test', 'some_gauge', 'this is for testing', ['foo']);
+        $gauge->set(35, ['bar']);
         $gaugeRedisKey = 'PROMETHEUS_' . Gauge::TYPE . Redis::PROMETHEUS_METRIC_KEYS_SUFFIX;
         $this->assertEquals(['PROMETHEUS_:gauge:test_some_gauge'], $redis->sMembers($gaugeRedisKey));
 
-        $histogram = $registry->registerHistogram('test', 'some_histogram', 'this is for testing', array('foo', 'bar'), array(0.1, 1, 5, 10));
-        $histogram->observe(2, array('cat', 'meow'));
+        $histogram = $registry->registerHistogram('test', 'some_histogram', 'this is for testing', ['foo', 'bar'], [0.1, 1, 5, 10]);
+        $histogram->observe(2, ['cat', 'meow']);
         $histogramRedisKey = 'PROMETHEUS_' . Histogram::TYPE . Redis::PROMETHEUS_METRIC_KEYS_SUFFIX;
         $this->assertEquals(['PROMETHEUS_:histogram:test_some_histogram'], $redis->sMembers($histogramRedisKey));
 
