@@ -3,9 +3,8 @@ namespace Test;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Promise;
-use PHPUnit_Framework_TestCase;
 
-class BlackBoxTest extends PHPUnit_Framework_TestCase
+class BlackBoxTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Client
@@ -17,7 +16,7 @@ class BlackBoxTest extends PHPUnit_Framework_TestCase
      */
     private $adapter;
 
-    public function setUp()
+    protected function setUp() : void
     {
         $this->adapter = getenv('ADAPTER');
         $this->client = new Client(['base_uri' => 'http://nginx:80/']);

@@ -3,7 +3,6 @@
 
 namespace Test\Prometheus;
 
-use PHPUnit_Framework_TestCase;
 use Prometheus\Histogram;
 use Prometheus\MetricFamilySamples;
 use Prometheus\Sample;
@@ -13,14 +12,14 @@ use Prometheus\Storage\Adapter;
 /**
  * See https://prometheus.io/docs/instrumenting/exposition_formats/
  */
-abstract class AbstractHistogramTest extends PHPUnit_Framework_TestCase
+abstract class AbstractHistogramTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Adapter
      */
     public $adapter;
 
-    public function setUp()
+    protected function setUp() : void
     {
         $this->configureAdapter();
     }
@@ -374,51 +373,51 @@ abstract class AbstractHistogramTest extends PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Histogram buckets must be in increasing order
      */
     public function itShouldThrowAnExceptionWhenTheBucketSizesAreNotIncreasing()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Histogram buckets must be in increasing order');
         new Histogram($this->adapter, 'test', 'some_metric', 'this is for testing', array(), array(1, 1));
     }
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Histogram must have at least one bucket
      */
     public function itShouldThrowAnExceptionWhenThereIsLessThanOneBucket()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Histogram must have at least one bucket');
         new Histogram($this->adapter, 'test', 'some_metric', 'this is for testing', array(), array());
     }
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Histogram cannot have a label named
      */
     public function itShouldThrowAnExceptionWhenThereIsALabelNamedLe()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Histogram cannot have a label named');
         new Histogram($this->adapter, 'test', 'some_metric', 'this is for testing', array('le'), array(1));
     }
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Invalid metric name
      */
     public function itShouldRejectInvalidMetricsNames()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid metric name');
         new Histogram($this->adapter, 'test', 'some invalid metric', 'help', array(), array(1));
     }
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Invalid label name
      */
     public function itShouldRejectInvalidLabelNames()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid label name');
         new Histogram($this->adapter, 'test', 'some_metric', 'help', array('invalid label'), array(1));
     }
 
@@ -435,7 +434,7 @@ abstract class AbstractHistogramTest extends PHPUnit_Framework_TestCase
         $histogram->observe(1, array($value));
 
         $metrics = $this->adapter->collect();
-        self::assertInternalType('array', $metrics);
+        self::assertIsArray($metrics);
         self::assertCount(1, $metrics);
         self::assertContainsOnlyInstancesOf(MetricFamilySamples::class, $metrics);
 
