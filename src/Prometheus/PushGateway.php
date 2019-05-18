@@ -55,7 +55,7 @@ class PushGateway
     }
 
     /**
-     * @param CollectorRegistry $collectorRegistry
+     * @param CollectorRegistry|null $collectorRegistry
      * @param $job
      * @param $groupingKey
      * @param $method
