@@ -1,15 +1,7 @@
 {
-    "name": "jimdo/prometheus_client_php",
-    "authors": [
-        {
-            "name": "Joscha",
-            "email": "joscha@schnipseljagd.org"
-        },
-        {
-            "name": "Jan Brauer",
-            "email": "jan.brauer@jimdo.com"
-        }
-    ],
+    "name": "tgerbet/prometheus-client",
+    "description": "Prometheus instrumentation library",
+    "license": "Apache-2.0",
     "require": {
         "php": ">=7.2",
         "guzzlehttp/guzzle": "^6.2"
@@ -33,7 +25,6 @@
             "Test\\Prometheus\\": "tests/Test/Prometheus/"
         }
     },
-    "license": "Apache-2.0",
     "config": {
         "sort-packages": true
     }
