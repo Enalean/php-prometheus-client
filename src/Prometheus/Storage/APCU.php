@@ -7,7 +7,7 @@ namespace Prometheus\Storage;
 use Prometheus\MetricFamilySamples;
 use RuntimeException;
 
-class APC implements Adapter
+class APCU implements Adapter
 {
     const PROMETHEUS_PREFIX = 'prom';
 
