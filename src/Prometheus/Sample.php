@@ -17,6 +17,8 @@ class Sample
 
     /**
      * @param array<string, int|double|array> $data
+     *
+     * @psalm-param array{name:string, value:int|double, labelValues:string[], labelNames:string[]} $data
      */
     public function __construct(array $data)
     {

@@ -19,6 +19,14 @@ class MetricFamilySamples
 
     /**
      * @param array<string,string|array> $data
+     *
+     * @psalm-param array{
+     *      name: string,
+     *      type: string,
+     *      help: string,
+     *      labelNames: string[],
+     *      samples: array<array{name:string, value:int|double, labelValues:string[], labelNames:string[]}>
+     *  } $data
      */
     public function __construct(array $data)
     {

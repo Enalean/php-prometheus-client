@@ -26,7 +26,13 @@ class InMemory implements Adapter
     private $counters = [];
     /** @var array<string,mixed> */
     private $gauges = [];
-    /** @var array<string,mixed> */
+    /**
+     * @var array<string,string[]>
+     * @psalm-var array<string, array{
+     *      meta: array{name:string, help:string, type:string, labelNames:string[], buckets:array<int|float>},
+     *      samples: array<string, int|float>
+     * }>
+     */
     private $histograms = [];
 
     /**
@@ -129,6 +135,14 @@ class InMemory implements Adapter
      * @param array<string,mixed> $metrics
      *
      * @return MetricFamilySamples[]
+     *
+     * @psalm-param array<
+     *      string,
+     *      array{
+     *          meta:array{name:string, help:string, type:string, labelNames:string[]},
+     *          samples:array<string, int|float>
+     *      }
+     *  > $metrics
      */
     private function internalCollect(array $metrics) : array
     {
@@ -152,7 +166,9 @@ class InMemory implements Adapter
                     'value' => $value,
                 ];
             }
-            $this->sortSamples($data['samples']);
+            usort($data['samples'], static function (array $a, array $b) : int {
+                return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
+            });
             $result[] = new MetricFamilySamples($data);
         }
 
@@ -160,7 +176,17 @@ class InMemory implements Adapter
     }
 
     /**
-     * @param array<string,mixed> $data
+     * @param array<string,string|int|float|array> $data
+     *
+     * @psalm-param array{
+     *      name:string,
+     *      help:string,
+     *      type:string,
+     *      labelNames:string[],
+     *      buckets:array<int|float>,
+     *      value:int|float,
+     *      labelValues:string[]
+     * } $data
      */
     public function updateHistogram(array $data) : void
     {
@@ -195,15 +221,27 @@ class InMemory implements Adapter
     }
 
     /**
-     * @param array<string,mixed> $data
+     * @param array<string,string|int|float|string[]> $data
+     *
+     * @psalm-param array{
+     *      name:string,
+     *      help:string,
+     *      type:string,
+     *      labelNames:string[],
+     *      value:int|float,
+     *      command:int,
+     *      labelValues:string[]
+     * } $data
      */
     public function updateGauge(array $data) : void
     {
         $metaKey  = $this->metaKey($data);
         $valueKey = $this->valueKey($data);
         if (array_key_exists($metaKey, $this->gauges) === false) {
+            /** @psalm-suppress InvalidArgument */
+            $meta                   = $this->metaData($data);
             $this->gauges[$metaKey] = [
-                'meta' => $this->metaData($data),
+                'meta' => $meta,
                 'samples' => [],
             ];
         }
@@ -218,15 +256,27 @@ class InMemory implements Adapter
     }
 
     /**
-     * @param array<string,mixed> $data
+     * @param array<string,string|int|float|string[]> $data
+     *
+     * @psalm-param array{
+     *      name:string,
+     *      help:string,
+     *      type:string,
+     *      labelNames:string[],
+     *      value:int|float,
+     *      command:int,
+     *      labelValues:string[]
+     * } $data
      */
     public function updateCounter(array $data) : void
     {
         $metaKey  = $this->metaKey($data);
         $valueKey = $this->valueKey($data);
         if (array_key_exists($metaKey, $this->counters) === false) {
+            /** @psalm-suppress InvalidArgument */
+            $meta                     = $this->metaData($data);
             $this->counters[$metaKey] = [
-                'meta' => $this->metaData($data),
+                'meta' => $data,
                 'samples' => [],
             ];
         }
@@ -242,6 +292,8 @@ class InMemory implements Adapter
 
     /**
      * @param array<string,string|string[]> $data
+     *
+     * @psalm-param array{type:string, name:string, labelValues: string[]} $data
      */
     private function histogramBucketValueKey(array $data, string $bucket) : string
     {
@@ -255,6 +307,8 @@ class InMemory implements Adapter
 
     /**
      * @param array<string,string> $data
+     *
+     * @psalm-param array{type:string, name:string} $data
      */
     private function metaKey(array $data) : string
     {
@@ -263,6 +317,12 @@ class InMemory implements Adapter
 
     /**
      * @param array<string,string|string[]> $data
+     *
+     * @psalm-param array{
+     *      type:string,
+     *      name:string,
+     *      labelValues:string[]
+     * } $data
      */
     private function valueKey(array $data) : string
     {
@@ -273,9 +333,21 @@ class InMemory implements Adapter
     }
 
     /**
-     * @param array<string,string> $data
+     * @param array<string,mixed> $data
      *
-     * @return array<string,string>
+     * @return array<string,string|array>
+     *
+     * @psalm-param array{
+     *      name:string,
+     *      help:string,
+     *      type:string,
+     *      labelNames:string[],
+     *      buckets:array<int|float>,
+     *      value?:mixed,
+     *      command?:mixed,
+     *      labelValues?:mixed
+     *  } $data
+     * @psalm-return array{name:string, help:string, type:string, labelNames:string[], buckets:array<int|float>}
      */
     private function metaData(array $data) : array
     {
@@ -285,16 +357,6 @@ class InMemory implements Adapter
         unset($metricsMetaData['labelValues']);
 
         return $metricsMetaData;
-    }
-
-    /**
-     * @param array<string,string[]> $samples
-     */
-    private function sortSamples(array &$samples) : void
-    {
-        usort($samples, static function ($a, $b) {
-            return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
-        });
     }
 
     /**

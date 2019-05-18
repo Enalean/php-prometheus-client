@@ -53,7 +53,7 @@ class PushGateway
     /**
      * @param array<string,string>|null $groupingKey
      */
-    private function doRequest(?CollectorRegistry $collectorRegistry = null, string $job, ?array $groupingKey, string $method) : void
+    private function doRequest(?CollectorRegistry $collectorRegistry = null, string $job = '', ?array $groupingKey = null, string $method = '') : void
     {
         $url = 'http://' . $this->address . '/metrics/job/' . $job;
         if (! empty($groupingKey)) {
@@ -69,7 +69,7 @@ class PushGateway
             'connect_timeout' => 10,
             'timeout' => 20,
         ];
-        if ($method !== 'delete') {
+        if ($method !== 'delete' && $collectorRegistry !== null) {
             $renderer               = new RenderTextFormat();
             $requestOptions['body'] = $renderer->render($collectorRegistry->getMetricFamilySamples());
         }

@@ -26,18 +26,26 @@ class Redis implements Adapter
 {
     public const PROMETHEUS_METRIC_KEYS_SUFFIX = '_METRIC_KEYS';
 
-    /** @var array<string, (string|int|float|false|null)> */
+    /**
+     * @var array<string, (string|int|float|false|null)>
+     * @psalm-var array{host?:string,port?:int,timeout?:float,read_timeout?:string,persistent_connections?:bool,password?:string|null}
+     */
     private static $defaultOptions = [];
     /** @var string */
     private static $prefix = 'PROMETHEUS_';
 
-    /** @var array<string, (string|int|float|false|null)> */
+    /**
+     * @var array<string, (string|int|float|false|null)>
+     * @psalm-var array{host:string,port:int,timeout:float,read_timeout:string,persistent_connections:bool,password:string|null}
+     */
     private $options;
     /** @var \Redis */
     private $redis;
 
     /**
      * @param array<string, (string|int|float|false|null)> $options
+     *
+     * @psalm-param array{host?:string,port?:int,timeout?:float,read_timeout?:string,persistent_connections?:bool,password?:string|null} $options
      */
     public function __construct(array $options = [])
     {
@@ -62,12 +70,15 @@ class Redis implements Adapter
             self::$defaultOptions['password'] = null;
         }
 
+        /** @psalm-suppress PropertyTypeCoercion */
         $this->options = array_merge(self::$defaultOptions, $options);
         $this->redis   = new \Redis();
     }
 
     /**
      * @param array<string, (string|int|float|false|null)> $options
+     *
+     * @psalm-param array{host?:string,port?:int,timeout?:float,read_timeout?:string,persistent_connections?:bool,password?:string|null} $options
      */
     public static function setDefaultOptions(array $options) : void
     {
@@ -253,14 +264,11 @@ LUA
     }
 
     /**
-     * @return array<string,mixed>
+     * @return array<int,mixed>
      */
     private function collectHistograms() : array
     {
         $keys = $this->redis->sMembers(self::$prefix . Histogram::TYPE . self::PROMETHEUS_METRIC_KEYS_SUFFIX);
-        if ($keys === false) {
-            return [];
-        }
 
         sort($keys);
         $histograms = [];
@@ -335,14 +343,11 @@ LUA
     }
 
     /**
-     * @return array<string,mixed>
+     * @return array<int,mixed>
      */
     private function collectGauges() : array
     {
         $keys = $this->redis->sMembers(self::$prefix . Gauge::TYPE . self::PROMETHEUS_METRIC_KEYS_SUFFIX);
-        if ($keys === false) {
-            return [];
-        }
 
         sort($keys);
         $gauges = [];
@@ -359,7 +364,7 @@ LUA
                     'value' => $value,
                 ];
             }
-            usort($gauge['samples'], static function ($a, $b) {
+            usort($gauge['samples'], static function (array $a, array $b) : int {
                 return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
             });
             $gauges[] = $gauge;
@@ -369,14 +374,11 @@ LUA
     }
 
     /**
-     * @return array<string,mixed>
+     * @return array<int,mixed>
      */
     private function collectCounters() : array
     {
         $keys = $this->redis->sMembers(self::$prefix . Counter::TYPE . self::PROMETHEUS_METRIC_KEYS_SUFFIX);
-        if ($keys === false) {
-            return [];
-        }
 
         sort($keys);
         $counters = [];
@@ -393,7 +395,7 @@ LUA
                     'value' => $value,
                 ];
             }
-            usort($counter['samples'], static function ($a, $b) {
+            usort($counter['samples'], static function (array $a, array $b) : int {
                 return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
             });
             $counters[] = $counter;

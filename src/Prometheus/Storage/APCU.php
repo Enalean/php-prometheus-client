@@ -130,6 +130,8 @@ class APCU implements Adapter
 
     /**
      * @param array<string,string|string[]> $data
+     *
+     * @psalm-param array{type:string, name:string, labelValues: string[]} $data
      */
     private function valueKey(array $data) : string
     {
@@ -144,6 +146,8 @@ class APCU implements Adapter
 
     /**
      * @param array<string,string|string[]> $data
+     *
+     * @psalm-param array{type:string, name:string, labelValues: string[]} $data
      */
     private function histogramBucketValueKey(array $data, string $bucket) : string
     {
@@ -179,22 +183,27 @@ class APCU implements Adapter
     {
         $counters = [];
         foreach (new APCUIterator('/^prom:counter:.*:meta/') as $counter) {
-            $metaData = json_decode($counter['value'], true);
-            $data     = [
-                'name' => $metaData['name'],
-                'help' => $metaData['help'],
-                'type' => $metaData['type'],
-                'labelNames' => $metaData['labelNames'],
+            $metaData   = json_decode($counter['value'], true);
+            $labelNames = [];
+            foreach ($metaData['labelNames'] as $labelName) {
+                $labelNames[] = (string) $labelName;
+            }
+            $data = [
+                'name' => (string) $metaData['name'],
+                'help' => (string) $metaData['help'],
+                'type' => (string) $metaData['type'],
+                'labelNames' => $labelNames,
                 'samples' => [],
             ];
+
             foreach (new APCUIterator('/^prom:counter:' . $metaData['name'] . ':.*:value/') as $value) {
                 $parts             = explode(':', $value['key']);
                 $labelValues       = $parts[3];
                 $data['samples'][] = [
-                    'name' => $metaData['name'],
+                    'name' => (string) $metaData['name'],
                     'labelNames' => [],
                     'labelValues' => $this->decodeLabelValues($labelValues),
-                    'value' => $value['value'],
+                    'value' => (float) $value['value'],
                 ];
             }
             $this->sortSamples($data['samples']);
@@ -211,19 +220,23 @@ class APCU implements Adapter
     {
         $gauges = [];
         foreach (new APCUIterator('/^prom:gauge:.*:meta/') as $gauge) {
-            $metaData = json_decode($gauge['value'], true);
-            $data     = [
-                'name' => $metaData['name'],
-                'help' => $metaData['help'],
-                'type' => $metaData['type'],
-                'labelNames' => $metaData['labelNames'],
+            $metaData   = json_decode($gauge['value'], true);
+            $labelNames = [];
+            foreach ($metaData['labelNames'] as $labelName) {
+                $labelNames[] = (string) $labelName;
+            }
+            $data = [
+                'name' => (string) $metaData['name'],
+                'help' => (string) $metaData['help'],
+                'type' => (string) $metaData['type'],
+                'labelNames' => $labelNames,
                 'samples' => [],
             ];
             foreach (new APCUIterator('/^prom:gauge:' . $metaData['name'] . ':.*:value/') as $value) {
                 $parts             = explode(':', $value['key']);
                 $labelValues       = $parts[3];
                 $data['samples'][] = [
-                    'name' => $metaData['name'],
+                    'name' => (string) $metaData['name'],
                     'labelNames' => [],
                     'labelValues' => $this->decodeLabelValues($labelValues),
                     'value' => $this->fromInteger($value['value']),
@@ -244,12 +257,16 @@ class APCU implements Adapter
     {
         $histograms = [];
         foreach (new APCUIterator('/^prom:histogram:.*:meta/') as $histogram) {
-            $metaData = json_decode($histogram['value'], true);
-            $data     = [
-                'name' => $metaData['name'],
-                'help' => $metaData['help'],
-                'type' => $metaData['type'],
-                'labelNames' => $metaData['labelNames'],
+            $metaData   = json_decode($histogram['value'], true);
+            $labelNames = [];
+            foreach ($metaData['labelNames'] as $labelName) {
+                $labelNames[] = (string) $labelName;
+            }
+            $data = [
+                'name' => (string) $metaData['name'],
+                'help' => (string) $metaData['help'],
+                'type' => (string) $metaData['type'],
+                'labelNames' => $labelNames,
                 'buckets' => $metaData['buckets'],
                 'samples' => [],
             ];
@@ -282,7 +299,7 @@ class APCU implements Adapter
                             'value' => $acc,
                         ];
                     } else {
-                        $acc              += $histogramBuckets[$labelValues][$bucket];
+                        $acc              += (float) $histogramBuckets[$labelValues][$bucket];
                         $data['samples'][] = [
                             'name' => $metaData['name'] . '_bucket',
                             'labelNames' => ['le'],
@@ -308,6 +325,7 @@ class APCU implements Adapter
                     'value' => $this->fromInteger($histogramBuckets[$labelValues]['sum']),
                 ];
             }
+            unset($data['buckets']);
             $histograms[] = new MetricFamilySamples($data);
         }
 
@@ -331,11 +349,11 @@ class APCU implements Adapter
     }
 
     /**
-     * @param array<string,string[]> $samples
+     * @param string[][] $samples
      */
-    private function sortSamples(array &$samples) : void
+    private static function sortSamples(array &$samples) : void
     {
-        usort($samples, static function ($a, $b) {
+        usort($samples, static function (array $a, array $b) : int {
             return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
         });
     }
