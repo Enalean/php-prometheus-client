@@ -1,6 +1,7 @@
 # A prometheus client library written in PHP
 
-[![Build Status](https://travis-ci.org/Jimdo/prometheus_client_php.svg?branch=master)](https://travis-ci.org/Jimdo/prometheus_client_php)
+[![Build Status](https://travis-ci.org/LeSuisse/php-prometheus-client.svg?branch=master)](https://travis-ci.org/LeSuisse/php-prometheus-client)
+[![Type Coverage](https://shepherd.dev/github/lesuisse/php-prometheus-client/coverage.svg)](https://shepherd.dev/github/lesuisse/php-prometheus-client)
 
 :warning: This a WIP fork of [Jimdo/prometheus_client_php](https://github.com/Jimdo/prometheus_client_php).
 

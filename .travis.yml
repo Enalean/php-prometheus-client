@@ -35,7 +35,7 @@ jobs:
       install: travis_retry composer install --prefer-dist
       php: 7.3
       script:
-        - ./vendor/bin/psalm
+        - ./vendor/bin/psalm --shepherd
     - stage: test
       name: Integration
       services:
