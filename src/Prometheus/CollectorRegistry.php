@@ -6,11 +6,11 @@ namespace Prometheus;
 
 use Prometheus\Exception\MetricNotFoundException;
 use Prometheus\Exception\MetricsRegistrationException;
-use Prometheus\Storage\Adapter;
+use Prometheus\Storage\Storage;
 
 class CollectorRegistry implements RegistryInterface
 {
-    /** @var Adapter */
+    /** @var Storage */
     private $storageAdapter;
     /** @var Gauge[] */
     private $gauges = [];
@@ -19,7 +19,7 @@ class CollectorRegistry implements RegistryInterface
     /** @var Histogram[] */
     private $histograms = [];
 
-    public function __construct(Adapter $storage)
+    public function __construct(Storage $storage)
     {
         $this->storageAdapter = $storage;
     }

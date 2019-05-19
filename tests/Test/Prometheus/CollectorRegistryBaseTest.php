@@ -9,11 +9,11 @@ use Prometheus\CollectorRegistry;
 use Prometheus\Exception\MetricNotFoundException;
 use Prometheus\Exception\MetricsRegistrationException;
 use Prometheus\RenderTextFormat;
-use Prometheus\Storage\Adapter;
+use Prometheus\Storage\Storage;
 
 abstract class CollectorRegistryBaseTest extends TestCase
 {
-    /** @var Adapter */
+    /** @var Storage */
     public $adapter;
 
     /** @var RenderTextFormat */

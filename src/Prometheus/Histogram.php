@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Prometheus;
 
 use InvalidArgumentException;
-use Prometheus\Storage\Adapter;
+use Prometheus\Storage\Storage;
 use function count;
 
 class Histogram extends Collector
@@ -19,7 +19,7 @@ class Histogram extends Collector
      * @param string[] $labels
      * @param float[]  $buckets
      */
-    public function __construct(Adapter $adapter, string $namespace, string $name, string $help, array $labels = [], ?array $buckets = null)
+    public function __construct(Storage $adapter, string $namespace, string $name, string $help, array $labels = [], ?array $buckets = null)
     {
         parent::__construct($adapter, $namespace, $name, $help, $labels);
 

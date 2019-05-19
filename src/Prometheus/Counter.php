@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Prometheus;
 
-use Prometheus\Storage\Adapter;
+use Prometheus\Storage\Storage;
 
 class Counter extends Collector
 {
@@ -39,7 +39,7 @@ class Counter extends Collector
                 'labelNames' => $this->getLabelNames(),
                 'labelValues' => $labels,
                 'value' => $count,
-                'command' => Adapter::COMMAND_INCREMENT_INTEGER,
+                'command' => Storage::COMMAND_INCREMENT_INTEGER,
             ]
         );
     }

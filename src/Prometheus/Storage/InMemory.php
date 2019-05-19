@@ -20,7 +20,7 @@ use function sort;
 use function strcmp;
 use function usort;
 
-class InMemory implements Adapter
+class InMemory implements Storage
 {
     /** @var array<string,mixed> */
     private $counters = [];
@@ -248,7 +248,7 @@ class InMemory implements Adapter
         if (array_key_exists($valueKey, $this->gauges[$metaKey]['samples']) === false) {
             $this->gauges[$metaKey]['samples'][$valueKey] = 0;
         }
-        if ($data['command'] === Adapter::COMMAND_SET) {
+        if ($data['command'] === self::COMMAND_SET) {
             $this->gauges[$metaKey]['samples'][$valueKey] = $data['value'];
         } else {
             $this->gauges[$metaKey]['samples'][$valueKey] += $data['value'];
@@ -283,7 +283,7 @@ class InMemory implements Adapter
         if (array_key_exists($valueKey, $this->counters[$metaKey]['samples']) === false) {
             $this->counters[$metaKey]['samples'][$valueKey] = 0;
         }
-        if ($data['command'] === Adapter::COMMAND_SET) {
+        if ($data['command'] === self::COMMAND_SET) {
             $this->counters[$metaKey]['samples'][$valueKey] = 0;
         } else {
             $this->counters[$metaKey]['samples'][$valueKey] += $data['value'];

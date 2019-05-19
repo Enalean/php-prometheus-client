@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Prometheus;
 
-use Prometheus\Storage\Adapter;
+use Prometheus\Storage\Storage;
 
 class Gauge extends Collector
 {
@@ -26,7 +26,7 @@ class Gauge extends Collector
                 'labelNames' => $this->getLabelNames(),
                 'labelValues' => $labels,
                 'value' => $value,
-                'command' => Adapter::COMMAND_SET,
+                'command' => Storage::COMMAND_SET,
             ]
         );
     }
@@ -59,7 +59,7 @@ class Gauge extends Collector
                 'labelNames' => $this->getLabelNames(),
                 'labelValues' => $labels,
                 'value' => $value,
-                'command' => Adapter::COMMAND_INCREMENT_FLOAT,
+                'command' => Storage::COMMAND_INCREMENT_FLOAT,
             ]
         );
     }

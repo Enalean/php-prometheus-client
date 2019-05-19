@@ -6,7 +6,7 @@ namespace Prometheus\Storage;
 
 use Prometheus\MetricFamilySamples;
 
-interface Adapter
+interface Storage
 {
     public const COMMAND_INCREMENT_INTEGER = 1;
     public const COMMAND_INCREMENT_FLOAT   = 2;

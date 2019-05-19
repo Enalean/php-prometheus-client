@@ -28,7 +28,7 @@ use function strcmp;
 use function unpack;
 use function usort;
 
-class APCU implements Adapter
+class APCU implements Storage
 {
     public const PROMETHEUS_PREFIX = 'prom';
 
@@ -86,7 +86,7 @@ class APCU implements Adapter
     public function updateGauge(array $data) : void
     {
         $valueKey = $this->valueKey($data);
-        if ($data['command'] === Adapter::COMMAND_SET) {
+        if ($data['command'] === self::COMMAND_SET) {
             apcu_store($valueKey, $this->toInteger($data['value']));
             apcu_store($this->metaKey($data), json_encode($this->metaData($data)));
         } else {

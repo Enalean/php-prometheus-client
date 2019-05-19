@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Prometheus;
 
 use InvalidArgumentException;
-use Prometheus\Storage\Adapter;
+use Prometheus\Storage\Storage;
 use function count;
 use function preg_match;
 use function print_r;
@@ -17,7 +17,7 @@ abstract class Collector
 {
     public const RE_METRIC_LABEL_NAME = '/^[a-zA-Z_:][a-zA-Z0-9_:]*$/';
 
-    /** @var Adapter */
+    /** @var Storage */
     protected $storageAdapter;
     /** @var string */
     protected $name;
@@ -29,7 +29,7 @@ abstract class Collector
     /**
      * @param string[] $labels
      */
-    public function __construct(Adapter $storageAdapter, string $namespace, string $name, string $help, array $labels = [])
+    public function __construct(Storage $storageAdapter, string $namespace, string $name, string $help, array $labels = [])
     {
         $this->storageAdapter = $storageAdapter;
         $metricName           = ($namespace ? $namespace . '_' : '') . $name;

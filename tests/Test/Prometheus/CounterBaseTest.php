@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Prometheus\Counter;
 use Prometheus\MetricFamilySamples;
 use Prometheus\Sample;
-use Prometheus\Storage\Adapter;
+use Prometheus\Storage\Storage;
 use function array_combine;
 use function array_merge;
 use function chr;
@@ -20,7 +20,7 @@ use function reset;
  */
 abstract class CounterBaseTest extends TestCase
 {
-    /** @var Adapter */
+    /** @var Storage */
     public $adapter;
 
     protected function setUp() : void

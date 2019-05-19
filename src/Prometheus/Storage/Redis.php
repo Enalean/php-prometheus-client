@@ -20,7 +20,7 @@ use function sort;
 use function strcmp;
 use function usort;
 
-class Redis implements Adapter
+class Redis implements Storage
 {
     public const PROMETHEUS_METRIC_KEYS_SUFFIX = '_METRIC_KEYS';
 
@@ -330,11 +330,11 @@ LUA
     private function getRedisCommand(int $cmd) : string
     {
         switch ($cmd) {
-            case Adapter::COMMAND_INCREMENT_INTEGER:
+            case self::COMMAND_INCREMENT_INTEGER:
                 return 'hIncrBy';
-            case Adapter::COMMAND_INCREMENT_FLOAT:
+            case self::COMMAND_INCREMENT_FLOAT:
                 return 'hIncrByFloat';
-            case Adapter::COMMAND_SET:
+            case self::COMMAND_SET:
                 return 'hSet';
             default:
                 throw new InvalidArgumentException('Unknown command');
