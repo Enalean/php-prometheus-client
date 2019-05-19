@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/Jimdo/prometheus_client_php.svg?branch=master)](https://travis-ci.org/Jimdo/prometheus_client_php)
 
+:warning: This a WIP fork of [Jimdo/prometheus_client_php](https://github.com/Jimdo/prometheus_client_php).
+
 This library uses Redis or APCu to do the client side aggregation.
 If using Redis, we recommend to run a local Redis instance next to your PHP workers.
 
