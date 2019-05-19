@@ -1,4 +1,5 @@
-<phpunit colors="true" bootstrap="./tests/bootstrap.php">
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit colors="true" bootstrap="vendor/autoload.php">
     <testsuites>
         <testsuite name="Test Suite">
             <directory>./tests/Test/Prometheus</directory>
@@ -9,4 +10,7 @@
             <directory suffix=".php">src/Prometheus/</directory>
         </whitelist>
     </filter>
+    <php>
+        <env name="REDIS_HOST" value="127.0.0.1" />
+    </php>
 </phpunit>
