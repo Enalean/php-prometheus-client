@@ -6,14 +6,39 @@ php:
 services:
   - redis-server
 
-before_script:
+before_install:
   - echo "apc.enabled = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo "apc.enable_cli = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  - composer self-update
-  - composer install --no-interaction --prefer-source --dev
   - phpenv rehash
+
+install:
+  - travis_retry composer update --prefer-dist
+
+jobs:
+  include:
+    - stage: "Code Quality"
+      name: PHPCS
+      install: travis_retry composer install --prefer-dist
+      php: 7.3
+      script:
+        - ./vendor/bin/phpcs
+    - stage: "Code Quality"
+      name: Psalm
+      install: travis_retry composer install --prefer-dist
+      php: 7.3
+      script:
+        - ./vendor/bin/psalm
 
 script:
   - vendor/bin/phpunit --verbose --colors
+
+stages:
+  - "Code Quality"
+  - test
+
+cache:
+  directories:
+    - vendor
+    - $HOME/.composer/cache
