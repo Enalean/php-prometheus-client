@@ -7,7 +7,7 @@ namespace Test\Prometheus\InMemory;
 use Prometheus\Storage\InMemory;
 use Test\Prometheus\CollectorRegistryBaseTest;
 
-class CollectorRegistryTest extends CollectorRegistryBaseTest
+final class CollectorRegistryTest extends CollectorRegistryBaseTest
 {
     public function configureAdapter() : void
     {

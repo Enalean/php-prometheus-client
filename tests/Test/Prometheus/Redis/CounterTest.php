@@ -11,7 +11,7 @@ use Test\Prometheus\CounterBaseTest;
  *
  * @requires extension redis
  */
-class CounterTest extends CounterBaseTest
+final class CounterTest extends CounterBaseTest
 {
     use ConfigureRedisStorage;
 }

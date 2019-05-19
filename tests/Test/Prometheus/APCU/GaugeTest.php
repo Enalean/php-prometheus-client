@@ -12,7 +12,7 @@ use Test\Prometheus\GaugeBaseTest;
  *
  * @requires extension apcu
  */
-class GaugeTest extends GaugeBaseTest
+final class GaugeTest extends GaugeBaseTest
 {
     public function configureAdapter() : void
     {

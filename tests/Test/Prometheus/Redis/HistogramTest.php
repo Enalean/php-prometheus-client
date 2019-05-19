@@ -11,7 +11,7 @@ use Test\Prometheus\HistogramBaseTest;
  *
  * @requires extension redis
  */
-class HistogramTest extends HistogramBaseTest
+final class HistogramTest extends HistogramBaseTest
 {
     use ConfigureRedisStorage;
 }

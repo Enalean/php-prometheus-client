@@ -11,7 +11,7 @@ use Test\Prometheus\GaugeBaseTest;
  *
  * @requires extension redis
  */
-class GaugeTest extends GaugeBaseTest
+final class GaugeTest extends GaugeBaseTest
 {
     use ConfigureRedisStorage;
 }

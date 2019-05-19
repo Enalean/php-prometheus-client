@@ -20,7 +20,7 @@ use function sort;
 use function strcmp;
 use function usort;
 
-class InMemory implements Storage
+final class InMemory implements Storage
 {
     /** @var array<string,mixed> */
     private $counters = [];

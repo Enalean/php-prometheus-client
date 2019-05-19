@@ -10,7 +10,7 @@ use Test\Prometheus\CollectorRegistryBaseTest;
 /**
  * @requires extension apcu
  */
-class CollectorRegistryTest extends CollectorRegistryBaseTest
+final class CollectorRegistryTest extends CollectorRegistryBaseTest
 {
     public function configureAdapter() : void
     {

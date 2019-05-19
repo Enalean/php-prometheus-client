@@ -8,7 +8,7 @@ use Prometheus\Exception\MetricNotFoundException;
 use Prometheus\Exception\MetricsRegistrationException;
 use Prometheus\Storage\Storage;
 
-class CollectorRegistry implements RegistryInterface
+final class CollectorRegistry implements RegistryInterface
 {
     /** @var Storage */
     private $storageAdapter;

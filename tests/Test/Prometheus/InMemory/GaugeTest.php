@@ -10,7 +10,7 @@ use Test\Prometheus\GaugeBaseTest;
 /**
  * See https://prometheus.io/docs/instrumenting/exposition_formats/
  */
-class GaugeTest extends GaugeBaseTest
+final class GaugeTest extends GaugeBaseTest
 {
     public function configureAdapter() : void
     {

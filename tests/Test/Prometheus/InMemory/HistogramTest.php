@@ -10,7 +10,7 @@ use Test\Prometheus\HistogramBaseTest;
 /**
  * See https://prometheus.io/docs/instrumenting/exposition_formats/
  */
-class HistogramTest extends HistogramBaseTest
+final class HistogramTest extends HistogramBaseTest
 {
     public function configureAdapter() : void
     {

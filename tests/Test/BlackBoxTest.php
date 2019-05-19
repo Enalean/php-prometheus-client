@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 use function getenv;
 use function microtime;
 
-class BlackBoxTest extends TestCase
+final class BlackBoxTest extends TestCase
 {
     /** @var Client */
     private $client;

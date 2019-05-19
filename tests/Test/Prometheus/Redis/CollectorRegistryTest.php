@@ -15,7 +15,7 @@ use Test\Prometheus\CollectorRegistryBaseTest;
 /**
  * @requires extension redis
  */
-class CollectorRegistryTest extends CollectorRegistryBaseTest
+final class CollectorRegistryTest extends CollectorRegistryBaseTest
 {
     use ConfigureRedisStorage;
 

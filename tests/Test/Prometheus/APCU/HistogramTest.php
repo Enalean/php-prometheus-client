@@ -12,7 +12,7 @@ use Test\Prometheus\HistogramBaseTest;
  *
  * @requires extension apcu
  */
-class HistogramTest extends HistogramBaseTest
+final class HistogramTest extends HistogramBaseTest
 {
     public function configureAdapter() : void
     {

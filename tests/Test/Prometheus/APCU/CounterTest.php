@@ -12,7 +12,7 @@ use Test\Prometheus\CounterBaseTest;
  *
  * @requires extension apcu
  */
-class CounterTest extends CounterBaseTest
+final class CounterTest extends CounterBaseTest
 {
     public function configureAdapter() : void
     {

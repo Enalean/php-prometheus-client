@@ -12,7 +12,7 @@ use function str_replace;
 use function strcmp;
 use function usort;
 
-class RenderTextFormat implements RendererInterface
+final class RenderTextFormat implements RendererInterface
 {
     public const MIME_TYPE = 'text/plain; version=0.0.4';
 

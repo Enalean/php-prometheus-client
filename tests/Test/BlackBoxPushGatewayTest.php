@@ -10,7 +10,7 @@ use Prometheus\CollectorRegistry;
 use Prometheus\PushGateway;
 use Prometheus\Storage\APCU;
 
-class BlackBoxPushGatewayTest extends TestCase
+final class BlackBoxPushGatewayTest extends TestCase
 {
     /**
      * @test

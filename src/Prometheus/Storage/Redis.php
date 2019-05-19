@@ -20,7 +20,7 @@ use function sort;
 use function strcmp;
 use function usort;
 
-class Redis implements Storage
+final class Redis implements Storage
 {
     public const PROMETHEUS_METRIC_KEYS_SUFFIX = '_METRIC_KEYS';
 

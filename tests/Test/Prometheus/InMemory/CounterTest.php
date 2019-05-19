@@ -10,7 +10,7 @@ use Test\Prometheus\CounterBaseTest;
 /**
  * See https://prometheus.io/docs/instrumenting/exposition_formats/
  */
-class CounterTest extends CounterBaseTest
+final class CounterTest extends CounterBaseTest
 {
     public function configureAdapter() : void
     {
