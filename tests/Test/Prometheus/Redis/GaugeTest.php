@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Test\Prometheus\Redis;
 
-use Prometheus\Storage\Redis;
 use Test\Prometheus\GaugeBaseTest;
-use function getenv;
 
 /**
  * See https://prometheus.io/docs/instrumenting/exposition_formats/
@@ -15,9 +13,5 @@ use function getenv;
  */
 class GaugeTest extends GaugeBaseTest
 {
-    public function configureAdapter() : void
-    {
-        $this->adapter = new Redis(['host' => getenv('REDIS_HOST') ?: '']);
-        $this->adapter->flushRedis();
-    }
+    use ConfigureRedisStorage;
 }

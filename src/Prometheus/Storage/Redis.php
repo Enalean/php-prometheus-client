@@ -6,11 +6,9 @@ namespace Prometheus\Storage;
 
 use InvalidArgumentException;
 use Prometheus\Counter;
-use Prometheus\Exception\StorageException;
 use Prometheus\Gauge;
 use Prometheus\Histogram;
 use Prometheus\MetricFamilySamples;
-use RedisException;
 use function array_keys;
 use function array_map;
 use function array_merge;
@@ -26,63 +24,15 @@ class Redis implements Adapter
 {
     public const PROMETHEUS_METRIC_KEYS_SUFFIX = '_METRIC_KEYS';
 
-    /**
-     * @var array<string, (string|int|float|false|null)>
-     * @psalm-var array{host?:string,port?:int,timeout?:float,read_timeout?:string,persistent_connections?:bool,password?:string|null}
-     */
-    private static $defaultOptions = [];
     /** @var string */
     private static $prefix = 'PROMETHEUS_';
 
-    /**
-     * @var array<string, (string|int|float|false|null)>
-     * @psalm-var array{host:string,port:int,timeout:float,read_timeout:string,persistent_connections:bool,password:string|null}
-     */
-    private $options;
     /** @var \Redis */
     private $redis;
 
-    /**
-     * @param array<string, (string|int|float|false|null)> $options
-     *
-     * @psalm-param array{host?:string,port?:int,timeout?:float,read_timeout?:string,persistent_connections?:bool,password?:string|null} $options
-     */
-    public function __construct(array $options = [])
+    public function __construct(\Redis $redis_client)
     {
-        // with php 5.3 we cannot initialize the options directly on the field definition
-        // so we initialize them here for now
-        if (! isset(self::$defaultOptions['host'])) {
-            self::$defaultOptions['host'] = '127.0.0.1';
-        }
-        if (! isset(self::$defaultOptions['port'])) {
-            self::$defaultOptions['port'] = 6379;
-        }
-        if (! isset(self::$defaultOptions['timeout'])) {
-            self::$defaultOptions['timeout'] = 0.1; // in seconds
-        }
-        if (! isset(self::$defaultOptions['read_timeout'])) {
-            self::$defaultOptions['read_timeout'] = '10'; // in seconds
-        }
-        if (! isset(self::$defaultOptions['persistent_connections'])) {
-            self::$defaultOptions['persistent_connections'] = false;
-        }
-        if (! isset(self::$defaultOptions['password'])) {
-            self::$defaultOptions['password'] = null;
-        }
-
-        /** @psalm-suppress PropertyTypeCoercion */
-        $this->options = array_merge(self::$defaultOptions, $options);
-        $this->redis   = new \Redis();
-    }
-
-    /**
-     * @param array<string, (string|int|float|false|null)> $options
-     *
-     * @psalm-param array{host?:string,port?:int,timeout?:float,read_timeout?:string,persistent_connections?:bool,password?:string|null} $options
-     */
-    public static function setDefaultOptions(array $options) : void
-    {
-        self::$defaultOptions = array_merge(self::$defaultOptions, $options);
+        $this->redis = $redis_client;
     }
 
     public static function setPrefix(string $prefix) : void
@@ -92,7 +42,6 @@ class Redis implements Adapter
 
     public function flushRedis() : void
     {
-        $this->openConnection();
         $this->redis->eval(
             <<<LUA
 for keyIndex,key in ipairs(KEYS) do
@@ -115,12 +64,9 @@ LUA
 
     /**
      * @return MetricFamilySamples[]
-     *
-     * @throws StorageException
      */
     public function collect() : array
     {
-        $this->openConnection();
         $metrics = $this->collectHistograms();
         $metrics = array_merge($metrics, $this->collectGauges());
         $metrics = array_merge($metrics, $this->collectCounters());
@@ -134,31 +80,10 @@ LUA
     }
 
     /**
-     * @throws StorageException
-     */
-    private function openConnection() : void
-    {
-        try {
-            if ($this->options['persistent_connections']) {
-                @$this->redis->pconnect($this->options['host'], $this->options['port'], $this->options['timeout']);
-            } else {
-                @$this->redis->connect($this->options['host'], $this->options['port'], $this->options['timeout']);
-            }
-            if ($this->options['password']) {
-                $this->redis->auth($this->options['password']);
-            }
-            $this->redis->setOption(\Redis::OPT_READ_TIMEOUT, $this->options['read_timeout']);
-        } catch (RedisException $e) {
-            throw new StorageException("Can't connect to Redis server", 0, $e);
-        }
-    }
-
-    /**
      * @param array<string,mixed> $data
      */
     public function updateHistogram(array $data) : void
     {
-        $this->openConnection();
         $bucketToIncrease = '+Inf';
         foreach ($data['buckets'] as $bucket) {
             if ($data['value'] <= $bucket) {
@@ -196,7 +121,6 @@ LUA
      */
     public function updateGauge(array $data) : void
     {
-        $this->openConnection();
         $metaData = $data;
         unset($metaData['value']);
         unset($metaData['labelValues']);
@@ -235,7 +159,6 @@ LUA
      */
     public function updateCounter(array $data) : void
     {
-        $this->openConnection();
         $metaData = $data;
         unset($metaData['value']);
         unset($metaData['labelValues']);

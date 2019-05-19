@@ -7,13 +7,9 @@ namespace Prometheus;
 use Prometheus\Exception\MetricNotFoundException;
 use Prometheus\Exception\MetricsRegistrationException;
 use Prometheus\Storage\Adapter;
-use Prometheus\Storage\Redis;
 
 class CollectorRegistry implements RegistryInterface
 {
-    /** @var CollectorRegistry */
-    private static $defaultRegistry;
-
     /** @var Adapter */
     private $storageAdapter;
     /** @var Gauge[] */
@@ -23,18 +19,9 @@ class CollectorRegistry implements RegistryInterface
     /** @var Histogram[] */
     private $histograms = [];
 
-    public function __construct(Adapter $redisAdapter)
+    public function __construct(Adapter $storage)
     {
-        $this->storageAdapter = $redisAdapter;
-    }
-
-    public static function getDefault() : CollectorRegistry
-    {
-        if (! self::$defaultRegistry) {
-            return self::$defaultRegistry = new static(new Redis());
-        }
-
-        return self::$defaultRegistry;
+        $this->storageAdapter = $storage;
     }
 
     /**

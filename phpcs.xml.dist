@@ -18,7 +18,6 @@
     </rule>
     <rule ref="SlevomatCodingStandard.Classes.SuperfluousExceptionNaming.SuperfluousSuffix">
         <exclude-pattern>src/Prometheus/Exception/MetricNotFoundException.php</exclude-pattern>
-        <exclude-pattern>src/Prometheus/Exception/StorageException.php</exclude-pattern>
         <exclude-pattern>src/Prometheus/Exception/MetricsRegistrationException.php</exclude-pattern>
     </rule>
 </ruleset>

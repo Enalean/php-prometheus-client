@@ -11,31 +11,20 @@ use Prometheus\Histogram;
 use Prometheus\RenderTextFormat;
 use Prometheus\Storage\Redis;
 use Test\Prometheus\CollectorRegistryBaseTest;
-use function getenv;
 
 /**
  * @requires extension redis
  */
 class CollectorRegistryTest extends CollectorRegistryBaseTest
 {
-    /**
-     * @var Redis
-     */
-    public $adapter;
-
-    public function configureAdapter() : void
-    {
-        $this->adapter = new Redis(['host' => getenv('REDIS_HOST') ?: '']);
-        $this->adapter->flushRedis();
-    }
+    use ConfigureRedisStorage;
 
     /**
      * @test
      */
     public function itShouldOnlyFlushMetricData() : void
     {
-        $redis = new \Redis();
-        $redis->connect(getenv('REDIS_HOST') ?: '');
+        $redis = $this->getRedisClient();
         $redis->set('foo', 'bar');
 
         $registry = new CollectorRegistry($this->adapter);
