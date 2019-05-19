@@ -23,7 +23,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Test\\Prometheus\\": "tests/Test/Prometheus/"
+            "Test\\Prometheus\\": "tests/unit/Prometheus/"
         }
     },
     "config": {

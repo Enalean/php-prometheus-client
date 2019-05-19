@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit colors="true" bootstrap="vendor/autoload.php">
+<phpunit colors="true" bootstrap="vendor/autoload.php" defaultTestSuite="unit">
     <testsuites>
-        <testsuite name="Test Suite">
-            <directory>./tests/Test/Prometheus</directory>
+        <testsuite name="unit">
+            <directory>./tests/unit/</directory>
+        </testsuite>
+        <testsuite name="functionnal">
+            <directory>./tests/functionnal/</directory>
         </testsuite>
     </testsuites>
     <filter>
