@@ -9,8 +9,6 @@ use Prometheus\Storage\Storage;
 use function count;
 use function preg_match;
 use function print_r;
-use function serialize;
-use function sha1;
 use function sprintf;
 
 abstract class Collector
@@ -64,11 +62,6 @@ abstract class Collector
     public function getHelp() : string
     {
         return $this->help;
-    }
-
-    public function getKey() : string
-    {
-        return sha1($this->getName() . serialize($this->getLabelNames()));
     }
 
     /**
