@@ -155,7 +155,6 @@ abstract class CounterBaseTest extends TestCase
         $histogram->inc([$value]);
 
         $metrics = $this->adapter->collect();
-        self::assertIsArray($metrics);
         self::assertCount(1, $metrics);
         self::assertContainsOnlyInstancesOf(MetricFamilySamples::class, $metrics);
 
@@ -175,7 +174,7 @@ abstract class CounterBaseTest extends TestCase
     /**
      * @see isShouldAcceptArbitraryLabelValues
      *
-     * @return array<string,string>
+     * @return array<string,string[]>
      */
     public function labelValuesDataProvider() : array
     {

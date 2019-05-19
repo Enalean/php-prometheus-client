@@ -62,8 +62,8 @@ EOF
         $registry = new CollectorRegistry($this->adapter);
         $metric   = $registry->registerCounter('test', 'some_metric', 'this is for testing', ['foo', 'bar']);
         $metric->incBy(2, ['lalal', 'lululu']);
-        $registry->getCounter('test', 'some_metric', ['foo', 'bar'])->inc(['lalal', 'lululu']);
-        $registry->getCounter('test', 'some_metric', ['foo', 'bar'])->inc(['lalal', 'lvlvlv']);
+        $registry->getCounter('test', 'some_metric')->inc(['lalal', 'lululu']);
+        $registry->getCounter('test', 'some_metric')->inc(['lalal', 'lvlvlv']);
 
         $registry = new CollectorRegistry($this->adapter);
         $this->assertThat(
@@ -87,10 +87,10 @@ EOF
         $registry = new CollectorRegistry($this->adapter);
         $metric   = $registry->registerHistogram('test', 'some_metric', 'this is for testing', ['foo', 'bar'], [0.1, 1, 5, 10]);
         $metric->observe(2, ['lalal', 'lululu']);
-        $registry->getHistogram('test', 'some_metric', ['foo', 'bar'])->observe(7.1, ['lalal', 'lvlvlv']);
-        $registry->getHistogram('test', 'some_metric', ['foo', 'bar'])->observe(13, ['lalal', 'lululu']);
-        $registry->getHistogram('test', 'some_metric', ['foo', 'bar'])->observe(7.1, ['lalal', 'lululu']);
-        $registry->getHistogram('test', 'some_metric', ['foo', 'bar'])->observe(7.1, ['gnaaha', 'hihihi']);
+        $registry->getHistogram('test', 'some_metric')->observe(7.1, ['lalal', 'lvlvlv']);
+        $registry->getHistogram('test', 'some_metric')->observe(13, ['lalal', 'lululu']);
+        $registry->getHistogram('test', 'some_metric')->observe(7.1, ['lalal', 'lululu']);
+        $registry->getHistogram('test', 'some_metric')->observe(7.1, ['gnaaha', 'hihihi']);
 
         $registry = new CollectorRegistry($this->adapter);
         $this->assertThat(

@@ -17,7 +17,7 @@ class CounterTest extends CounterBaseTest
 {
     public function configureAdapter() : void
     {
-        $this->adapter = new Redis(['host' => getenv('REDIS_HOST')]);
+        $this->adapter = new Redis(['host' => getenv('REDIS_HOST') ?: '']);
         $this->adapter->flushRedis();
     }
 }

@@ -8,7 +8,7 @@ use GuzzleHttp\Client;
 use PHPUnit\Framework\TestCase;
 use Prometheus\CollectorRegistry;
 use Prometheus\PushGateway;
-use Prometheus\Storage\APC;
+use Prometheus\Storage\APCU;
 
 class BlackBoxPushGatewayTest extends TestCase
 {
@@ -17,7 +17,7 @@ class BlackBoxPushGatewayTest extends TestCase
      */
     public function pushGatewayShouldWork() : void
     {
-        $adapter  = new APC();
+        $adapter  = new APCU();
         $registry = new CollectorRegistry($adapter);
 
         $counter = $registry->registerCounter('test', 'some_counter', 'it increases', ['type']);

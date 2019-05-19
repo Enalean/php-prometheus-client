@@ -20,7 +20,7 @@ class BlackBoxTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->adapter = getenv('ADAPTER');
+        $this->adapter = getenv('ADAPTER') ?: '';
         $this->client  = new Client(['base_uri' => 'http://nginx:80/']);
         $this->client->get('/examples/flush_adapter.php?adapter=' . $this->adapter);
     }

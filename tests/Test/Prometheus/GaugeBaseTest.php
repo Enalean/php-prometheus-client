@@ -318,7 +318,6 @@ abstract class GaugeBaseTest extends TestCase
         $histogram->inc([$value]);
 
         $metrics = $this->adapter->collect();
-        self::assertIsArray($metrics);
         self::assertCount(1, $metrics);
         self::assertContainsOnlyInstancesOf(MetricFamilySamples::class, $metrics);
 
@@ -338,7 +337,7 @@ abstract class GaugeBaseTest extends TestCase
     /**
      * @see isShouldAcceptArbitraryLabelValues
      *
-     * @return string<string,string>
+     * @return array<string,string[]>
      */
     public function labelValuesDataProvider() : array
     {

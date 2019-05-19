@@ -9,6 +9,7 @@
     "require-dev": {
         "doctrine/coding-standard": "^6.0",
         "phpunit/phpunit": "^8.1",
+        "psalm/plugin-phpunit": "^0.5.8",
         "vimeo/psalm": "^3.2"
     },
     "suggest": {

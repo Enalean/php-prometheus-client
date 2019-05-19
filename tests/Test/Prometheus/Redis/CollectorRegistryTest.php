@@ -18,9 +18,14 @@ use function getenv;
  */
 class CollectorRegistryTest extends CollectorRegistryBaseTest
 {
+    /**
+     * @var Redis
+     */
+    public $adapter;
+
     public function configureAdapter() : void
     {
-        $this->adapter = new Redis(['host' => getenv('REDIS_HOST')]);
+        $this->adapter = new Redis(['host' => getenv('REDIS_HOST') ?: '']);
         $this->adapter->flushRedis();
     }
 
@@ -30,7 +35,7 @@ class CollectorRegistryTest extends CollectorRegistryBaseTest
     public function itShouldOnlyFlushMetricData() : void
     {
         $redis = new \Redis();
-        $redis->connect(getenv('REDIS_HOST'));
+        $redis->connect(getenv('REDIS_HOST') ?: '');
         $redis->set('foo', 'bar');
 
         $registry = new CollectorRegistry($this->adapter);
