@@ -36,6 +36,18 @@ jobs:
       php: 7.3
       script:
         - ./vendor/bin/psalm
+    - stage: test
+      name: Integration
+      services:
+        - docker
+      install: travis_retry composer install --prefer-dist
+      before_script:
+        - docker-compose up -d
+        - sleep 15
+        - docker ps -a
+      script:
+        - docker-compose exec phpunit env ADAPTER=apcu vendor/bin/phpunit --testsuite=functionnal
+        - docker-compose exec phpunit env ADAPTER=redis vendor/bin/phpunit --testsuite=functionnal
 
 script:
   - vendor/bin/phpunit --verbose --colors
