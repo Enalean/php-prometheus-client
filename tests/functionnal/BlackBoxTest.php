@@ -8,7 +8,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Promise;
 use PHPUnit\Framework\TestCase;
 use function getenv;
-use function microtime;
 
 final class BlackBoxTest extends TestCase
 {
@@ -30,7 +29,6 @@ final class BlackBoxTest extends TestCase
      */
     public function gaugesShouldBeOverwritten() : void
     {
-        $start    = microtime(true);
         $promises = [
             $this->client->getAsync('/examples/some_gauge.php?c=0&adapter=' . $this->adapter),
             $this->client->getAsync('/examples/some_gauge.php?c=1&adapter=' . $this->adapter),
@@ -39,12 +37,9 @@ final class BlackBoxTest extends TestCase
         ];
 
         Promise\settle($promises)->wait();
-        $end = microtime(true);
-        echo "\ntime: " . ($end - $start) . "\n";
 
         $metricsResult = $this->client->get('/examples/metrics.php?adapter=' . $this->adapter);
         $body          = (string) $metricsResult->getBody();
-        echo "\nbody: " . $body . "\n";
         $this->assertThat(
             $body,
             $this->logicalOr(
@@ -60,7 +55,6 @@ final class BlackBoxTest extends TestCase
      */
     public function countersShouldIncrementAtomically() : void
     {
-        $start    = microtime(true);
         $promises = [];
         $sum      = 0;
         for ($i = 0; $i < 1100; $i++) {
@@ -69,8 +63,6 @@ final class BlackBoxTest extends TestCase
         }
 
         Promise\settle($promises)->wait();
-        $end = microtime(true);
-        echo "\ntime: " . ($end - $start) . "\n";
 
         $metricsResult = $this->client->get('/examples/metrics.php?adapter=' . $this->adapter);
         $body          = (string) $metricsResult->getBody();
@@ -83,7 +75,6 @@ final class BlackBoxTest extends TestCase
      */
     public function histogramsShouldIncrementAtomically() : void
     {
-        $start    = microtime(true);
         $promises = [
             $this->client->getAsync('/examples/some_histogram.php?c=0&adapter=' . $this->adapter),
             $this->client->getAsync('/examples/some_histogram.php?c=1&adapter=' . $this->adapter),
@@ -98,8 +89,6 @@ final class BlackBoxTest extends TestCase
         ];
 
         Promise\settle($promises)->wait();
-        $end = microtime(true);
-        echo "\ntime: " . ($end - $start) . "\n";
 
         $metricsResult = $this->client->get('/examples/metrics.php?adapter=' . $this->adapter);
         $body          = (string) $metricsResult->getBody();
