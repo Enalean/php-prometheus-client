@@ -2,16 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Test;
+namespace Test\Prometheus\PushGateway;
 
-use GuzzleHttp\Client;
+use Http\Discovery\Psr17FactoryDiscovery;
+use Http\Discovery\Psr18ClientDiscovery;
 use PHPUnit\Framework\TestCase;
 use Prometheus\CollectorRegistry;
-use Prometheus\PushGateway;
+use Prometheus\PushGateway\Pusher;
 use Prometheus\Storage\APCU;
 
-final class BlackBoxPushGatewayTest extends TestCase
+abstract class BlackBoxPushGatewayTest extends TestCase
 {
+    abstract public function getPusher(string $address) : Pusher;
+
     /**
      * @test
      */
@@ -23,11 +26,13 @@ final class BlackBoxPushGatewayTest extends TestCase
         $counter = $registry->registerCounter('test', 'some_counter', 'it increases', ['type']);
         $counter->incBy(6, ['blue']);
 
-        $pushGateway = new PushGateway('pushgateway:9091');
-        $pushGateway->push($registry, 'my_job', ['instance' => 'foo']);
+        $pusher = $this->getPusher('pushgateway:9091');
+        $pusher->push($registry, 'my_job', ['instance' => 'foo']);
 
-        $httpClient = new Client();
-        $metrics    = $httpClient->get('http://pushgateway:9091/metrics')->getBody()->getContents();
+        $httpClient     = Psr18ClientDiscovery::find();
+        $requestFactory = Psr17FactoryDiscovery::findRequestFactory();
+        $metricsRequest = $requestFactory->createRequest('GET', 'http://pushgateway:9091/metrics');
+        $metrics        = $httpClient->sendRequest($metricsRequest)->getBody()->getContents();
         $this->assertStringContainsString(
             '# HELP test_some_counter it increases
 # TYPE test_some_counter counter
@@ -35,10 +40,9 @@ test_some_counter{instance="foo",job="my_job",type="blue"} 6',
             $metrics
         );
 
-        $pushGateway->delete('my_job', ['instance' => 'foo']);
+        $pusher->delete('my_job', ['instance' => 'foo']);
 
-        $httpClient = new Client();
-        $metrics    = $httpClient->get('http://pushgateway:9091/metrics')->getBody()->getContents();
+        $metrics = $httpClient->sendRequest($metricsRequest)->getBody()->getContents();
         $this->assertStringNotContainsString(
             '# HELP test_some_counter it increases
 # TYPE test_some_counter counter

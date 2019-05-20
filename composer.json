@@ -4,17 +4,20 @@
     "license": "Apache-2.0",
     "require": {
         "php": ">=7.2",
-        "guzzlehttp/guzzle": "^6.2"
+        "psr/http-client": "^1.0",
+        "psr/http-factory": "^1.0"
     },
     "require-dev": {
         "doctrine/coding-standard": "^6.0",
+        "php-http/curl-client": "^2.0",
         "phpunit/phpunit": "^8.1",
         "psalm/plugin-phpunit": "^0.6.0",
-        "vimeo/psalm": "^3.2"
+        "vimeo/psalm": "^3.2",
+        "zendframework/zend-diactoros": "^2.1"
     },
     "suggest": {
-        "ext-redis": "Required if using Redis.",
-        "ext-apcu": "Required if using APCu."
+        "ext-redis": "Required if using the Redis storage.",
+        "ext-apcu": "Required if using the APCu storage."
     },
     "autoload": {
         "psr-4": {
@@ -23,7 +26,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Test\\Prometheus\\": "tests/unit/Prometheus/"
+            "Test\\Prometheus\\": ["tests/unit/Prometheus/", "tests/functionnal/"]
         }
     },
     "config": {

@@ -2,26 +2,35 @@
 
 declare(strict_types=1);
 
-namespace Test;
+namespace Test\Prometheus;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Promise;
+use Http\Client\HttpAsyncClient;
+use Http\Discovery\HttpAsyncClientDiscovery;
+use Http\Discovery\Psr17FactoryDiscovery;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestFactoryInterface;
 use function getenv;
 
 final class BlackBoxTest extends TestCase
 {
-    /** @var Client */
+    private const BASE_URI = 'http://nginx:80/';
+
+    /** @var HttpAsyncClient */
     private $client;
+    /** @var RequestFactoryInterface */
+    private $requestFactory;
 
     /** @var string */
     private $adapter;
 
     protected function setUp() : void
     {
-        $this->adapter = getenv('ADAPTER') ?: '';
-        $this->client  = new Client(['base_uri' => 'http://nginx:80/']);
-        $this->client->get('/examples/flush_adapter.php?adapter=' . $this->adapter);
+        $this->adapter        = getenv('ADAPTER') ?: '';
+        $this->client         = HttpAsyncClientDiscovery::find();
+        $this->requestFactory = Psr17FactoryDiscovery::findRequestFactory();
+        $this->client->sendAsyncRequest(
+            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/flush_adapter.php?adapter=' . $this->adapter)
+        )->wait();
     }
 
     /**
@@ -29,19 +38,24 @@ final class BlackBoxTest extends TestCase
      */
     public function gaugesShouldBeOverwritten() : void
     {
-        $promises = [
-            $this->client->getAsync('/examples/some_gauge.php?c=0&adapter=' . $this->adapter),
-            $this->client->getAsync('/examples/some_gauge.php?c=1&adapter=' . $this->adapter),
-            $this->client->getAsync('/examples/some_gauge.php?c=2&adapter=' . $this->adapter),
-
+        $requests = [
+            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/some_gauge.php?c=0&adapter=' . $this->adapter),
+            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/some_gauge.php?c=1&adapter=' . $this->adapter),
+            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/some_gauge.php?c=2&adapter=' . $this->adapter),
         ];
+        $promises = [];
+        foreach ($requests as $request) {
+            $promises[] = $this->client->sendAsyncRequest($request);
+        }
+        foreach ($promises as $promise) {
+            $promise->wait();
+        }
 
-        Promise\settle($promises)->wait();
-
-        $metricsResult = $this->client->get('/examples/metrics.php?adapter=' . $this->adapter);
-        $body          = (string) $metricsResult->getBody();
+        $metricsResult = $this->client->sendAsyncRequest(
+            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/metrics.php?adapter=' . $this->adapter)
+        )->wait();
         $this->assertThat(
-            $body,
+            $metricsResult->getBody()->getContents(),
             $this->logicalOr(
                 $this->stringContains('test_some_gauge{type="blue"} 0'),
                 $this->stringContains('test_some_gauge{type="blue"} 1'),
@@ -58,16 +72,20 @@ final class BlackBoxTest extends TestCase
         $promises = [];
         $sum      = 0;
         for ($i = 0; $i < 1100; $i++) {
-            $promises[] =  $this->client->getAsync('/examples/some_counter.php?c=' . $i . '&adapter=' . $this->adapter);
+            $request    = $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/some_counter.php?c=' . $i . '&adapter=' . $this->adapter);
+            $promises[] =  $this->client->sendAsyncRequest($request);
             $sum       += $i;
         }
 
-        Promise\settle($promises)->wait();
+        foreach ($promises as $promise) {
+            $promise->wait();
+        }
 
-        $metricsResult = $this->client->get('/examples/metrics.php?adapter=' . $this->adapter);
-        $body          = (string) $metricsResult->getBody();
+        $metricsResult = $this->client->sendAsyncRequest(
+            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/metrics.php?adapter=' . $this->adapter)
+        )->wait();
 
-        $this->assertThat($body, $this->stringContains('test_some_counter{type="blue"} ' . $sum));
+        $this->assertThat($metricsResult->getBody()->getContents(), $this->stringContains('test_some_counter{type="blue"} ' . $sum));
     }
 
     /**
@@ -75,25 +93,31 @@ final class BlackBoxTest extends TestCase
      */
     public function histogramsShouldIncrementAtomically() : void
     {
-        $promises = [
-            $this->client->getAsync('/examples/some_histogram.php?c=0&adapter=' . $this->adapter),
-            $this->client->getAsync('/examples/some_histogram.php?c=1&adapter=' . $this->adapter),
-            $this->client->getAsync('/examples/some_histogram.php?c=2&adapter=' . $this->adapter),
-            $this->client->getAsync('/examples/some_histogram.php?c=3&adapter=' . $this->adapter),
-            $this->client->getAsync('/examples/some_histogram.php?c=4&adapter=' . $this->adapter),
-            $this->client->getAsync('/examples/some_histogram.php?c=5&adapter=' . $this->adapter),
-            $this->client->getAsync('/examples/some_histogram.php?c=6&adapter=' . $this->adapter),
-            $this->client->getAsync('/examples/some_histogram.php?c=7&adapter=' . $this->adapter),
-            $this->client->getAsync('/examples/some_histogram.php?c=8&adapter=' . $this->adapter),
-            $this->client->getAsync('/examples/some_histogram.php?c=9&adapter=' . $this->adapter),
+        $requests = [
+            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/some_histogram.php?c=0&adapter=' . $this->adapter),
+            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/some_histogram.php?c=1&adapter=' . $this->adapter),
+            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/some_histogram.php?c=2&adapter=' . $this->adapter),
+            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/some_histogram.php?c=3&adapter=' . $this->adapter),
+            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/some_histogram.php?c=4&adapter=' . $this->adapter),
+            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/some_histogram.php?c=5&adapter=' . $this->adapter),
+            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/some_histogram.php?c=6&adapter=' . $this->adapter),
+            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/some_histogram.php?c=7&adapter=' . $this->adapter),
+            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/some_histogram.php?c=8&adapter=' . $this->adapter),
+            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/some_histogram.php?c=9&adapter=' . $this->adapter),
         ];
+        $promises = [];
+        foreach ($requests as $request) {
+            $promises[] = $this->client->sendAsyncRequest($request);
+        }
+        foreach ($promises as $promise) {
+            $promise->wait();
+        }
 
-        Promise\settle($promises)->wait();
+        $metricsResult = $this->client->sendAsyncRequest(
+            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/metrics.php?adapter=' . $this->adapter)
+        )->wait();
 
-        $metricsResult = $this->client->get('/examples/metrics.php?adapter=' . $this->adapter);
-        $body          = (string) $metricsResult->getBody();
-
-        $this->assertThat($body, $this->stringContains(<<<EOF
+        $this->assertThat($metricsResult->getBody()->getContents(), $this->stringContains(<<<EOF
 test_some_histogram_bucket{type="blue",le="0.1"} 1
 test_some_histogram_bucket{type="blue",le="1"} 2
 test_some_histogram_bucket{type="blue",le="2"} 3
