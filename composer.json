@@ -12,7 +12,7 @@
         "php-http/curl-client": "^2.0",
         "phpunit/phpunit": "^8.1",
         "psalm/plugin-phpunit": "^0.6.0",
-        "vimeo/psalm": "^3.2",
+        "vimeo/psalm": "^3.3",
         "zendframework/zend-diactoros": "^2.1"
     },
     "suggest": {
