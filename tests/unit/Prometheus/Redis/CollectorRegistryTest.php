@@ -8,7 +8,7 @@ use Prometheus\Counter;
 use Prometheus\Gauge;
 use Prometheus\Histogram;
 use Prometheus\Registry\CollectorRegistry;
-use Prometheus\RenderTextFormat;
+use Prometheus\Renderer\RenderTextFormat;
 use Prometheus\Storage\Redis;
 use Test\Prometheus\CollectorRegistryBaseTest;
 

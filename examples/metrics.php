@@ -5,7 +5,7 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use Prometheus\Registry\CollectorRegistry;
-use Prometheus\RenderTextFormat;
+use Prometheus\Renderer\RenderTextFormat;
 
 $adapter = $_GET['adapter'] ?? '';
 
@@ -22,5 +22,5 @@ $registry = new CollectorRegistry($adapter);
 $renderer = new RenderTextFormat();
 $result   = $renderer->render($registry->getMetricFamilySamples());
 
-header('Content-type: ' . RenderTextFormat::MIME_TYPE);
+header('Content-type: ' . $renderer->getMimeType());
 echo $result;

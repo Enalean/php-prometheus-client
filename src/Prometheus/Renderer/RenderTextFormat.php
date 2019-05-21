@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Prometheus;
+namespace Prometheus\Renderer;
 
+use Prometheus\MetricFamilySamples;
+use Prometheus\Sample;
 use function array_combine;
 use function array_merge;
 use function implode;
@@ -12,9 +14,9 @@ use function str_replace;
 use function strcmp;
 use function usort;
 
-final class RenderTextFormat implements RendererInterface
+final class RenderTextFormat implements MetricsRenderer
 {
-    public const MIME_TYPE = 'text/plain; version=0.0.4';
+    private const MIME_TYPE = 'text/plain; version=0.0.4';
 
     /**
      * @param MetricFamilySamples[] $metrics
@@ -62,5 +64,10 @@ final class RenderTextFormat implements RendererInterface
         $v = str_replace('"', '\\"', $v);
 
         return $v;
+    }
+
+    public function getMimeType() : string
+    {
+        return self::MIME_TYPE;
     }
 }

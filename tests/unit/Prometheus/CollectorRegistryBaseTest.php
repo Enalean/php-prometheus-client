@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Prometheus\Exception\MetricNotFoundException;
 use Prometheus\Exception\MetricsRegistrationException;
 use Prometheus\Registry\CollectorRegistry;
-use Prometheus\RenderTextFormat;
+use Prometheus\Renderer\RenderTextFormat;
 use Prometheus\Storage\Storage;
 
 abstract class CollectorRegistryBaseTest extends TestCase

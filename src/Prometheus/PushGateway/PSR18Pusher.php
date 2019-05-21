@@ -6,7 +6,7 @@ namespace Prometheus\PushGateway;
 
 use Prometheus\MetricFamilySamples;
 use Prometheus\Registry\Registry;
-use Prometheus\RenderTextFormat;
+use Prometheus\Renderer\RenderTextFormat;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -75,12 +75,12 @@ final class PSR18Pusher implements Pusher
             $uri .= '/' . rawurlencode($label) . '/' . rawurlencode($value);
         }
 
-        $request = $this->request_factory->createRequest($method, $uri)
-                        ->withHeader('Content-Type', RenderTextFormat::MIME_TYPE);
+        $renderer = new RenderTextFormat();
+        $request  = $this->request_factory->createRequest($method, $uri)
+                        ->withHeader('Content-Type', $renderer->getMimeType());
 
         if ($request->getMethod() !== 'DELETE') {
-            $renderer = new RenderTextFormat();
-            $request  = $request->withBody($this->stream_factory->createStream($renderer->render($metricFamilySamples)));
+            $request = $request->withBody($this->stream_factory->createStream($renderer->render($metricFamilySamples)));
         }
 
         $response = $this->client->sendRequest($request);

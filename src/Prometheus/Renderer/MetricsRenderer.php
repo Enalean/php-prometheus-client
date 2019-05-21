@@ -2,12 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Prometheus;
+namespace Prometheus\Renderer;
 
-interface RendererInterface
+use Prometheus\MetricFamilySamples;
+
+interface MetricsRenderer
 {
     /**
      * @param MetricFamilySamples[] $metrics
      */
     public function render(array $metrics) : string;
+
+    public function getMimeType() : string;
 }
