@@ -6,26 +6,23 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $adapter = $_GET['adapter'] ?? '';
 
+$storage = null;
+
 if ($adapter === 'redis') {
     $redis_client = new Redis();
     $redis_client->connect($_SERVER['REDIS_HOST'] ?? '127.0.0.1');
 
-    $redisAdapter = new Prometheus\Storage\RedisStore($redis_client);
-    $redisAdapter->flushRedis();
-
-    return;
+    $storage = new Prometheus\Storage\RedisStore($redis_client);
 }
 
 if ($adapter === 'apcu') {
-    $apcAdapter = new Prometheus\Storage\APCUStore();
-    $apcAdapter->flushAPC();
-
-    return;
+    $storage = new Prometheus\Storage\APCUStore();
 }
 
 if ($adapter === 'in-memory') {
-    $inMemoryAdapter = new Prometheus\Storage\InMemoryStore();
-    $inMemoryAdapter->flushMemory();
+    $storage = new Prometheus\Storage\InMemoryStore();
+}
 
-    return;
+if ($storage !== null) {
+    $storage->flush();
 }

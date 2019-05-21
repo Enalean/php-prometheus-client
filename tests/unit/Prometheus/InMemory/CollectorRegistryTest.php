@@ -12,6 +12,6 @@ final class CollectorRegistryTest extends CollectorRegistryBaseTest
     public function configureAdapter() : void
     {
         $this->adapter = new InMemoryStore();
-        $this->adapter->flushMemory();
+        $this->adapter->flush();
     }
 }

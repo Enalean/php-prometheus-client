@@ -28,7 +28,7 @@ use function strcmp;
 use function unpack;
 use function usort;
 
-final class APCUStore implements Storage
+final class APCUStore implements Storage, FlushableStorage
 {
     public const PROMETHEUS_PREFIX = 'prom';
 
@@ -115,7 +115,7 @@ final class APCUStore implements Storage
         apcu_inc($this->valueKey($data), $data['value']);
     }
 
-    public function flushAPC() : void
+    public function flush() : void
     {
         apcu_clear_cache();
     }

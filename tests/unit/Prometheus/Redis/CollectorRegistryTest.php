@@ -44,7 +44,7 @@ final class CollectorRegistryTest extends CollectorRegistryBaseTest
         $histogramRedisKey = 'PROMETHEUS_' . Histogram::TYPE . RedisStore::PROMETHEUS_METRIC_KEYS_SUFFIX;
         $this->assertEquals(['PROMETHEUS_:histogram:test_some_histogram'], $redis->sMembers($histogramRedisKey));
 
-        $this->adapter->flushRedis();
+        $this->adapter->flush();
 
         $this->assertEquals('bar', $redis->get('foo'));
 

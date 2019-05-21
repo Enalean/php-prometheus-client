@@ -15,6 +15,6 @@ final class CollectorRegistryTest extends CollectorRegistryBaseTest
     public function configureAdapter() : void
     {
         $this->adapter = new APCUStore();
-        $this->adapter->flushAPC();
+        $this->adapter->flush();
     }
 }

@@ -15,6 +15,6 @@ final class CounterTest extends CounterBaseTest
     public function configureAdapter() : void
     {
         $this->adapter = new InMemoryStore();
-        $this->adapter->flushMemory();
+        $this->adapter->flush();
     }
 }

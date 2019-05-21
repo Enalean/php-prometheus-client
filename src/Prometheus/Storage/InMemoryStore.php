@@ -20,7 +20,7 @@ use function sort;
 use function strcmp;
 use function usort;
 
-final class InMemoryStore implements Storage
+final class InMemoryStore implements Storage, FlushableStorage
 {
     /** @var array<string,mixed> */
     private $counters = [];
@@ -47,7 +47,7 @@ final class InMemoryStore implements Storage
         return $metrics;
     }
 
-    public function flushMemory() : void
+    public function flush() : void
     {
         $this->counters   = [];
         $this->gauges     = [];

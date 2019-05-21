@@ -21,7 +21,7 @@ use function sort;
 use function strcmp;
 use function usort;
 
-final class RedisStore implements Storage
+final class RedisStore implements Storage, FlushableStorage
 {
     public const PROMETHEUS_METRIC_KEYS_SUFFIX = '_METRIC_KEYS';
 
@@ -37,7 +37,7 @@ final class RedisStore implements Storage
         $this->prefix = $key_prefix;
     }
 
-    public function flushRedis() : void
+    public function flush() : void
     {
         $this->redis->eval(
             <<<LUA
