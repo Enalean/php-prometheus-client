@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Prometheus\PushGateway;
 
 use Prometheus\MetricFamilySamples;
-use Prometheus\RegistryInterface;
+use Prometheus\Registry\Registry;
 use Prometheus\RenderTextFormat;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -43,7 +43,7 @@ final class PSR18Pusher implements Pusher
     /**
      * @param array<string,string> $groupingKey
      */
-    public function push(RegistryInterface $collectorRegistry, string $job, array $groupingKey = []) : void
+    public function push(Registry $collectorRegistry, string $job, array $groupingKey = []) : void
     {
         $this->send('PUT', $job, $groupingKey, $collectorRegistry->getMetricFamilySamples());
     }
@@ -51,7 +51,7 @@ final class PSR18Pusher implements Pusher
     /**
      * @param array<string,string> $groupingKey
      */
-    public function pushAdd(RegistryInterface $collectorRegistry, string $job, array $groupingKey = []) : void
+    public function pushAdd(Registry $collectorRegistry, string $job, array $groupingKey = []) : void
     {
         $this->send('POST', $job, $groupingKey, $collectorRegistry->getMetricFamilySamples());
     }

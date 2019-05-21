@@ -7,8 +7,8 @@ namespace Test\Prometheus\PushGateway;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Discovery\Psr18ClientDiscovery;
 use PHPUnit\Framework\TestCase;
-use Prometheus\CollectorRegistry;
 use Prometheus\PushGateway\Pusher;
+use Prometheus\Registry\CollectorRegistry;
 use Prometheus\Storage\APCU;
 
 abstract class BlackBoxPushGatewayTest extends TestCase

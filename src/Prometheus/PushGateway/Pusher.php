@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Prometheus\PushGateway;
 
-use Prometheus\RegistryInterface;
+use Prometheus\Registry\Registry;
 
 interface Pusher
 {
@@ -14,7 +14,7 @@ interface Pusher
      *
      * @param array<string,string> $groupingKey
      */
-    public function push(RegistryInterface $collectorRegistry, string $job, array $groupingKey = []) : void;
+    public function push(Registry $collectorRegistry, string $job, array $groupingKey = []) : void;
 
     /**
      * Pushes all metrics in a Collector, replacing only previously pushed metrics of the same name and job.
@@ -22,7 +22,7 @@ interface Pusher
      *
      * @param array<string,string> $groupingKey
      */
-    public function pushAdd(RegistryInterface $collectorRegistry, string $job, array $groupingKey = []) : void;
+    public function pushAdd(Registry $collectorRegistry, string $job, array $groupingKey = []) : void;
 
     /**
      * Deletes metrics from the Pushgateway.

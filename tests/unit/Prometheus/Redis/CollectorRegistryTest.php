@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Test\Prometheus\Redis;
 
-use Prometheus\CollectorRegistry;
 use Prometheus\Counter;
 use Prometheus\Gauge;
 use Prometheus\Histogram;
+use Prometheus\Registry\CollectorRegistry;
 use Prometheus\RenderTextFormat;
 use Prometheus\Storage\Redis;
 use Test\Prometheus\CollectorRegistryBaseTest;

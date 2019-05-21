@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Prometheus\CollectorRegistry;
+use Prometheus\Registry\CollectorRegistry;
 
 $adapter = $_GET['adapter'];
 

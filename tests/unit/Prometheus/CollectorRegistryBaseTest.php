@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Test\Prometheus;
 
 use PHPUnit\Framework\TestCase;
-use Prometheus\CollectorRegistry;
 use Prometheus\Exception\MetricNotFoundException;
 use Prometheus\Exception\MetricsRegistrationException;
+use Prometheus\Registry\CollectorRegistry;
 use Prometheus\RenderTextFormat;
 use Prometheus\Storage\Storage;
 

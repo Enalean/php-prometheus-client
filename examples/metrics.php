@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Prometheus\CollectorRegistry;
+use Prometheus\Registry\CollectorRegistry;
 use Prometheus\RenderTextFormat;
 
 $adapter = $_GET['adapter'] ?? '';

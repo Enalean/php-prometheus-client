@@ -6,8 +6,8 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Discovery\Psr18ClientDiscovery;
-use Prometheus\CollectorRegistry;
 use Prometheus\PushGateway\PSR18Pusher;
+use Prometheus\Registry\CollectorRegistry;
 use Prometheus\Storage\Redis;
 
 $adapter = $_GET['adapter'] ?? '';

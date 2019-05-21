@@ -2,12 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Prometheus;
+namespace Prometheus\Registry;
 
+use Prometheus\Counter;
 use Prometheus\Exception\MetricNotFoundException;
 use Prometheus\Exception\MetricsRegistrationException;
+use Prometheus\Gauge;
+use Prometheus\Histogram;
+use Prometheus\MetricFamilySamples;
 
-interface RegistryInterface
+interface Registry
 {
     /**
      * @return MetricFamilySamples[]
