@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Test\Prometheus\InMemory;
 
-use Prometheus\Storage\InMemory;
+use Prometheus\Storage\InMemoryStore;
 use Test\Prometheus\CounterBaseTest;
 
 /**
@@ -14,7 +14,7 @@ final class CounterTest extends CounterBaseTest
 {
     public function configureAdapter() : void
     {
-        $this->adapter = new InMemory();
+        $this->adapter = new InMemoryStore();
         $this->adapter->flushMemory();
     }
 }

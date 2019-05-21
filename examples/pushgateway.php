@@ -8,18 +8,18 @@ use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Discovery\Psr18ClientDiscovery;
 use Prometheus\PushGateway\PSR18Pusher;
 use Prometheus\Registry\CollectorRegistry;
-use Prometheus\Storage\Redis;
+use Prometheus\Storage\RedisStore;
 
 $adapter = $_GET['adapter'] ?? '';
 
 if ($adapter === 'redis') {
-    $redis_client = new \Redis();
+    $redis_client = new Redis();
     $redis_client->connect($_SERVER['REDIS_HOST'] ?? '127.0.0.1');
-    $adapter = new Redis($redis_client);
+    $adapter = new RedisStore($redis_client);
 } elseif ($adapter === 'apcu') {
-    $adapter = new Prometheus\Storage\APCU();
+    $adapter = new Prometheus\Storage\APCUStore();
 } elseif ($adapter === 'in-memory') {
-    $adapter = new Prometheus\Storage\InMemory();
+    $adapter = new Prometheus\Storage\InMemoryStore();
 }
 
 $registry = new CollectorRegistry($adapter);

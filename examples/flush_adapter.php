@@ -10,21 +10,21 @@ if ($adapter === 'redis') {
     $redis_client = new Redis();
     $redis_client->connect($_SERVER['REDIS_HOST'] ?? '127.0.0.1');
 
-    $redisAdapter = new Prometheus\Storage\Redis($redis_client);
+    $redisAdapter = new Prometheus\Storage\RedisStore($redis_client);
     $redisAdapter->flushRedis();
 
     return;
 }
 
 if ($adapter === 'apcu') {
-    $apcAdapter = new Prometheus\Storage\APCU();
+    $apcAdapter = new Prometheus\Storage\APCUStore();
     $apcAdapter->flushAPC();
 
     return;
 }
 
 if ($adapter === 'in-memory') {
-    $inMemoryAdapter = new Prometheus\Storage\InMemory();
+    $inMemoryAdapter = new Prometheus\Storage\InMemoryStore();
     $inMemoryAdapter->flushMemory();
 
     return;

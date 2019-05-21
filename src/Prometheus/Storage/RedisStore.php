@@ -9,6 +9,7 @@ use Prometheus\Counter;
 use Prometheus\Gauge;
 use Prometheus\Histogram;
 use Prometheus\MetricFamilySamples;
+use Redis;
 use function array_keys;
 use function array_map;
 use function array_merge;
@@ -20,17 +21,17 @@ use function sort;
 use function strcmp;
 use function usort;
 
-final class Redis implements Storage
+final class RedisStore implements Storage
 {
     public const PROMETHEUS_METRIC_KEYS_SUFFIX = '_METRIC_KEYS';
 
     /** @var string */
     private $prefix = 'PROMETHEUS_';
 
-    /** @var \Redis */
+    /** @var Redis */
     private $redis;
 
-    public function __construct(\Redis $redis_client, string $key_prefix = 'PROMETHEUS_')
+    public function __construct(Redis $redis_client, string $key_prefix = 'PROMETHEUS_')
     {
         $this->redis  = $redis_client;
         $this->prefix = $key_prefix;

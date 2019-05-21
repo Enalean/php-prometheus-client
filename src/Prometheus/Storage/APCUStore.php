@@ -28,7 +28,7 @@ use function strcmp;
 use function unpack;
 use function usort;
 
-final class APCU implements Storage
+final class APCUStore implements Storage
 {
     public const PROMETHEUS_PREFIX = 'prom';
 

@@ -9,7 +9,7 @@ use Http\Discovery\Psr18ClientDiscovery;
 use PHPUnit\Framework\TestCase;
 use Prometheus\PushGateway\Pusher;
 use Prometheus\Registry\CollectorRegistry;
-use Prometheus\Storage\APCU;
+use Prometheus\Storage\APCUStore;
 
 abstract class BlackBoxPushGatewayTest extends TestCase
 {
@@ -20,7 +20,7 @@ abstract class BlackBoxPushGatewayTest extends TestCase
      */
     public function pushGatewayShouldWork() : void
     {
-        $adapter  = new APCU();
+        $adapter  = new APCUStore();
         $registry = new CollectorRegistry($adapter);
 
         $counter = $registry->registerCounter('test', 'some_counter', 'it increases', ['type']);

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Test\Prometheus\APCU;
 
-use Prometheus\Storage\APCU;
+use Prometheus\Storage\APCUStore;
 use Test\Prometheus\GaugeBaseTest;
 
 /**
@@ -16,7 +16,7 @@ final class GaugeTest extends GaugeBaseTest
 {
     public function configureAdapter() : void
     {
-        $this->adapter = new APCU();
+        $this->adapter = new APCUStore();
         $this->adapter->flushAPC();
     }
 }
