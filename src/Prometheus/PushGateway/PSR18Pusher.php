@@ -43,17 +43,17 @@ final class PSR18Pusher implements Pusher
     /**
      * @param array<string,string> $groupingKey
      */
-    public function push(Registry $collectorRegistry, string $job, array $groupingKey = []) : void
+    public function push(Registry $registry, string $job, array $groupingKey = []) : void
     {
-        $this->send('PUT', $job, $groupingKey, $collectorRegistry->getMetricFamilySamples());
+        $this->send('PUT', $job, $groupingKey, $registry->getMetricFamilySamples());
     }
 
     /**
      * @param array<string,string> $groupingKey
      */
-    public function pushAdd(Registry $collectorRegistry, string $job, array $groupingKey = []) : void
+    public function pushAdd(Registry $registry, string $job, array $groupingKey = []) : void
     {
-        $this->send('POST', $job, $groupingKey, $collectorRegistry->getMetricFamilySamples());
+        $this->send('POST', $job, $groupingKey, $registry->getMetricFamilySamples());
     }
 
     /**
