@@ -40,7 +40,7 @@ abstract class GaugeBaseTest extends TestCase
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
-                    Gauge::TYPE,
+                    'gauge',
                     'this is for testing',
                     ['foo', 'bar'],
                     [new Sample('test_some_metric', 123, [], ['lalal', 'lululu'])],
@@ -49,7 +49,7 @@ abstract class GaugeBaseTest extends TestCase
             )
         );
         $this->assertThat($gauge->getHelp(), $this->equalTo('this is for testing'));
-        $this->assertThat($gauge->getType(), $this->equalTo(Gauge::TYPE));
+        $this->assertThat($gauge->getType(), $this->equalTo('gauge'));
     }
 
     /**
@@ -64,7 +64,7 @@ abstract class GaugeBaseTest extends TestCase
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
-                    Gauge::TYPE,
+                    'gauge',
                     'this is for testing',
                     [],
                     [new Sample('test_some_metric', 123, [], [])],
@@ -73,7 +73,7 @@ abstract class GaugeBaseTest extends TestCase
             )
         );
         $this->assertThat($gauge->getHelp(), $this->equalTo('this is for testing'));
-        $this->assertThat($gauge->getType(), $this->equalTo(Gauge::TYPE));
+        $this->assertThat($gauge->getType(), $this->equalTo('gauge'));
     }
 
     /**
@@ -88,7 +88,7 @@ abstract class GaugeBaseTest extends TestCase
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
-                    Gauge::TYPE,
+                    'gauge',
                     'this is for testing',
                     [],
                     [new Sample('test_some_metric', 123.5, [], [])],
@@ -97,7 +97,7 @@ abstract class GaugeBaseTest extends TestCase
             )
         );
         $this->assertThat($gauge->getHelp(), $this->equalTo('this is for testing'));
-        $this->assertThat($gauge->getType(), $this->equalTo(Gauge::TYPE));
+        $this->assertThat($gauge->getType(), $this->equalTo('gauge'));
     }
 
     /**
@@ -113,7 +113,7 @@ abstract class GaugeBaseTest extends TestCase
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
-                    Gauge::TYPE,
+                    'gauge',
                     'this is for testing',
                     ['foo', 'bar'],
                     [new Sample('test_some_metric', 124, [], ['lalal', 'lululu'])]
@@ -136,7 +136,7 @@ abstract class GaugeBaseTest extends TestCase
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
-                    Gauge::TYPE,
+                    'gauge',
                     'this is for testing',
                     ['foo', 'bar'],
                     [new Sample('test_some_metric', 124.5, [], ['lalal', 'lululu'])],
@@ -159,7 +159,7 @@ abstract class GaugeBaseTest extends TestCase
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
-                    Gauge::TYPE,
+                    'gauge',
                     'this is for testing',
                     ['foo', 'bar'],
                     [new Sample('test_some_metric', -124, [], ['lalal', 'lululu'])],
@@ -182,7 +182,7 @@ abstract class GaugeBaseTest extends TestCase
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
-                    Gauge::TYPE,
+                    'gauge',
                     'this is for testing',
                     ['foo', 'bar'],
                     [new Sample('test_some_metric', -123.5, [], ['lalal', 'lululu'])],
@@ -205,7 +205,7 @@ abstract class GaugeBaseTest extends TestCase
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
-                    Gauge::TYPE,
+                    'gauge',
                     'this is for testing',
                     ['foo', 'bar'],
                     [new Sample('test_some_metric', 321, [], ['lalal', 'lululu'])],

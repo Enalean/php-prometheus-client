@@ -42,7 +42,7 @@ abstract class CounterBaseTest extends TestCase
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
-                    Counter::TYPE,
+                    'counter',
                     'this is for testing',
                     ['foo', 'bar'],
                     [new Sample('test_some_metric', 3, [], ['lalal', 'lululu'])],
@@ -64,7 +64,7 @@ abstract class CounterBaseTest extends TestCase
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
-                    Counter::TYPE,
+                    'counter',
                     'this is for testing',
                     [],
                     [new Sample('test_some_metric', 1, [], [])],
@@ -87,7 +87,7 @@ abstract class CounterBaseTest extends TestCase
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
-                    Counter::TYPE,
+                    'counter',
                     'this is for testing',
                     ['foo', 'bar'],
                     [new Sample('test_some_metric', 124, [], ['lalal', 'lululu'])]

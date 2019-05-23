@@ -49,7 +49,7 @@ abstract class HistogramBaseTest extends TestCase
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
-                    Histogram::TYPE,
+                    'histogram',
                     'this is for testing',
                     ['foo', 'bar'],
                     [
@@ -85,7 +85,7 @@ abstract class HistogramBaseTest extends TestCase
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
-                    Histogram::TYPE,
+                    'histogram',
                     'this is for testing',
                     [],
                     [
@@ -122,7 +122,7 @@ abstract class HistogramBaseTest extends TestCase
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
-                    Histogram::TYPE,
+                    'histogram',
                     'this is for testing',
                     [],
                     [
@@ -160,7 +160,7 @@ abstract class HistogramBaseTest extends TestCase
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
-                    Histogram::TYPE,
+                    'histogram',
                     'this is for testing',
                     [],
                     [

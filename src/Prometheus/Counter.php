@@ -8,7 +8,7 @@ use Prometheus\Storage\Storage;
 
 class Counter extends Collector
 {
-    public const TYPE = 'counter';
+    private const TYPE = 'counter';
 
     public function getType() : string
     {

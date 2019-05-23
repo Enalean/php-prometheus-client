@@ -10,7 +10,7 @@ use function count;
 
 class Histogram extends Collector
 {
-    public const TYPE = 'histogram';
+    private const TYPE = 'histogram';
 
     /** @var float[] */
     private $buckets;

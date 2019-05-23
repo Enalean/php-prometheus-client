@@ -8,7 +8,7 @@ use Prometheus\Storage\Storage;
 
 class Gauge extends Collector
 {
-    public const TYPE = 'gauge';
+    private const TYPE = 'gauge';
 
     /**
      * @param float    $value  e.g. 123
