@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Test\Prometheus\Null;
+namespace Test\Prometheus\Storage\Null;
 
 use PHPUnit\Framework\TestCase;
 use Prometheus\Counter;

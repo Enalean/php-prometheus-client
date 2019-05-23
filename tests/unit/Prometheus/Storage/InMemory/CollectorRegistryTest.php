@@ -2,15 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Test\Prometheus\InMemory;
+namespace Test\Prometheus\Storage\InMemory;
 
 use Prometheus\Storage\InMemoryStore;
-use Test\Prometheus\HistogramBaseTest;
+use Test\Prometheus\CollectorRegistryBaseTest;
 
-/**
- * See https://prometheus.io/docs/instrumenting/exposition_formats/
- */
-final class HistogramTest extends HistogramBaseTest
+final class CollectorRegistryTest extends CollectorRegistryBaseTest
 {
     public function configureAdapter() : void
     {

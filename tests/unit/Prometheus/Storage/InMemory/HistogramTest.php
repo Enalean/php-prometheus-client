@@ -2,21 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Test\Prometheus\APCU;
+namespace Test\Prometheus\Storage\InMemory;
 
-use Prometheus\Storage\APCUStore;
+use Prometheus\Storage\InMemoryStore;
 use Test\Prometheus\HistogramBaseTest;
 
 /**
  * See https://prometheus.io/docs/instrumenting/exposition_formats/
- *
- * @requires extension apcu
  */
 final class HistogramTest extends HistogramBaseTest
 {
     public function configureAdapter() : void
     {
-        $this->adapter = new APCUStore();
+        $this->adapter = new InMemoryStore();
         $this->adapter->flush();
     }
 }

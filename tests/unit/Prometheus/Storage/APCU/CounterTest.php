@@ -2,15 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Test\Prometheus\APCU;
+namespace Test\Prometheus\Storage\APCU;
 
 use Prometheus\Storage\APCUStore;
-use Test\Prometheus\CollectorRegistryBaseTest;
+use Test\Prometheus\CounterBaseTest;
 
 /**
+ * See https://prometheus.io/docs/instrumenting/exposition_formats/
+ *
  * @requires extension apcu
  */
-final class CollectorRegistryTest extends CollectorRegistryBaseTest
+final class CounterTest extends CounterBaseTest
 {
     public function configureAdapter() : void
     {

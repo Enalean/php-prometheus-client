@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Test\Prometheus\Redis;
+namespace Test\Prometheus\Storage\Redis;
 
 use Prometheus\Counter;
 use Prometheus\Gauge;

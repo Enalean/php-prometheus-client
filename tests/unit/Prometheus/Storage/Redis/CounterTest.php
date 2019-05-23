@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Test\Prometheus\Redis;
+namespace Test\Prometheus\Storage\Redis;
 
-use Test\Prometheus\HistogramBaseTest;
+use Test\Prometheus\CounterBaseTest;
 
 /**
  * See https://prometheus.io/docs/instrumenting/exposition_formats/
  *
  * @requires extension redis
  */
-final class HistogramTest extends HistogramBaseTest
+final class CounterTest extends CounterBaseTest
 {
     use ConfigureRedisStorage;
 }
