@@ -188,7 +188,7 @@ abstract class GaugeBaseTest extends TestCase
     {
         $gauge = new Gauge($this->adapter, 'test', 'some_metric', 'this is for testing', ['foo', 'bar']);
         $gauge->dec(['lalal', 'lululu']);
-        $gauge->decBy(123, ['lalal', 'lululu']);
+        $gauge->decBy(122.5, ['lalal', 'lululu']);
         $this->assertThat(
             $this->adapter->collect(),
             $this->equalTo(
@@ -198,7 +198,7 @@ abstract class GaugeBaseTest extends TestCase
                     'this is for testing',
                     ['foo', 'bar'],
                     [
-                        new Sample('test_some_metric', -124, [], ['lalal', 'lululu'])
+                        new Sample('test_some_metric', -123.5, [], ['lalal', 'lululu'])
                     ],
                 ),
                 ]

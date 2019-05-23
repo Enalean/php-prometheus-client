@@ -105,7 +105,7 @@ abstract class HistogramBaseTest extends TestCase
     /**
      * @test
      */
-    public function itShouldObserveValuesOfTypeDouble() : void
+    public function itShouldObserveValuesOfTypeFloat() : void
     {
         $histogram = new Histogram(
             $this->adapter,
