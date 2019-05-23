@@ -16,16 +16,16 @@ class Sample
     private $value;
 
     /**
-     * @param array<string, int|double|array> $data
-     *
-     * @psalm-param array{name:string, value:int|double, labelValues:string[], labelNames:string[]} $data
+     * @param int|float $value
+     * @param string[] $labelNames
+     * @param string[] $labelValues
      */
-    public function __construct(array $data)
+    public function __construct(string $name, $value, array $labelNames, array $labelValues)
     {
-        $this->name        = $data['name'];
-        $this->labelNames  = (array) $data['labelNames'];
-        $this->labelValues = (array) $data['labelValues'];
-        $this->value       = $data['value'];
+        $this->name        = $name;
+        $this->labelNames  = $labelNames;
+        $this->labelValues = $labelValues;
+        $this->value       = $value;
     }
 
     public function getName() : string
