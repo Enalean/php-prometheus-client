@@ -43,9 +43,7 @@ abstract class GaugeBaseTest extends TestCase
                     Gauge::TYPE,
                     'this is for testing',
                     ['foo', 'bar'],
-                    [
-                        new Sample('test_some_metric', 123, [], ['lalal', 'lululu'])
-                    ],
+                    [new Sample('test_some_metric', 123, [], ['lalal', 'lululu'])],
                 ),
                 ]
             )
@@ -69,9 +67,7 @@ abstract class GaugeBaseTest extends TestCase
                     Gauge::TYPE,
                     'this is for testing',
                     [],
-                    [
-                        new Sample('test_some_metric', 123, [], [])
-                    ],
+                    [new Sample('test_some_metric', 123, [], [])],
                 ),
                 ]
             )
@@ -95,9 +91,7 @@ abstract class GaugeBaseTest extends TestCase
                     Gauge::TYPE,
                     'this is for testing',
                     [],
-                    [
-                        new Sample('test_some_metric', 123.5, [], [])
-                    ],
+                    [new Sample('test_some_metric', 123.5, [], [])],
                 ),
                 ]
             )
@@ -122,9 +116,7 @@ abstract class GaugeBaseTest extends TestCase
                     Gauge::TYPE,
                     'this is for testing',
                     ['foo', 'bar'],
-                    [
-                        new Sample('test_some_metric', 124, [], ['lalal', 'lululu'])
-                    ]
+                    [new Sample('test_some_metric', 124, [], ['lalal', 'lululu'])]
                 ),
                 ]
             )
@@ -147,9 +139,7 @@ abstract class GaugeBaseTest extends TestCase
                     Gauge::TYPE,
                     'this is for testing',
                     ['foo', 'bar'],
-                    [
-                        new Sample('test_some_metric', 124.5, [], ['lalal', 'lululu'])
-                    ],
+                    [new Sample('test_some_metric', 124.5, [], ['lalal', 'lululu'])],
                 ),
                 ]
             )
@@ -172,9 +162,7 @@ abstract class GaugeBaseTest extends TestCase
                     Gauge::TYPE,
                     'this is for testing',
                     ['foo', 'bar'],
-                    [
-                        new Sample('test_some_metric', -124, [], ['lalal', 'lululu'])
-                    ],
+                    [new Sample('test_some_metric', -124, [], ['lalal', 'lululu'])],
                 ),
                 ]
             )
@@ -197,9 +185,7 @@ abstract class GaugeBaseTest extends TestCase
                     Gauge::TYPE,
                     'this is for testing',
                     ['foo', 'bar'],
-                    [
-                        new Sample('test_some_metric', -123.5, [], ['lalal', 'lululu'])
-                    ],
+                    [new Sample('test_some_metric', -123.5, [], ['lalal', 'lululu'])],
                 ),
                 ]
             )
@@ -222,9 +208,7 @@ abstract class GaugeBaseTest extends TestCase
                     Gauge::TYPE,
                     'this is for testing',
                     ['foo', 'bar'],
-                    [
-                        new Sample('test_some_metric', 321, [], ['lalal', 'lululu'])
-                    ],
+                    [new Sample('test_some_metric', 321, [], ['lalal', 'lululu'])],
                 ),
                 ]
             )

@@ -18,7 +18,7 @@ class MetricFamilySamples
     private $samples;
 
     /**
-     * @param string[]                      $labelNames
+     * @param string[] $labelNames
      * @param Sample[] $samples
      */
     public function __construct(string $name, string $type, string $help, array $labelNames, array $samples)
