@@ -7,10 +7,10 @@ namespace Prometheus\PushGateway;
 use Prometheus\MetricFamilySamples;
 use Prometheus\Registry\Registry;
 use Prometheus\Renderer\RenderTextFormat;
+use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
-use RuntimeException;
 use function rawurlencode;
 use function strpos;
 use function substr;
@@ -41,7 +41,9 @@ final class PSR18Pusher implements Pusher
     }
 
     /**
-     * @param array<string,string> $groupingKey
+     * @inheritdoc
+     * 
+     * @throws PSR18UnexpectedPushGatewayResponse
      */
     public function push(Registry $registry, string $job, array $groupingKey = []) : void
     {
@@ -49,7 +51,9 @@ final class PSR18Pusher implements Pusher
     }
 
     /**
-     * @param array<string,string> $groupingKey
+     * @inheritdoc
+     * 
+     * @throws PSR18UnexpectedPushGatewayResponse
      */
     public function pushAdd(Registry $registry, string $job, array $groupingKey = []) : void
     {
@@ -57,7 +61,9 @@ final class PSR18Pusher implements Pusher
     }
 
     /**
-     * @param array<string,string> $groupingKey
+     * @inheritdoc
+     * 
+     * @throws PSR18UnexpectedPushGatewayResponse
      */
     public function delete(string $job, array $groupingKey = []) : void
     {
@@ -67,6 +73,8 @@ final class PSR18Pusher implements Pusher
     /**
      * @param array<string,string>  $groupingKey
      * @param MetricFamilySamples[] $metricFamilySamples
+     *
+     * @throws UnexpectedPushGatewayResponse
      */
     private function send(string $method, string $job, array $groupingKey, array $metricFamilySamples) : void
     {
@@ -83,12 +91,14 @@ final class PSR18Pusher implements Pusher
             $request = $request->withBody($this->stream_factory->createStream($renderer->render($metricFamilySamples)));
         }
 
-        $response = $this->client->sendRequest($request);
+        try {
+            $response = $this->client->sendRequest($request);
+        } catch (ClientExceptionInterface $ex) {
+            throw PSR18UnexpectedPushGatewayResponse::requestFailure($request, $ex);
+        }
 
-        $statusCode = $response->getStatusCode();
-        if ($statusCode !== 202) {
-            $msg = 'Unexpected status code ' . $statusCode . ' received from pushgateway ' . $this->address . ': ' . $response->getBody();
-            throw new RuntimeException($msg);
+        if ($response->getStatusCode() !== 202) {
+            throw PSR18UnexpectedPushGatewayResponse::invalidResponse($request, $response);
         }
     }
 }

@@ -13,6 +13,8 @@ interface Pusher
      * Uses HTTP PUT.
      *
      * @param array<string,string> $groupingKey
+     *
+     * @throws UnexpectedPushGatewayResponse
      */
     public function push(Registry $collectorRegistry, string $job, array $groupingKey = []) : void;
 
@@ -21,6 +23,8 @@ interface Pusher
      * Uses HTTP POST.
      *
      * @param array<string,string> $groupingKey
+     *
+     * @throws UnexpectedPushGatewayResponse
      */
     public function pushAdd(Registry $collectorRegistry, string $job, array $groupingKey = []) : void;
 
@@ -29,6 +33,8 @@ interface Pusher
      * Uses HTTP DELETE.
      *
      * @param array<string,string> $groupingKey
+     *
+     * @throws UnexpectedPushGatewayResponse
      */
     public function delete(string $job, array $groupingKey = []) : void;
 }

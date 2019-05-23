@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Test\Prometheus\PushGateway;
 
+use Exception;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Mock\Client;
 use PHPUnit\Framework\TestCase;
 use Prometheus\MetricFamilySamples;
 use Prometheus\PushGateway\PSR18Pusher;
+use Prometheus\PushGateway\UnexpectedPushGatewayResponse;
 use Prometheus\Registry\Registry;
-use RuntimeException;
+use Psr\Http\Client\ClientExceptionInterface;
 
 final class PSR18PusherTest extends TestCase
 {
@@ -128,7 +130,27 @@ final class PSR18PusherTest extends TestCase
             Psr17FactoryDiscovery::findStreamFactory()
         );
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(UnexpectedPushGatewayResponse::class);
+        $pusher->delete('myjob');
+    }
+
+    public function testExceptionIsThrownWhenRequestToPushGatewayCanNotBeSent() : void
+    {
+        $client = new Client();
+
+        $responseFactory = Psr17FactoryDiscovery::findResponseFactory();
+
+        $client->addException(new class extends Exception implements ClientExceptionInterface {
+        });
+
+        $pusher = new PSR18Pusher(
+            'https://example.com',
+            $client,
+            Psr17FactoryDiscovery::findRequestFactory(),
+            Psr17FactoryDiscovery::findStreamFactory()
+        );
+
+        $this->expectException(UnexpectedPushGatewayResponse::class);
         $pusher->delete('myjob');
     }
 }
