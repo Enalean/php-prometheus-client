@@ -44,51 +44,6 @@ abstract class HistogramBaseTest extends TestCase
         $histogram->observe(123, ['lalal', 'lululu']);
         $histogram->observe(245, ['lalal', 'lululu']);
 
-        $a = new MetricFamilySamples(
-            'test_some_metric',
-            Histogram::TYPE,
-            'this is for testing',
-            ['foo', 'bar'],
-            [
-                [
-                    'name' => 'test_some_metric_bucket',
-                    'labelNames' => ['le'],
-                    'labelValues' => ['lalal', 'lululu', '100'],
-                    'value' => 0,
-                ],
-                [
-                    'name' => 'test_some_metric_bucket',
-                    'labelNames' => ['le'],
-                    'labelValues' => ['lalal', 'lululu', '200'],
-                    'value' => 1,
-                ],
-                [
-                    'name' => 'test_some_metric_bucket',
-                    'labelNames' => ['le'],
-                    'labelValues' => ['lalal', 'lululu', '300'],
-                    'value' => 2,
-                ],
-                [
-                    'name' => 'test_some_metric_bucket',
-                    'labelNames' => ['le'],
-                    'labelValues' => ['lalal', 'lululu', '+Inf'],
-                    'value' => 2,
-                ],
-                [
-                    'name' => 'test_some_metric_count',
-                    'labelNames' => [],
-                    'labelValues' => ['lalal', 'lululu'],
-                    'value' => 2,
-                ],
-                [
-                    'name' => 'test_some_metric_sum',
-                    'labelNames' => [],
-                    'labelValues' => ['lalal', 'lululu'],
-                    'value' => 368,
-                ],
-            ],
-        );
-
         $this->assertThat(
             $this->adapter->collect(),
             $this->equalTo(
@@ -98,42 +53,12 @@ abstract class HistogramBaseTest extends TestCase
                     'this is for testing',
                     ['foo', 'bar'],
                     [
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['lalal', 'lululu', '100'],
-                            'value' => 0,
-                        ],
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['lalal', 'lululu', '200'],
-                            'value' => 1,
-                        ],
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['lalal', 'lululu', '300'],
-                            'value' => 2,
-                        ],
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['lalal', 'lululu', '+Inf'],
-                            'value' => 2,
-                        ],
-                        [
-                            'name' => 'test_some_metric_count',
-                            'labelNames' => [],
-                            'labelValues' => ['lalal', 'lululu'],
-                            'value' => 2,
-                        ],
-                        [
-                            'name' => 'test_some_metric_sum',
-                            'labelNames' => [],
-                            'labelValues' => ['lalal', 'lululu'],
-                            'value' => 368,
-                        ],
+                        new Sample('test_some_metric_bucket', 0, ['le'], ['lalal', 'lululu', '100']),
+                        new Sample('test_some_metric_bucket', 1, ['le'], ['lalal', 'lululu', '200']),
+                        new Sample('test_some_metric_bucket', 2, ['le'], ['lalal', 'lululu', '300']),
+                        new Sample('test_some_metric_bucket', 2, ['le'], ['lalal', 'lululu', '+Inf']),
+                        new Sample('test_some_metric_count', 2, [], ['lalal', 'lululu']),
+                        new Sample('test_some_metric_sum', 368, [], ['lalal', 'lululu']),
                     ],
                 ),
                 ]
@@ -142,7 +67,7 @@ abstract class HistogramBaseTest extends TestCase
     }
 
     /**
-     * @tes
+     * @test
      */
     public function itShouldObserveWithoutLabelWhenNoLabelsAreDefined() : void
     {
@@ -164,43 +89,13 @@ abstract class HistogramBaseTest extends TestCase
                     'this is for testing',
                     [],
                     [
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['100'],
-                            'value' => 0,
-                        ],
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['200'],
-                            'value' => 0,
-                        ],
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['300'],
-                            'value' => 1,
-                        ],
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['+Inf'],
-                            'value' => 1,
-                        ],
-                        [
-                            'name' => 'test_some_metric_count',
-                            'labelNames' => [],
-                            'labelValues' => [],
-                            'value' => 1,
-                        ],
-                        [
-                            'name' => 'test_some_metric_sum',
-                            'labelNames' => [],
-                            'labelValues' => [],
-                            'value' => 245,
-                        ],
-                    ],
+                        new Sample('test_some_metric_bucket', 0, ['le'], ['100']),
+                        new Sample('test_some_metric_bucket', 0, ['le'], ['200']),
+                        new Sample('test_some_metric_bucket', 1, ['le'], ['300']),
+                        new Sample('test_some_metric_bucket', 1, ['le'], ['+Inf']),
+                        new Sample('test_some_metric_count', 1, [], []),
+                        new Sample('test_some_metric_sum', 245, [], []),
+                    ]
                 ),
                 ]
             )
@@ -208,7 +103,7 @@ abstract class HistogramBaseTest extends TestCase
     }
 
     /**
-     * @tes
+     * @test
      */
     public function itShouldObserveValuesOfTypeDouble() : void
     {
@@ -231,42 +126,12 @@ abstract class HistogramBaseTest extends TestCase
                     'this is for testing',
                     [],
                     [
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['0.1'],
-                            'value' => 0,
-                        ],
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['0.2'],
-                            'value' => 1,
-                        ],
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['0.3'],
-                            'value' => 2,
-                        ],
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['+Inf'],
-                            'value' => 2,
-                        ],
-                        [
-                            'name' => 'test_some_metric_count',
-                            'labelNames' => [],
-                            'labelValues' => [],
-                            'value' => 2,
-                        ],
-                        [
-                            'name' => 'test_some_metric_sum',
-                            'labelNames' => [],
-                            'labelValues' => [],
-                            'value' => 0.41,
-                        ],
+                        new Sample('test_some_metric_bucket', 0, ['le'], ['0.1']),
+                        new Sample('test_some_metric_bucket', 1, ['le'], ['0.2']),
+                        new Sample('test_some_metric_bucket', 2, ['le'], ['0.3']),
+                        new Sample('test_some_metric_bucket', 2, ['le'], ['+Inf']),
+                        new Sample('test_some_metric_count', 2, [], []),
+                        new Sample('test_some_metric_sum', 0.41, [], []),
                     ],
                 ),
                 ]
@@ -275,7 +140,7 @@ abstract class HistogramBaseTest extends TestCase
     }
 
     /**
-     * @tes
+     * @test
      */
     public function itShouldProvideDefaultBuckets() : void
     {
@@ -299,108 +164,23 @@ abstract class HistogramBaseTest extends TestCase
                     'this is for testing',
                     [],
                     [
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['0.005'],
-                            'value' => 0,
-                        ],
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['0.01'],
-                            'value' => 0,
-                        ],
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['0.025'],
-                            'value' => 0,
-                        ],
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['0.05'],
-                            'value' => 1,
-                        ],
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['0.075'],
-                            'value' => 1,
-                        ],
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['0.1'],
-                            'value' => 1,
-                        ],
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['0.25'],
-                            'value' => 2,
-                        ],
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['0.5'],
-                            'value' => 2,
-                        ],
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['0.75'],
-                            'value' => 2,
-                        ],
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['1'],
-                            'value' => 2,
-                        ],
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['2.5'],
-                            'value' => 2,
-                        ],
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['5'],
-                            'value' => 2,
-                        ],
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['7.5'],
-                            'value' => 2,
-                        ],
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['10'],
-                            'value' => 2,
-                        ],
-                        [
-                            'name' => 'test_some_metric_bucket',
-                            'labelNames' => ['le'],
-                            'labelValues' => ['+Inf'],
-                            'value' => 2,
-                        ],
-                        [
-                            'name' => 'test_some_metric_count',
-                            'labelNames' => [],
-                            'labelValues' => [],
-                            'value' => 2,
-                        ],
-                        [
-                            'name' => 'test_some_metric_sum',
-                            'labelNames' => [],
-                            'labelValues' => [],
-                            'value' => 0.14,
-                        ],
+                        new Sample('test_some_metric_bucket', 0, ['le'], ['0.005']),
+                        new Sample('test_some_metric_bucket', 0, ['le'], ['0.01']),
+                        new Sample('test_some_metric_bucket', 0, ['le'], ['0.025']),
+                        new Sample('test_some_metric_bucket', 1, ['le'], ['0.05']),
+                        new Sample('test_some_metric_bucket', 1, ['le'], ['0.075']),
+                        new Sample('test_some_metric_bucket', 1, ['le'], ['0.1']),
+                        new Sample('test_some_metric_bucket', 2, ['le'], ['0.25']),
+                        new Sample('test_some_metric_bucket', 2, ['le'], ['0.5']),
+                        new Sample('test_some_metric_bucket', 2, ['le'], ['0.75']),
+                        new Sample('test_some_metric_bucket', 2, ['le'], ['1']),
+                        new Sample('test_some_metric_bucket', 2, ['le'], ['2.5']),
+                        new Sample('test_some_metric_bucket', 2, ['le'], ['5']),
+                        new Sample('test_some_metric_bucket', 2, ['le'], ['7.5']),
+                        new Sample('test_some_metric_bucket', 2, ['le'], ['10']),
+                        new Sample('test_some_metric_bucket', 2, ['le'], ['+Inf']),
+                        new Sample('test_some_metric_count', 2, [], []),
+                        new Sample('test_some_metric_sum', 0.14, [], []),
                     ],
                 ),
                 ]
@@ -409,7 +189,7 @@ abstract class HistogramBaseTest extends TestCase
     }
 
     /**
-     * @tes
+     * @test
      */
     public function itShouldThrowAnExceptionWhenTheBucketSizesAreNotIncreasing() : void
     {
@@ -419,7 +199,7 @@ abstract class HistogramBaseTest extends TestCase
     }
 
     /**
-     * @tes
+     * @test
      */
     public function itShouldThrowAnExceptionWhenThereIsLessThanOneBucket() : void
     {
@@ -429,7 +209,7 @@ abstract class HistogramBaseTest extends TestCase
     }
 
     /**
-     * @tes
+     * @test
      */
     public function itShouldThrowAnExceptionWhenThereIsALabelNamedLe() : void
     {
@@ -439,7 +219,7 @@ abstract class HistogramBaseTest extends TestCase
     }
 
     /**
-     * @tes
+     * @test
      */
     public function itShouldRejectInvalidMetricsNames() : void
     {
@@ -449,7 +229,7 @@ abstract class HistogramBaseTest extends TestCase
     }
 
     /**
-     * @tes
+     * @test
      */
     public function itShouldRejectInvalidLabelNames() : void
     {

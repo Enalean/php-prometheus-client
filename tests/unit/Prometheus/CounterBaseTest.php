@@ -46,12 +46,7 @@ abstract class CounterBaseTest extends TestCase
                     'this is for testing',
                     ['foo', 'bar'],
                     [
-                        [
-                            'labelValues' => ['lalal', 'lululu'],
-                            'value' => 3,
-                            'name' => 'test_some_metric',
-                            'labelNames' => [],
-                        ],
+                        new Sample('test_some_metric', 3, [], ['lalal', 'lululu'])
                     ],
                 ),
                 ]
@@ -75,12 +70,7 @@ abstract class CounterBaseTest extends TestCase
                     'this is for testing',
                     [],
                     [
-                        [
-                            'labelValues' => [],
-                            'value' => 1,
-                            'name' => 'test_some_metric',
-                            'labelNames' => [],
-                        ],
+                        new Sample('test_some_metric', 1, [], [])
                     ],
                 ),
                 ]
@@ -105,12 +95,7 @@ abstract class CounterBaseTest extends TestCase
                     'this is for testing',
                     ['foo', 'bar'],
                     [
-                        [
-                            'labelValues' => ['lalal', 'lululu'],
-                            'value' => 124,
-                            'name' => 'test_some_metric',
-                            'labelNames' => [],
-                        ],
+                        new Sample('test_some_metric', 124, [], ['lalal', 'lululu'])
                     ]
                 ),
                 ]

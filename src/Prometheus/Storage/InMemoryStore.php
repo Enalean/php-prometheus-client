@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Prometheus\Storage;
 
 use Prometheus\MetricFamilySamples;
+use Prometheus\Sample;
 use RuntimeException;
 use function array_key_exists;
 use function array_keys;
@@ -125,7 +126,11 @@ final class InMemoryStore implements Storage, FlushableStorage
                     'value' => $histogramBuckets[$labelValues]['sum'],
                 ];
             }
-            $histograms[] = new MetricFamilySamples($data['name'], $data['type'], $data['help'], $data['labelNames'], $data['samples']);
+            $samples = [];
+            foreach ($data['samples'] as $sampleData) {
+                $samples[] = new Sample($sampleData['name'], $sampleData['value'], $sampleData['labelNames'], $sampleData['labelValues']);
+            }
+            $histograms[] = new MetricFamilySamples($data['name'], $data['type'], $data['help'], $data['labelNames'], $samples);
         }
 
         return $histograms;
@@ -169,7 +174,11 @@ final class InMemoryStore implements Storage, FlushableStorage
             usort($data['samples'], static function (array $a, array $b) : int {
                 return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
             });
-            $result[] = new MetricFamilySamples($data['name'], $data['type'], $data['help'], $data['labelNames'], $data['samples']);
+            $samples = [];
+            foreach ($data['samples'] as $sampleData) {
+                $samples[] = new Sample($sampleData['name'], $sampleData['value'], $sampleData['labelNames'], $sampleData['labelValues']);
+            }
+            $result[] = new MetricFamilySamples($data['name'], $data['type'], $data['help'], $data['labelNames'], $samples);
         }
 
         return $result;

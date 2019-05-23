@@ -15,13 +15,11 @@ class MetricFamilySamples
     /** @var string[] */
     private $labelNames;
     /** @var Sample[] */
-    private $samples = [];
+    private $samples;
 
     /**
      * @param string[]                      $labelNames
-     * @param array<string|int|float|array> $samples
-     *
-     * @psalm-param array<array{name:string, value:int|double, labelValues:string[], labelNames:string[]}> $samples
+     * @param Sample[] $samples
      */
     public function __construct(string $name, string $type, string $help, array $labelNames, array $samples)
     {
@@ -29,9 +27,7 @@ class MetricFamilySamples
         $this->type       = $type;
         $this->help       = $help;
         $this->labelNames = $labelNames;
-        foreach ($samples as $sampleData) {
-            $this->samples[] = new Sample($sampleData['name'], $sampleData['value'], $sampleData['labelNames'], $sampleData['labelValues']);
-        }
+        $this->samples    = $samples;
     }
 
     public function getName() : string

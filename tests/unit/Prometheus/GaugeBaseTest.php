@@ -44,12 +44,7 @@ abstract class GaugeBaseTest extends TestCase
                     'this is for testing',
                     ['foo', 'bar'],
                     [
-                        [
-                            'name' => 'test_some_metric',
-                            'labelNames' => [],
-                            'labelValues' => ['lalal', 'lululu'],
-                            'value' => 123,
-                        ],
+                        new Sample('test_some_metric', 123, [], ['lalal', 'lululu'])
                     ],
                 ),
                 ]
@@ -75,12 +70,7 @@ abstract class GaugeBaseTest extends TestCase
                     'this is for testing',
                     [],
                     [
-                        [
-                            'name' => 'test_some_metric',
-                            'labelNames' => [],
-                            'labelValues' => [],
-                            'value' => 123,
-                        ],
+                        new Sample('test_some_metric', 123, [], [])
                     ],
                 ),
                 ]
@@ -106,12 +96,7 @@ abstract class GaugeBaseTest extends TestCase
                     'this is for testing',
                     [],
                     [
-                        [
-                            'name' => 'test_some_metric',
-                            'labelNames' => [],
-                            'labelValues' => [],
-                            'value' => 123.5,
-                        ],
+                        new Sample('test_some_metric', 123.5, [], [])
                     ],
                 ),
                 ]
@@ -138,13 +123,8 @@ abstract class GaugeBaseTest extends TestCase
                     'this is for testing',
                     ['foo', 'bar'],
                     [
-                        [
-                            'name' => 'test_some_metric',
-                            'labelNames' => [],
-                            'labelValues' => ['lalal', 'lululu'],
-                            'value' => 124,
-                        ],
-                    ],
+                        new Sample('test_some_metric', 124, [], ['lalal', 'lululu'])
+                    ]
                 ),
                 ]
             )
@@ -168,12 +148,7 @@ abstract class GaugeBaseTest extends TestCase
                     'this is for testing',
                     ['foo', 'bar'],
                     [
-                        [
-                            'name' => 'test_some_metric',
-                            'labelNames' => [],
-                            'labelValues' => ['lalal', 'lululu'],
-                            'value' => 124.5,
-                        ],
+                        new Sample('test_some_metric', 124.5, [], ['lalal', 'lululu'])
                     ],
                 ),
                 ]
@@ -198,12 +173,7 @@ abstract class GaugeBaseTest extends TestCase
                     'this is for testing',
                     ['foo', 'bar'],
                     [
-                        [
-                            'name' => 'test_some_metric',
-                            'labelNames' => [],
-                            'labelValues' => ['lalal', 'lululu'],
-                            'value' => -124,
-                        ],
+                        new Sample('test_some_metric', -124, [], ['lalal', 'lululu'])
                     ],
                 ),
                 ]
@@ -228,12 +198,7 @@ abstract class GaugeBaseTest extends TestCase
                     'this is for testing',
                     ['foo', 'bar'],
                     [
-                        [
-                            'name' => 'test_some_metric',
-                            'labelNames' => [],
-                            'labelValues' => ['lalal', 'lululu'],
-                            'value' => -124,
-                        ],
+                        new Sample('test_some_metric', -124, [], ['lalal', 'lululu'])
                     ],
                 ),
                 ]
@@ -258,12 +223,7 @@ abstract class GaugeBaseTest extends TestCase
                     'this is for testing',
                     ['foo', 'bar'],
                     [
-                        [
-                            'name' => 'test_some_metric',
-                            'labelNames' => [],
-                            'labelValues' => ['lalal', 'lululu'],
-                            'value' => 321,
-                        ],
+                        new Sample('test_some_metric', 321, [], ['lalal', 'lululu'])
                     ],
                 ),
                 ]

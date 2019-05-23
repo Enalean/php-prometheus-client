@@ -9,6 +9,7 @@ use Prometheus\Counter;
 use Prometheus\Gauge;
 use Prometheus\Histogram;
 use Prometheus\MetricFamilySamples;
+use Prometheus\Sample;
 use Redis;
 use function array_keys;
 use function array_map;
@@ -70,7 +71,11 @@ LUA
 
         $familySamples = [];
         foreach ($metrics as $metric) {
-            $familySamples[] = new MetricFamilySamples($metric['name'], $metric['type'], $metric['help'], $metric['labelNames'], $metric['samples']);
+            $samples = [];
+            foreach ($metric['samples'] as $sampleData) {
+                $samples[] = new Sample($sampleData['name'], $sampleData['value'], $sampleData['labelNames'], $sampleData['labelValues']);
+            }
+            $familySamples[] = new MetricFamilySamples($metric['name'], $metric['type'], $metric['help'], $metric['labelNames'], $samples);
         }
 
         return $familySamples;

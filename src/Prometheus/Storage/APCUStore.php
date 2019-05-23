@@ -6,6 +6,7 @@ namespace Prometheus\Storage;
 
 use APCUIterator;
 use Prometheus\MetricFamilySamples;
+use Prometheus\Sample;
 use RuntimeException;
 use function apcu_add;
 use function apcu_cas;
@@ -207,7 +208,11 @@ final class APCUStore implements Storage, FlushableStorage
                 ];
             }
             $this->sortSamples($data['samples']);
-            $counters[] = new MetricFamilySamples($data['name'], $data['type'], $data['help'], $data['labelNames'], $data['samples']);
+            $samples = [];
+            foreach ($data['samples'] as $sampleData) {
+                $samples[] = new Sample($sampleData['name'], $sampleData['value'], $sampleData['labelNames'], $sampleData['labelValues']);
+            }
+            $counters[] = new MetricFamilySamples($data['name'], $data['type'], $data['help'], $data['labelNames'], $samples);
         }
 
         return $counters;
@@ -244,7 +249,11 @@ final class APCUStore implements Storage, FlushableStorage
             }
 
             $this->sortSamples($data['samples']);
-            $gauges[] = new MetricFamilySamples($data['name'], $data['type'], $data['help'], $data['labelNames'], $data['samples']);
+            $samples = [];
+            foreach ($data['samples'] as $sampleData) {
+                $samples[] = new Sample($sampleData['name'], $sampleData['value'], $sampleData['labelNames'], $sampleData['labelValues']);
+            }
+            $gauges[] = new MetricFamilySamples($data['name'], $data['type'], $data['help'], $data['labelNames'], $samples);
         }
 
         return $gauges;
@@ -326,7 +335,11 @@ final class APCUStore implements Storage, FlushableStorage
                 ];
             }
             unset($data['buckets']);
-            $histograms[] = new MetricFamilySamples($data['name'], $data['type'], $data['help'], $data['labelNames'], $data['samples']);
+            $samples = [];
+            foreach ($data['samples'] as $sampleData) {
+                $samples[] = new Sample($sampleData['name'], $sampleData['value'], $sampleData['labelNames'], $sampleData['labelValues']);
+            }
+            $histograms[] = new MetricFamilySamples($data['name'], $data['type'], $data['help'], $data['labelNames'], $samples);
         }
 
         return $histograms;
