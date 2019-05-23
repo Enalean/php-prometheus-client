@@ -125,7 +125,7 @@ final class InMemoryStore implements Storage, FlushableStorage
                     'value' => $histogramBuckets[$labelValues]['sum'],
                 ];
             }
-            $histograms[] = new MetricFamilySamples($data);
+            $histograms[] = new MetricFamilySamples($data['name'], $data['type'], $data['help'], $data['labelNames'], $data['samples']);
         }
 
         return $histograms;
@@ -169,7 +169,7 @@ final class InMemoryStore implements Storage, FlushableStorage
             usort($data['samples'], static function (array $a, array $b) : int {
                 return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
             });
-            $result[] = new MetricFamilySamples($data);
+            $result[] = new MetricFamilySamples($data['name'], $data['type'], $data['help'], $data['labelNames'], $data['samples']);
         }
 
         return $result;

@@ -207,7 +207,7 @@ final class APCUStore implements Storage, FlushableStorage
                 ];
             }
             $this->sortSamples($data['samples']);
-            $counters[] = new MetricFamilySamples($data);
+            $counters[] = new MetricFamilySamples($data['name'], $data['type'], $data['help'], $data['labelNames'], $data['samples']);
         }
 
         return $counters;
@@ -244,7 +244,7 @@ final class APCUStore implements Storage, FlushableStorage
             }
 
             $this->sortSamples($data['samples']);
-            $gauges[] = new MetricFamilySamples($data);
+            $gauges[] = new MetricFamilySamples($data['name'], $data['type'], $data['help'], $data['labelNames'], $data['samples']);
         }
 
         return $gauges;
@@ -326,7 +326,7 @@ final class APCUStore implements Storage, FlushableStorage
                 ];
             }
             unset($data['buckets']);
-            $histograms[] = new MetricFamilySamples($data);
+            $histograms[] = new MetricFamilySamples($data['name'], $data['type'], $data['help'], $data['labelNames'], $data['samples']);
         }
 
         return $histograms;

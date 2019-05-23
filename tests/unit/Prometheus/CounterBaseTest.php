@@ -41,20 +41,18 @@ abstract class CounterBaseTest extends TestCase
             $this->adapter->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
+                    'test_some_metric',
+                    Counter::TYPE,
+                    'this is for testing',
+                    ['foo', 'bar'],
                     [
-                        'type' => Counter::TYPE,
-                        'help' => 'this is for testing',
-                        'name' => 'test_some_metric',
-                        'labelNames' => ['foo', 'bar'],
-                        'samples' => [
-                            [
-                                'labelValues' => ['lalal', 'lululu'],
-                                'value' => 3,
-                                'name' => 'test_some_metric',
-                                'labelNames' => [],
-                            ],
+                        [
+                            'labelValues' => ['lalal', 'lululu'],
+                            'value' => 3,
+                            'name' => 'test_some_metric',
+                            'labelNames' => [],
                         ],
-                    ]
+                    ],
                 ),
                 ]
             )
@@ -72,20 +70,18 @@ abstract class CounterBaseTest extends TestCase
             $this->adapter->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
+                    'test_some_metric',
+                    Counter::TYPE,
+                    'this is for testing',
+                    [],
                     [
-                        'type' => Counter::TYPE,
-                        'help' => 'this is for testing',
-                        'name' => 'test_some_metric',
-                        'labelNames' => [],
-                        'samples' => [
-                            [
-                                'labelValues' => [],
-                                'value' => 1,
-                                'name' => 'test_some_metric',
-                                'labelNames' => [],
-                            ],
+                        [
+                            'labelValues' => [],
+                            'value' => 1,
+                            'name' => 'test_some_metric',
+                            'labelNames' => [],
                         ],
-                    ]
+                    ],
                 ),
                 ]
             )
@@ -104,18 +100,16 @@ abstract class CounterBaseTest extends TestCase
             $this->adapter->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
+                    'test_some_metric',
+                    Counter::TYPE,
+                    'this is for testing',
+                    ['foo', 'bar'],
                     [
-                        'type' => Counter::TYPE,
-                        'help' => 'this is for testing',
-                        'name' => 'test_some_metric',
-                        'labelNames' => ['foo', 'bar'],
-                        'samples' => [
-                            [
-                                'labelValues' => ['lalal', 'lululu'],
-                                'value' => 124,
-                                'name' => 'test_some_metric',
-                                'labelNames' => [],
-                            ],
+                        [
+                            'labelValues' => ['lalal', 'lululu'],
+                            'value' => 124,
+                            'name' => 'test_some_metric',
+                            'labelNames' => [],
                         ],
                     ]
                 ),

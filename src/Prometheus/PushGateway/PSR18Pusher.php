@@ -41,9 +41,9 @@ final class PSR18Pusher implements Pusher
     }
 
     /**
-     * @inheritdoc
-     * 
      * @throws PSR18UnexpectedPushGatewayResponse
+     *
+     * @inheritdoc
      */
     public function push(Registry $registry, string $job, array $groupingKey = []) : void
     {
@@ -51,9 +51,9 @@ final class PSR18Pusher implements Pusher
     }
 
     /**
-     * @inheritdoc
-     * 
      * @throws PSR18UnexpectedPushGatewayResponse
+     *
+     * @inheritdoc
      */
     public function pushAdd(Registry $registry, string $job, array $groupingKey = []) : void
     {
@@ -61,9 +61,9 @@ final class PSR18Pusher implements Pusher
     }
 
     /**
-     * @inheritdoc
-     * 
      * @throws PSR18UnexpectedPushGatewayResponse
+     *
+     * @inheritdoc
      */
     public function delete(string $job, array $groupingKey = []) : void
     {

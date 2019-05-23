@@ -69,10 +69,7 @@ final class PSR18PusherTest extends TestCase
         );
         $registry = $this->createMock(Registry::class);
         /** @psalm-suppress InternalMethod */
-        $registry->method('getMetricFamilySamples')->willReturn([new MetricFamilySamples(
-            ['name' => 'name', 'type' => 'type', 'help' => 'help', 'labelNames' => [], 'samples' => []]
-        ),
-        ]);
+        $registry->method('getMetricFamilySamples')->willReturn([new MetricFamilySamples('name', 'type', 'help', [], [])]);
 
         $pusher->push($registry, 'myjob');
         $this->assertNotEmpty($client->getLastRequest()->getBody()->getContents());

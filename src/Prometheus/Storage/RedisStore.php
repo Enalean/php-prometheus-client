@@ -68,12 +68,12 @@ LUA
         $metrics = array_merge($metrics, $this->collectGauges());
         $metrics = array_merge($metrics, $this->collectCounters());
 
-        return array_map(
-            static function (array $metric) {
-                return new MetricFamilySamples($metric);
-            },
-            $metrics
-        );
+        $familySamples = [];
+        foreach ($metrics as $metric) {
+            $familySamples[] = new MetricFamilySamples($metric['name'], $metric['type'], $metric['help'], $metric['labelNames'], $metric['samples']);
+        }
+
+        return $familySamples;
     }
 
     /**

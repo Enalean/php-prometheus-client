@@ -39,20 +39,18 @@ abstract class GaugeBaseTest extends TestCase
             $this->adapter->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
+                    'test_some_metric',
+                    Gauge::TYPE,
+                    'this is for testing',
+                    ['foo', 'bar'],
                     [
-                        'name' => 'test_some_metric',
-                        'help' => 'this is for testing',
-                        'type' => Gauge::TYPE,
-                        'labelNames' => ['foo', 'bar'],
-                        'samples' => [
-                            [
-                                'name' => 'test_some_metric',
-                                'labelNames' => [],
-                                'labelValues' => ['lalal', 'lululu'],
-                                'value' => 123,
-                            ],
+                        [
+                            'name' => 'test_some_metric',
+                            'labelNames' => [],
+                            'labelValues' => ['lalal', 'lululu'],
+                            'value' => 123,
                         ],
-                    ]
+                    ],
                 ),
                 ]
             )
@@ -72,20 +70,18 @@ abstract class GaugeBaseTest extends TestCase
             $this->adapter->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
+                    'test_some_metric',
+                    Gauge::TYPE,
+                    'this is for testing',
+                    [],
                     [
-                        'name' => 'test_some_metric',
-                        'help' => 'this is for testing',
-                        'type' => Gauge::TYPE,
-                        'labelNames' => [],
-                        'samples' => [
-                            [
-                                'name' => 'test_some_metric',
-                                'labelNames' => [],
-                                'labelValues' => [],
-                                'value' => 123,
-                            ],
+                        [
+                            'name' => 'test_some_metric',
+                            'labelNames' => [],
+                            'labelValues' => [],
+                            'value' => 123,
                         ],
-                    ]
+                    ],
                 ),
                 ]
             )
@@ -105,20 +101,18 @@ abstract class GaugeBaseTest extends TestCase
             $this->adapter->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
+                    'test_some_metric',
+                    Gauge::TYPE,
+                    'this is for testing',
+                    [],
                     [
-                        'name' => 'test_some_metric',
-                        'help' => 'this is for testing',
-                        'type' => Gauge::TYPE,
-                        'labelNames' => [],
-                        'samples' => [
-                            [
-                                'name' => 'test_some_metric',
-                                'labelNames' => [],
-                                'labelValues' => [],
-                                'value' => 123.5,
-                            ],
+                        [
+                            'name' => 'test_some_metric',
+                            'labelNames' => [],
+                            'labelValues' => [],
+                            'value' => 123.5,
                         ],
-                    ]
+                    ],
                 ),
                 ]
             )
@@ -139,20 +133,18 @@ abstract class GaugeBaseTest extends TestCase
             $this->adapter->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
+                    'test_some_metric',
+                    Gauge::TYPE,
+                    'this is for testing',
+                    ['foo', 'bar'],
                     [
-                        'name' => 'test_some_metric',
-                        'help' => 'this is for testing',
-                        'type' => Gauge::TYPE,
-                        'labelNames' => ['foo', 'bar'],
-                        'samples' => [
-                            [
-                                'name' => 'test_some_metric',
-                                'labelNames' => [],
-                                'labelValues' => ['lalal', 'lululu'],
-                                'value' => 124,
-                            ],
+                        [
+                            'name' => 'test_some_metric',
+                            'labelNames' => [],
+                            'labelValues' => ['lalal', 'lululu'],
+                            'value' => 124,
                         ],
-                    ]
+                    ],
                 ),
                 ]
             )
@@ -171,20 +163,18 @@ abstract class GaugeBaseTest extends TestCase
             $this->adapter->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
+                    'test_some_metric',
+                    Gauge::TYPE,
+                    'this is for testing',
+                    ['foo', 'bar'],
                     [
-                        'name' => 'test_some_metric',
-                        'help' => 'this is for testing',
-                        'type' => Gauge::TYPE,
-                        'labelNames' => ['foo', 'bar'],
-                        'samples' => [
-                            [
-                                'name' => 'test_some_metric',
-                                'labelNames' => [],
-                                'labelValues' => ['lalal', 'lululu'],
-                                'value' => 124.5,
-                            ],
+                        [
+                            'name' => 'test_some_metric',
+                            'labelNames' => [],
+                            'labelValues' => ['lalal', 'lululu'],
+                            'value' => 124.5,
                         ],
-                    ]
+                    ],
                 ),
                 ]
             )
@@ -203,20 +193,18 @@ abstract class GaugeBaseTest extends TestCase
             $this->adapter->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
+                    'test_some_metric',
+                    Gauge::TYPE,
+                    'this is for testing',
+                    ['foo', 'bar'],
                     [
-                        'name' => 'test_some_metric',
-                        'help' => 'this is for testing',
-                        'type' => Gauge::TYPE,
-                        'labelNames' => ['foo', 'bar'],
-                        'samples' => [
-                            [
-                                'name' => 'test_some_metric',
-                                'labelNames' => [],
-                                'labelValues' => ['lalal', 'lululu'],
-                                'value' => -124,
-                            ],
+                        [
+                            'name' => 'test_some_metric',
+                            'labelNames' => [],
+                            'labelValues' => ['lalal', 'lululu'],
+                            'value' => -124,
                         ],
-                    ]
+                    ],
                 ),
                 ]
             )
@@ -235,20 +223,18 @@ abstract class GaugeBaseTest extends TestCase
             $this->adapter->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
+                    'test_some_metric',
+                    Gauge::TYPE,
+                    'this is for testing',
+                    ['foo', 'bar'],
                     [
-                        'name' => 'test_some_metric',
-                        'help' => 'this is for testing',
-                        'type' => Gauge::TYPE,
-                        'labelNames' => ['foo', 'bar'],
-                        'samples' => [
-                            [
-                                'name' => 'test_some_metric',
-                                'labelNames' => [],
-                                'labelValues' => ['lalal', 'lululu'],
-                                'value' => -124,
-                            ],
+                        [
+                            'name' => 'test_some_metric',
+                            'labelNames' => [],
+                            'labelValues' => ['lalal', 'lululu'],
+                            'value' => -124,
                         ],
-                    ]
+                    ],
                 ),
                 ]
             )
@@ -267,20 +253,18 @@ abstract class GaugeBaseTest extends TestCase
             $this->adapter->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
+                    'test_some_metric',
+                    Gauge::TYPE,
+                    'this is for testing',
+                    ['foo', 'bar'],
                     [
-                        'name' => 'test_some_metric',
-                        'help' => 'this is for testing',
-                        'type' => Gauge::TYPE,
-                        'labelNames' => ['foo', 'bar'],
-                        'samples' => [
-                            [
-                                'name' => 'test_some_metric',
-                                'labelNames' => [],
-                                'labelValues' => ['lalal', 'lululu'],
-                                'value' => 321,
-                            ],
+                        [
+                            'name' => 'test_some_metric',
+                            'labelNames' => [],
+                            'labelValues' => ['lalal', 'lululu'],
+                            'value' => 321,
                         ],
-                    ]
+                    ],
                 ),
                 ]
             )

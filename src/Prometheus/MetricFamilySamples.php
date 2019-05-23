@@ -18,23 +18,18 @@ class MetricFamilySamples
     private $samples = [];
 
     /**
-     * @param array<string,string|array> $data
+     * @param string[]                      $labelNames
+     * @param array<string|int|float|array> $samples
      *
-     * @psalm-param array{
-     *      name: string,
-     *      type: string,
-     *      help: string,
-     *      labelNames: string[],
-     *      samples: array<array{name:string, value:int|double, labelValues:string[], labelNames:string[]}>
-     *  } $data
+     * @psalm-param array<array{name:string, value:int|double, labelValues:string[], labelNames:string[]}> $samples
      */
-    public function __construct(array $data)
+    public function __construct(string $name, string $type, string $help, array $labelNames, array $samples)
     {
-        $this->name       = $data['name'];
-        $this->type       = $data['type'];
-        $this->help       = $data['help'];
-        $this->labelNames = $data['labelNames'];
-        foreach ($data['samples'] as $sampleData) {
+        $this->name       = $name;
+        $this->type       = $type;
+        $this->help       = $help;
+        $this->labelNames = $labelNames;
+        foreach ($samples as $sampleData) {
             $this->samples[] = new Sample($sampleData);
         }
     }
