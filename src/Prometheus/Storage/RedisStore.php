@@ -73,7 +73,7 @@ LUA
         foreach ($metrics as $metric) {
             $samples = [];
             foreach ($metric['samples'] as $sampleData) {
-                $samples[] = new Sample($sampleData['name'], $sampleData['value'], $sampleData['labelNames'], $sampleData['labelValues']);
+                $samples[] = new Sample($sampleData['name'], (float) $sampleData['value'], $sampleData['labelNames'], $sampleData['labelValues']);
             }
             $familySamples[] = new MetricFamilySamples($metric['name'], $metric['type'], $metric['help'], $metric['labelNames'], $samples);
         }

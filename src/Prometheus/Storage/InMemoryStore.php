@@ -31,7 +31,7 @@ final class InMemoryStore implements Storage, FlushableStorage
      * @var array<string,string[]>
      * @psalm-var array<string, array{
      *      meta: array{name:string, help:string, type:string, labelNames:string[], buckets:array<int|float>},
-     *      samples: array<string, int|float>
+     *      samples: array<string, float>
      * }>
      */
     private $histograms = [];
@@ -145,7 +145,7 @@ final class InMemoryStore implements Storage, FlushableStorage
      *      string,
      *      array{
      *          meta:array{name:string, help:string, type:string, labelNames:string[]},
-     *          samples:array<string, int|float>
+     *          samples:array<string, float>
      *      }
      *  > $metrics
      */
@@ -185,17 +185,7 @@ final class InMemoryStore implements Storage, FlushableStorage
     }
 
     /**
-     * @param array<string,string|int|float|array> $data
-     *
-     * @psalm-param array{
-     *      name:string,
-     *      help:string,
-     *      type:string,
-     *      labelNames:string[],
-     *      buckets:array<int|float>,
-     *      value:int|float,
-     *      labelValues:string[]
-     * } $data
+     * @inheritdoc
      */
     public function updateHistogram(array $data) : void
     {
@@ -230,17 +220,7 @@ final class InMemoryStore implements Storage, FlushableStorage
     }
 
     /**
-     * @param array<string,string|int|float|string[]> $data
-     *
-     * @psalm-param array{
-     *      name:string,
-     *      help:string,
-     *      type:string,
-     *      labelNames:string[],
-     *      value:int|float,
-     *      command:int,
-     *      labelValues:string[]
-     * } $data
+     * @inheritdoc
      */
     public function updateGauge(array $data) : void
     {
@@ -265,17 +245,7 @@ final class InMemoryStore implements Storage, FlushableStorage
     }
 
     /**
-     * @param array<string,string|int|float|string[]> $data
-     *
-     * @psalm-param array{
-     *      name:string,
-     *      help:string,
-     *      type:string,
-     *      labelNames:string[],
-     *      value:int|float,
-     *      command:int,
-     *      labelValues:string[]
-     * } $data
+     * @inheritdoc
      */
     public function updateCounter(array $data) : void
     {

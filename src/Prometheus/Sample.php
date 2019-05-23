@@ -12,15 +12,14 @@ class Sample
     private $labelNames;
     /** @var string[] */
     private $labelValues;
-    /** @var int|double */
+    /** @var float */
     private $value;
 
     /**
-     * @param int|float $value
      * @param string[] $labelNames
      * @param string[] $labelValues
      */
-    public function __construct(string $name, $value, array $labelNames, array $labelValues)
+    public function __construct(string $name, float $value, array $labelNames, array $labelValues)
     {
         $this->name        = $name;
         $this->labelNames  = $labelNames;
@@ -49,10 +48,7 @@ class Sample
         return $this->labelValues;
     }
 
-    /**
-     * @return int|double
-     */
-    public function getValue()
+    public function getValue() : float
     {
         return $this->value;
     }

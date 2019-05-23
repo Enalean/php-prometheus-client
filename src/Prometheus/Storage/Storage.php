@@ -18,7 +18,7 @@ interface Storage
     public function collect() : array;
 
     /**
-     * @param array<string,string|int|float|array> $data
+     * @param array<string,string|float|array> $data
      *
      * @psalm-param array{
      *      name:string,
@@ -26,7 +26,7 @@ interface Storage
      *      type:string,
      *      labelNames:string[],
      *      buckets:array<int|float>,
-     *      value:int|float,
+     *      value:float,
      *      labelValues:string[]
      * } $data
      */
@@ -40,7 +40,7 @@ interface Storage
      *      help:string,
      *      type:string,
      *      labelNames:string[],
-     *      value:int|float,
+     *      value:float,
      *      command:int,
      *      labelValues:string[]
      * } $data
@@ -55,7 +55,7 @@ interface Storage
      *      help:string,
      *      type:string,
      *      labelNames:string[],
-     *      value:int|float,
+     *      value:float,
      *      command:int,
      *      labelValues:string[]
      * } $data
