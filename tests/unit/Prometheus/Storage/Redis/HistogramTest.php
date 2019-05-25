@@ -10,6 +10,7 @@ use Test\Prometheus\HistogramBaseTest;
  * See https://prometheus.io/docs/instrumenting/exposition_formats/
  *
  * @requires extension redis
+ * @covers Prometheus\Storage\RedisStore
  */
 final class HistogramTest extends HistogramBaseTest
 {

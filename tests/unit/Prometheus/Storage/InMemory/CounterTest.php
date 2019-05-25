@@ -9,6 +9,8 @@ use Test\Prometheus\CounterBaseTest;
 
 /**
  * See https://prometheus.io/docs/instrumenting/exposition_formats/
+ *
+ * @covers Prometheus\Storage\InMemoryStore
  */
 final class CounterTest extends CounterBaseTest
 {

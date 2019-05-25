@@ -11,6 +11,7 @@ use Test\Prometheus\HistogramBaseTest;
  * See https://prometheus.io/docs/instrumenting/exposition_formats/
  *
  * @requires extension apcu
+ * @covers Prometheus\Storage\APCUStore
  */
 final class HistogramTest extends HistogramBaseTest
 {

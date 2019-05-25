@@ -14,6 +14,9 @@ use Prometheus\PushGateway\UnexpectedPushGatewayResponse;
 use Prometheus\Registry\Registry;
 use Psr\Http\Client\ClientExceptionInterface;
 
+/**
+ * @covers Prometheus\PushGateway\PSR18Pusher
+ */
 final class PSR18PusherTest extends TestCase
 {
     /**

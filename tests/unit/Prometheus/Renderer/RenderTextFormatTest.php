@@ -11,6 +11,9 @@ use Prometheus\Sample;
 
 final class RenderTextFormatTest extends TestCase
 {
+    /**
+     * @covers Prometheus\Renderer\RenderTextFormat
+     */
     public function testRendering() : void
     {
         $renderer = new RenderTextFormat();
@@ -48,6 +51,9 @@ test_some_metric_counter{label1="value1",label2="value\\\\2",label3="value\n3"} 
         );
     }
 
+    /**
+     * @covers Prometheus\Renderer\RenderTextFormat::getMimeType
+     */
     public function testType() : void
     {
         $renderer = new RenderTextFormat();

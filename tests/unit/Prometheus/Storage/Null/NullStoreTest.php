@@ -10,6 +10,9 @@ use Prometheus\Gauge;
 use Prometheus\Histogram;
 use Prometheus\Storage\NullStore;
 
+/**
+ * @covers Prometheus\Storage\NullStore
+ */
 final class NullStoreTest extends TestCase
 {
     public function testNothingIsStored() : void

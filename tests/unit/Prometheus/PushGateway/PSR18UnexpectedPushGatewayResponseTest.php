@@ -10,6 +10,9 @@ use PHPUnit\Framework\TestCase;
 use Prometheus\PushGateway\PSR18UnexpectedPushGatewayResponse;
 use Psr\Http\Client\ClientExceptionInterface;
 
+/**
+ * @covers Prometheus\PushGateway\PSR18UnexpectedPushGatewayResponse
+ */
 final class PSR18UnexpectedPushGatewayResponseTest extends TestCase
 {
     public function testInvalidResponse() : void

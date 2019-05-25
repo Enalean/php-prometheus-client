@@ -9,6 +9,8 @@ use Test\Prometheus\CollectorRegistryBaseTest;
 
 /**
  * @requires extension apcu
+ * @covers Prometheus\Registry\CollectorRegistry
+ * @covers Prometheus\Storage\APCUStore
  */
 final class CollectorRegistryTest extends CollectorRegistryBaseTest
 {
