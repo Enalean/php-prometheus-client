@@ -49,7 +49,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function updateHistogram(MetricName $name, array $data) : void
+    public function updateHistogram(MetricName $name, string $help, array $data) : void
     {
         // Initialize the sum
         $sumKey = $this->histogramBucketValueKey($name, $data, 'sum');
@@ -57,7 +57,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
 
         // If sum does not exist, assume a new histogram and store the metadata
         if ($new) {
-            apcu_store($this->metaKey($name, $data['type']), json_encode($this->metaData($name, $data)));
+            apcu_store($this->metaKey($name, $data['type']), json_encode($this->metaData($name, $help, $data)));
         }
 
         // Atomically increment the sum
@@ -85,16 +85,16 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function updateGauge(MetricName $name, array $data) : void
+    public function updateGauge(MetricName $name, string $help, array $data) : void
     {
         $valueKey = $this->valueKey($name, $data);
         if ($data['command'] === StorageCommand::COMMAND_SET) {
             apcu_store($valueKey, $this->toInteger($data['value']));
-            apcu_store($this->metaKey($name, $data['type']), json_encode($this->metaData($name, $data)));
+            apcu_store($this->metaKey($name, $data['type']), json_encode($this->metaData($name, $help, $data)));
         } else {
             $new = apcu_add($valueKey, $this->toInteger(0));
             if ($new) {
-                apcu_store($this->metaKey($name, $data['type']), json_encode($this->metaData($name, $data)));
+                apcu_store($this->metaKey($name, $data['type']), json_encode($this->metaData($name, $help, $data)));
             }
             // Taken from https://github.com/prometheus/client_golang/blob/66058aac3a83021948e5fb12f1f408ff556b9037/prometheus/value.go#L91
             $done = false;
@@ -108,11 +108,11 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @param array<string,mixed> $data
      */
-    public function updateCounter(MetricName $name, array $data) : void
+    public function updateCounter(MetricName $name, string $help, array $data) : void
     {
         $new = apcu_add($this->valueKey($name, $data), 0);
         if ($new) {
-            apcu_store($this->metaKey($name, $data['type']), json_encode($this->metaData($name, $data)));
+            apcu_store($this->metaKey($name, $data['type']), json_encode($this->metaData($name, $help, $data)));
         }
         apcu_inc($this->valueKey($name, $data), $data['value']);
     }
@@ -165,13 +165,14 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
      *
      * @return array<string,string>
      */
-    private function metaData(MetricName $name, array $data) : array
+    private function metaData(MetricName $name, string $help, array $data) : array
     {
         $metricsMetaData = $data;
         unset($metricsMetaData['value']);
         unset($metricsMetaData['command']);
         unset($metricsMetaData['labelValues']);
         $metricsMetaData['name'] = $name->toString();
+        $metricsMetaData['help'] = $help;
 
         return $metricsMetaData;
     }

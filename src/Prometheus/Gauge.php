@@ -34,9 +34,9 @@ class Gauge extends Metric
 
         $this->storage->updateGauge(
             $this->getName(),
+            $this->getHelp(),
             [
                 'name' => $this->getName()->toString(),
-                'help' => $this->getHelp(),
                 'type' => $this->getType(),
                 'labelNames' => $this->getLabelNames(),
                 'labelValues' => $labels,
@@ -68,9 +68,9 @@ class Gauge extends Metric
 
         $this->storage->updateGauge(
             $this->getName(),
+            $this->getHelp(),
             [
                 'name' => $this->getName()->toString(),
-                'help' => $this->getHelp(),
                 'type' => $this->getType(),
                 'labelNames' => $this->getLabelNames(),
                 'labelValues' => $labels,

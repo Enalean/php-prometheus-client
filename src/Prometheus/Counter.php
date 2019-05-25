@@ -47,8 +47,8 @@ class Counter extends Metric
 
         $this->storage->updateCounter(
             $this->getName(),
+            $this->getHelp(),
             [
-                'help' => $this->getHelp(),
                 'type' => $this->getType(),
                 'labelNames' => $this->getLabelNames(),
                 'labelValues' => $labels,

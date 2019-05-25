@@ -12,7 +12,6 @@ interface HistogramStorage
      * @param array<string,string|float|array> $data
      *
      * @psalm-param array{
-     *      help:string,
      *      type:string,
      *      labelNames:string[],
      *      buckets:array<int|float>,
@@ -20,5 +19,5 @@ interface HistogramStorage
      *      labelValues:string[]
      * } $data
      */
-    public function updateHistogram(MetricName $name, array $data) : void;
+    public function updateHistogram(MetricName $name, string $help, array $data) : void;
 }

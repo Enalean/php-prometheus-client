@@ -12,7 +12,6 @@ interface CounterStorage
      * @param array<string,string|int|float|string[]> $data
      *
      * @psalm-param array{
-     *      help:string,
      *      type:string,
      *      labelNames:string[],
      *      value:float,
@@ -20,5 +19,5 @@ interface CounterStorage
      *      labelValues:string[]
      * } $data
      */
-    public function updateCounter(MetricName $name, array $data) : void;
+    public function updateCounter(MetricName $name, string $help, array $data) : void;
 }

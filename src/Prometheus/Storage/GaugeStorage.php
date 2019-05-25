@@ -12,7 +12,6 @@ interface GaugeStorage
      * @param array<string,string|int|float|string[]> $data
      *
      * @psalm-param array{
-     *      help:string,
      *      type:string,
      *      labelNames:string[],
      *      value:float,
@@ -20,5 +19,5 @@ interface GaugeStorage
      *      labelValues:string[]
      * } $data
      */
-    public function updateGauge(MetricName $name, array $data) : void;
+    public function updateGauge(MetricName $name, string $help, array $data) : void;
 }

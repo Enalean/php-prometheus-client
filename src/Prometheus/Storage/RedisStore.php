@@ -82,7 +82,7 @@ LUA
     /**
      * @inheritdoc
      */
-    public function updateHistogram(MetricName $name, array $data) : void
+    public function updateHistogram(MetricName $name, string $help, array $data) : void
     {
         $bucketToIncrease = '+Inf';
         foreach ($data['buckets'] as $bucket) {
@@ -93,6 +93,7 @@ LUA
         }
         $metaData         = $data;
         $metaData['name'] = $name->toString();
+        $metaData['help'] = $help;
         unset($metaData['value']);
         unset($metaData['labelValues']);
         $this->redis->eval(
@@ -120,10 +121,11 @@ LUA
     /**
      * @inheritdoc
      */
-    public function updateGauge(MetricName $name, array $data) : void
+    public function updateGauge(MetricName $name, string $help, array $data) : void
     {
         $metaData         = $data;
         $metaData['name'] = $name->toString();
+        $metaData['help'] = $help;
         unset($metaData['value']);
         unset($metaData['labelValues']);
         unset($metaData['command']);
@@ -159,10 +161,11 @@ LUA
     /**
      * @inheritdoc
      */
-    public function updateCounter(MetricName $name, array $data) : void
+    public function updateCounter(MetricName $name, string $help, array $data) : void
     {
         $metaData         = $data;
         $metaData['name'] = $name->toString();
+        $metaData['help'] = $help;
         unset($metaData['value']);
         unset($metaData['labelValues']);
         unset($metaData['command']);

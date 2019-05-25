@@ -87,9 +87,9 @@ class Histogram extends Metric
 
         $this->storage->updateHistogram(
             $this->getName(),
+            $this->getHelp(),
             [
                 'value' => $value,
-                'help' => $this->getHelp(),
                 'type' => $this->getType(),
                 'labelNames' => $this->getLabelNames(),
                 'labelValues' => $labels,
