@@ -12,7 +12,6 @@ interface HistogramStorage
      * @param array<string,string|float|array> $data
      *
      * @psalm-param array{
-     *      type:string,
      *      labelNames:string[],
      *      buckets:array<int|float>,
      *      value:float,

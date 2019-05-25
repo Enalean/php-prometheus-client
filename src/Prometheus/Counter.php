@@ -49,7 +49,6 @@ class Counter extends Metric
             $this->getName(),
             $this->getHelp(),
             [
-                'type' => $this->getType(),
                 'labelNames' => $this->getLabelNames(),
                 'labelValues' => $labels,
                 'value' => $count,

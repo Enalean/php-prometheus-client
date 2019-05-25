@@ -12,7 +12,6 @@ interface CounterStorage
      * @param array<string,string|int|float|string[]> $data
      *
      * @psalm-param array{
-     *      type:string,
      *      labelNames:string[],
      *      value:float,
      *      command:int,

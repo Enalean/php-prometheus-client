@@ -31,7 +31,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
     /**
      * @var array<string,string[]>
      * @psalm-var array<string, array{
-     *      meta: array{name:string, help:string, type:string, labelNames:string[], buckets:array<int|float>},
+     *      meta: array{name:string, help:string, labelNames:string[], buckets:array<int|float>},
      *      samples: array<string, float>
      * }>
      */
@@ -42,8 +42,8 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
      */
     public function collect() : array
     {
-        $metrics = $this->internalCollect($this->counters);
-        $metrics = array_merge($metrics, $this->internalCollect($this->gauges));
+        $metrics = $this->internalCollect('counter', $this->counters);
+        $metrics = array_merge($metrics, $this->internalCollect('gauge', $this->gauges));
         $metrics = array_merge($metrics, $this->collectHistograms());
 
         return $metrics;
@@ -67,7 +67,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
             $data     = [
                 'name' => $metaData['name'],
                 'help' => $metaData['help'],
-                'type' => $metaData['type'],
+                'type' => 'histogram',
                 'labelNames' => $metaData['labelNames'],
                 'buckets' => $metaData['buckets'],
                 'samples' => [],
@@ -79,8 +79,8 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
             $histogramBuckets = [];
             foreach ($histogram['samples'] as $key => $value) {
                 $parts       = explode(':', $key);
-                $labelValues = $parts[2];
-                $bucket      = $parts[3];
+                $labelValues = $parts[1];
+                $bucket      = $parts[2];
                 // Key by labelValues
                 $histogramBuckets[$labelValues][$bucket] = $value;
             }
@@ -150,7 +150,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
      *      }
      *  > $metrics
      */
-    private function internalCollect(array $metrics) : array
+    private function internalCollect(string $type, array $metrics) : array
     {
         $result = [];
         foreach ($metrics as $metric) {
@@ -158,13 +158,12 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
             $data     = [
                 'name' => $metaData['name'],
                 'help' => $metaData['help'],
-                'type' => $metaData['type'],
                 'labelNames' => $metaData['labelNames'],
                 'samples' => [],
             ];
             foreach ($metric['samples'] as $key => $value) {
                 $parts             = explode(':', $key);
-                $labelValues       = $parts[2];
+                $labelValues       = $parts[1];
                 $data['samples'][] = [
                     'name' => $metaData['name'],
                     'labelNames' => [],
@@ -179,7 +178,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
             foreach ($data['samples'] as $sampleData) {
                 $samples[] = new Sample($sampleData['name'], $sampleData['value'], $sampleData['labelNames'], $sampleData['labelValues']);
             }
-            $result[] = new MetricFamilySamples($data['name'], $data['type'], $data['help'], $data['labelNames'], $samples);
+            $result[] = new MetricFamilySamples($data['name'], $type, $data['help'], $data['labelNames'], $samples);
         }
 
         return $result;
@@ -191,14 +190,14 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
     public function updateHistogram(MetricName $name, string $help, array $data) : void
     {
         // Initialize the sum
-        $metaKey = $this->metaKey($name, $data);
+        $metaKey = $this->metaKey($name);
         if (array_key_exists($metaKey, $this->histograms) === false) {
             $this->histograms[$metaKey] = [
                 'meta' => $this->metaData($name, $help, $data),
                 'samples' => [],
             ];
         }
-        $sumKey = $this->histogramBucketValueKey($name, $data, 'sum');
+        $sumKey = $this->histogramBucketValueKey($name, $data['labelValues'], 'sum');
         if (array_key_exists($sumKey, $this->histograms[$metaKey]['samples']) === false) {
             $this->histograms[$metaKey]['samples'][$sumKey] = 0;
         }
@@ -213,7 +212,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
             }
         }
 
-        $bucketKey = $this->histogramBucketValueKey($name, $data, (string) $bucketToIncrease);
+        $bucketKey = $this->histogramBucketValueKey($name, $data['labelValues'], (string) $bucketToIncrease);
         if (array_key_exists($bucketKey, $this->histograms[$metaKey]['samples']) === false) {
             $this->histograms[$metaKey]['samples'][$bucketKey] = 0;
         }
@@ -225,8 +224,8 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
      */
     public function updateGauge(MetricName $name, string $help, array $data) : void
     {
-        $metaKey  = $this->metaKey($name, $data);
-        $valueKey = $this->valueKey($name, $data);
+        $metaKey  = $this->metaKey($name);
+        $valueKey = $this->valueKey($name, $data['labelValues']);
         if (array_key_exists($metaKey, $this->gauges) === false) {
             /** @psalm-suppress InvalidArgument */
             $meta                   = $this->metaData($name, $help, $data);
@@ -250,8 +249,8 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
      */
     public function updateCounter(MetricName $name, string $help, array $data) : void
     {
-        $metaKey  = $this->metaKey($name, $data);
-        $valueKey = $this->valueKey($name, $data);
+        $metaKey  = $this->metaKey($name);
+        $valueKey = $this->valueKey($name, $data['labelValues']);
         if (array_key_exists($metaKey, $this->counters) === false) {
             /** @psalm-suppress InvalidArgument */
             $meta                     = $this->metaData($name, $help, $data);
@@ -271,43 +270,30 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
     }
 
     /**
-     * @param array<string,string|string[]> $data
-     *
-     * @psalm-param array{type:string, labelValues: string[]} $data
+     * @param string[] $labelValues
      */
-    private function histogramBucketValueKey(MetricName $name, array $data, string $bucket) : string
+    private function histogramBucketValueKey(MetricName $name, array $labelValues, string $bucket) : string
     {
         return implode(':', [
-            $data['type'],
             $name->toString(),
-            $this->encodeLabelValues($data['labelValues']),
+            $this->encodeLabelValues($labelValues),
             $bucket,
         ]);
     }
 
-    /**
-     * @param array<string,string> $data
-     *
-     * @psalm-param array{type:string} $data
-     */
-    private function metaKey(MetricName $name, array $data) : string
+    private function metaKey(MetricName $name) : string
     {
-        return implode(':', [$data['type'], $name->toString(), 'meta']);
+        return $name->toString() . ':meta';
     }
 
     /**
-     * @param array<string,string|string[]> $data
-     *
-     * @psalm-param array{
-     *      type:string,
-     *      labelValues:string[]
-     * } $data
+     * @param string[] $labelValues
      */
-    private function valueKey(MetricName $name, array $data) : string
+    private function valueKey(MetricName $name, array $labelValues) : string
     {
         return implode(
             ':',
-            [$data['type'], $name->toString(), $this->encodeLabelValues($data['labelValues']), 'value']
+            [$name->toString(), $this->encodeLabelValues($labelValues), 'value']
         );
     }
 
@@ -317,14 +303,13 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
      * @return array<string,string|array>
      *
      * @psalm-param array{
-     *      type:string,
      *      labelNames:string[],
      *      buckets:array<int|float>,
      *      value?:mixed,
      *      command?:mixed,
      *      labelValues?:mixed
      *  } $data
-     * @psalm-return array{name:string, help:string, type:string, labelNames:string[], buckets:array<int|float>}
+     * @psalm-return array{name:string, help:string, labelNames:string[], buckets:array<int|float>}
      */
     private function metaData(MetricName $name, string $help, array $data) : array
     {

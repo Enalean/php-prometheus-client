@@ -107,7 +107,7 @@ end
 LUA
             ,
             [
-                $this->toMetricKey($name, $data['type']),
+                $this->toMetricKey($name, 'histogram'),
                 json_encode(['b' => 'sum', 'labelValues' => $data['labelValues']]),
                 json_encode(['b' => $bucketToIncrease, 'labelValues' => $data['labelValues']]),
                 $this->prefix . 'histogram' . self::PROMETHEUS_METRIC_KEYS_SUFFIX,
@@ -147,7 +147,7 @@ end
 LUA
             ,
             [
-                $this->toMetricKey($name, $data['type']),
+                $this->toMetricKey($name, 'gauge'),
                 $this->getRedisCommand($data['command']),
                 $this->prefix . 'gauge' . self::PROMETHEUS_METRIC_KEYS_SUFFIX,
                 json_encode($data['labelValues']),
@@ -181,7 +181,7 @@ return result
 LUA
             ,
             [
-                $this->toMetricKey($name, $data['type']),
+                $this->toMetricKey($name, 'counter'),
                 $this->getRedisCommand($data['command']),
                 $this->prefix . 'counter' . self::PROMETHEUS_METRIC_KEYS_SUFFIX,
                 json_encode($data['labelValues']),
@@ -202,8 +202,9 @@ LUA
         sort($keys);
         $histograms = [];
         foreach ($keys as $key) {
-            $raw       = $this->redis->hGetAll($key);
-            $histogram = json_decode($raw['__meta'], true);
+            $raw               = $this->redis->hGetAll($key);
+            $histogram         = json_decode($raw['__meta'], true);
+            $histogram['type'] = 'histogram';
             unset($raw['__meta']);
             $histogram['samples'] = [];
 
@@ -281,8 +282,9 @@ LUA
         sort($keys);
         $gauges = [];
         foreach ($keys as $key) {
-            $raw   = $this->redis->hGetAll($key);
-            $gauge = json_decode($raw['__meta'], true);
+            $raw           = $this->redis->hGetAll($key);
+            $gauge         = json_decode($raw['__meta'], true);
+            $gauge['type'] = 'gauge';
             unset($raw['__meta']);
             $gauge['samples'] = [];
             foreach ($raw as $k => $value) {
@@ -312,8 +314,9 @@ LUA
         sort($keys);
         $counters = [];
         foreach ($keys as $key) {
-            $raw     = $this->redis->hGetAll($key);
-            $counter = json_decode($raw['__meta'], true);
+            $raw             = $this->redis->hGetAll($key);
+            $counter         = json_decode($raw['__meta'], true);
+            $counter['type'] = 'counter';
             unset($raw['__meta']);
             $counter['samples'] = [];
             foreach ($raw as $k => $value) {

@@ -90,7 +90,6 @@ class Histogram extends Metric
             $this->getHelp(),
             [
                 'value' => $value,
-                'type' => $this->getType(),
                 'labelNames' => $this->getLabelNames(),
                 'labelValues' => $labels,
                 'buckets' => $this->buckets,
