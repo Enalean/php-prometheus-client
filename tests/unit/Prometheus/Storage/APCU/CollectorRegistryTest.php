@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Test\Prometheus\Storage\APCU;
 
 use Prometheus\Storage\APCUStore;
-use Test\Prometheus\CollectorRegistryBaseTest;
+use Test\Prometheus\Storage\CollectorRegistryBaseTest;
 
 /**
  * @requires extension apcu

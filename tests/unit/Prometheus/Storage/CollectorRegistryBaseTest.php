@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Test\Prometheus;
+namespace Test\Prometheus\Storage;
 
 use PHPUnit\Framework\TestCase;
 use Prometheus\Exception\MetricNotFoundException;

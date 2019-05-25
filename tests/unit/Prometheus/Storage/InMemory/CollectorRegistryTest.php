@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Test\Prometheus\Storage\InMemory;
 
 use Prometheus\Storage\InMemoryStore;
-use Test\Prometheus\CollectorRegistryBaseTest;
+use Test\Prometheus\Storage\CollectorRegistryBaseTest;
 
 /**
  * @covers Prometheus\Registry\CollectorRegistry

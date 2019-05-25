@@ -7,7 +7,7 @@ namespace Test\Prometheus\Storage\Redis;
 use Prometheus\Registry\CollectorRegistry;
 use Prometheus\Renderer\RenderTextFormat;
 use Prometheus\Storage\RedisStore;
-use Test\Prometheus\CollectorRegistryBaseTest;
+use Test\Prometheus\Storage\CollectorRegistryBaseTest;
 
 /**
  * @requires extension redis

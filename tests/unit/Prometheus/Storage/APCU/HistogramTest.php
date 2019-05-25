@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Test\Prometheus\Storage\APCU;
 
 use Prometheus\Storage\APCUStore;
-use Test\Prometheus\HistogramBaseTest;
+use Test\Prometheus\Storage\HistogramBaseTest;
 
 /**
  * See https://prometheus.io/docs/instrumenting/exposition_formats/
