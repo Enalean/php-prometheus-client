@@ -26,4 +26,9 @@ trait ConfigureRedisStorage
         $this->adapter = new RedisStore($this->getRedisClient());
         $this->adapter->flush();
     }
+
+    protected function getStorage() : RedisStore
+    {
+        return new RedisStore($this->getRedisClient());
+    }
 }

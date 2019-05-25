@@ -4,11 +4,24 @@ declare(strict_types=1);
 
 namespace Prometheus;
 
-use Prometheus\Storage\Storage;
+use Prometheus\Storage\CounterStorage;
+use Prometheus\Storage\StorageCommand;
 
-class Counter extends Collector
+class Counter extends Metric
 {
     private const TYPE = 'counter';
+
+    /** @var CounterStorage */
+    private $storage;
+
+    /**
+     * @inheritdoc
+     */
+    public function __construct(CounterStorage $storage, string $namespace, string $name, string $help, array $labels = [])
+    {
+        parent::__construct($namespace, $name, $help, $labels);
+        $this->storage = $storage;
+    }
 
     public function getType() : string
     {
@@ -31,7 +44,7 @@ class Counter extends Collector
     {
         $this->assertLabelsAreDefinedCorrectly($labels);
 
-        $this->storageAdapter->updateCounter(
+        $this->storage->updateCounter(
             [
                 'name' => $this->getName(),
                 'help' => $this->getHelp(),
@@ -39,7 +52,7 @@ class Counter extends Collector
                 'labelNames' => $this->getLabelNames(),
                 'labelValues' => $labels,
                 'value' => $count,
-                'command' => Storage::COMMAND_INCREMENT_INTEGER,
+                'command' => StorageCommand::COMMAND_INCREMENT_INTEGER,
             ]
         );
     }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Test\Prometheus\Storage\InMemory;
 
-use Prometheus\Storage\InMemoryStore;
 use Test\Prometheus\Storage\CollectorRegistryBaseTest;
 
 /**
@@ -13,9 +12,5 @@ use Test\Prometheus\Storage\CollectorRegistryBaseTest;
  */
 final class CollectorRegistryTest extends CollectorRegistryBaseTest
 {
-    public function configureAdapter() : void
-    {
-        $this->adapter = new InMemoryStore();
-        $this->adapter->flush();
-    }
+    use ConfigureInMemoryStorage;
 }

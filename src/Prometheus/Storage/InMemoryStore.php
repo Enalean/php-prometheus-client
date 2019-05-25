@@ -21,7 +21,7 @@ use function sort;
 use function strcmp;
 use function usort;
 
-final class InMemoryStore implements Storage, FlushableStorage
+final class InMemoryStore implements Store, CounterStorage, GaugeStorage, HistogramStorage, FlushableStorage
 {
     /** @var array<string,mixed> */
     private $counters = [];
@@ -37,7 +37,7 @@ final class InMemoryStore implements Storage, FlushableStorage
     private $histograms = [];
 
     /**
-     * @return MetricFamilySamples[]
+     * @inheritdoc
      */
     public function collect() : array
     {
@@ -237,7 +237,7 @@ final class InMemoryStore implements Storage, FlushableStorage
         if (array_key_exists($valueKey, $this->gauges[$metaKey]['samples']) === false) {
             $this->gauges[$metaKey]['samples'][$valueKey] = 0;
         }
-        if ($data['command'] === self::COMMAND_SET) {
+        if ($data['command'] === StorageCommand::COMMAND_SET) {
             $this->gauges[$metaKey]['samples'][$valueKey] = $data['value'];
         } else {
             $this->gauges[$metaKey]['samples'][$valueKey] += $data['value'];
@@ -262,7 +262,7 @@ final class InMemoryStore implements Storage, FlushableStorage
         if (array_key_exists($valueKey, $this->counters[$metaKey]['samples']) === false) {
             $this->counters[$metaKey]['samples'][$valueKey] = 0;
         }
-        if ($data['command'] === self::COMMAND_SET) {
+        if ($data['command'] === StorageCommand::COMMAND_SET) {
             $this->counters[$metaKey]['samples'][$valueKey] = 0;
         } else {
             $this->counters[$metaKey]['samples'][$valueKey] += $data['value'];

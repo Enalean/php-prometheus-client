@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Test\Prometheus\Storage\APCU;
 
-use Prometheus\Storage\APCUStore;
 use Test\Prometheus\Storage\HistogramBaseTest;
 
 /**
@@ -15,9 +14,5 @@ use Test\Prometheus\Storage\HistogramBaseTest;
  */
 final class HistogramTest extends HistogramBaseTest
 {
-    public function configureAdapter() : void
-    {
-        $this->adapter = new APCUStore();
-        $this->adapter->flush();
-    }
+    use ConfigureAPCUStorage;
 }

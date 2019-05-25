@@ -29,12 +29,12 @@ use function strcmp;
 use function unpack;
 use function usort;
 
-final class APCUStore implements Storage, FlushableStorage
+final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramStorage, FlushableStorage
 {
     public const PROMETHEUS_PREFIX = 'prom';
 
     /**
-     * @return MetricFamilySamples[]
+     * @inheritdoc
      */
     public function collect() : array
     {
@@ -87,7 +87,7 @@ final class APCUStore implements Storage, FlushableStorage
     public function updateGauge(array $data) : void
     {
         $valueKey = $this->valueKey($data);
-        if ($data['command'] === self::COMMAND_SET) {
+        if ($data['command'] === StorageCommand::COMMAND_SET) {
             apcu_store($valueKey, $this->toInteger($data['value']));
             apcu_store($this->metaKey($data), json_encode($this->metaData($data)));
         } else {

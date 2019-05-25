@@ -10,11 +10,14 @@ use Prometheus\Exception\MetricsRegistrationException;
 use Prometheus\Gauge;
 use Prometheus\Histogram;
 use Prometheus\MetricFamilySamples;
-use Prometheus\Storage\Storage;
+use Prometheus\Storage\CounterStorage;
+use Prometheus\Storage\GaugeStorage;
+use Prometheus\Storage\HistogramStorage;
+use Prometheus\Storage\Store;
 
-final class CollectorRegistry implements Registry
+final class CollectorRegistry implements Registry, Collector
 {
-    /** @var Storage */
+    /** @var CounterStorage&GaugeStorage&HistogramStorage&Store */
     private $storageAdapter;
     /** @var Gauge[] */
     private $gauges = [];
@@ -23,7 +26,10 @@ final class CollectorRegistry implements Registry
     /** @var Histogram[] */
     private $histograms = [];
 
-    public function __construct(Storage $storage)
+    /**
+     * @param CounterStorage&GaugeStorage&HistogramStorage&Store $storage
+     */
+    public function __construct(Store $storage)
     {
         $this->storageAdapter = $storage;
     }

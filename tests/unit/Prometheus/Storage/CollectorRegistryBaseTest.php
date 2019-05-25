@@ -9,20 +9,31 @@ use Prometheus\Exception\MetricNotFoundException;
 use Prometheus\Exception\MetricsRegistrationException;
 use Prometheus\Registry\CollectorRegistry;
 use Prometheus\Renderer\RenderTextFormat;
-use Prometheus\Storage\Storage;
+use Prometheus\Storage\CounterStorage;
+use Prometheus\Storage\FlushableStorage;
+use Prometheus\Storage\GaugeStorage;
+use Prometheus\Storage\HistogramStorage;
+use Prometheus\Storage\Store;
 
 abstract class CollectorRegistryBaseTest extends TestCase
 {
-    /** @var Storage */
-    public $adapter;
-
     /** @var RenderTextFormat */
     private $renderer;
 
+    /**
+     * @return CounterStorage&GaugeStorage&HistogramStorage&Store
+     */
+    abstract protected function getStorage();
+
     protected function setUp() : void
     {
-        $this->configureAdapter();
         $this->renderer = new RenderTextFormat();
+        $storage        = $this->getStorage();
+        if (! ($storage instanceof FlushableStorage)) {
+            return;
+        }
+
+        $storage->flush();
     }
 
     /**
@@ -30,7 +41,8 @@ abstract class CollectorRegistryBaseTest extends TestCase
      */
     public function itShouldSaveGauges() : void
     {
-        $registry = new CollectorRegistry($this->adapter);
+        $storage  = $this->getStorage();
+        $registry = new CollectorRegistry($storage);
 
         $g = $registry->registerGauge('test', 'some_metric', 'this is for testing', ['foo']);
         $g->set(35, ['bbb']);
@@ -38,7 +50,7 @@ abstract class CollectorRegistryBaseTest extends TestCase
         $g->set(35, ['aaa']);
         $g->set(35, ['ccc']);
 
-        $registry = new CollectorRegistry($this->adapter);
+        $registry = new CollectorRegistry($storage);
         $this->assertThat(
             $this->renderer->render($registry->getMetricFamilySamples()),
             $this->equalTo(<<<EOF
@@ -59,13 +71,14 @@ EOF
      */
     public function itShouldSaveCounters() : void
     {
-        $registry = new CollectorRegistry($this->adapter);
+        $storage  = $this->getStorage();
+        $registry = new CollectorRegistry($storage);
         $metric   = $registry->registerCounter('test', 'some_metric', 'this is for testing', ['foo', 'bar']);
         $metric->incBy(2, ['lalal', 'lululu']);
         $registry->getCounter('test', 'some_metric')->inc(['lalal', 'lululu']);
         $registry->getCounter('test', 'some_metric')->inc(['lalal', 'lvlvlv']);
 
-        $registry = new CollectorRegistry($this->adapter);
+        $registry = new CollectorRegistry($storage);
         $this->assertThat(
             $this->renderer->render($registry->getMetricFamilySamples()),
             $this->equalTo(<<<EOF
@@ -84,7 +97,8 @@ EOF
      */
     public function itShouldSaveHistograms() : void
     {
-        $registry = new CollectorRegistry($this->adapter);
+        $storage  = $this->getStorage();
+        $registry = new CollectorRegistry($storage);
         $metric   = $registry->registerHistogram('test', 'some_metric', 'this is for testing', ['foo', 'bar'], [0.1, 1, 5, 10]);
         $metric->observe(2, ['lalal', 'lululu']);
         $registry->getHistogram('test', 'some_metric')->observe(7.1, ['lalal', 'lvlvlv']);
@@ -92,7 +106,7 @@ EOF
         $registry->getHistogram('test', 'some_metric')->observe(7.1, ['lalal', 'lululu']);
         $registry->getHistogram('test', 'some_metric')->observe(7.1, ['gnaaha', 'hihihi']);
 
-        $registry = new CollectorRegistry($this->adapter);
+        $registry = new CollectorRegistry($storage);
         $this->assertThat(
             $this->renderer->render($registry->getMetricFamilySamples()),
             $this->equalTo(<<<EOF
@@ -130,13 +144,14 @@ EOF
      */
     public function itShouldSaveHistogramsWithoutLabels() : void
     {
-        $registry = new CollectorRegistry($this->adapter);
+        $storage  = $this->getStorage();
+        $registry = new CollectorRegistry($storage);
         $metric   = $registry->registerHistogram('test', 'some_metric', 'this is for testing');
         $metric->observe(2);
         $registry->getHistogram('test', 'some_metric')->observe(13);
         $registry->getHistogram('test', 'some_metric')->observe(7.1);
 
-        $registry = new CollectorRegistry($this->adapter);
+        $registry = new CollectorRegistry($storage);
         $this->assertThat(
             $this->renderer->render($registry->getMetricFamilySamples()),
             $this->equalTo(<<<EOF
@@ -170,7 +185,7 @@ EOF
      */
     public function itShouldIncreaseACounterWithoutNamespace() : void
     {
-        $registry = new CollectorRegistry($this->adapter);
+        $registry = new CollectorRegistry($this->getStorage());
         $registry
             ->registerCounter('', 'some_quick_counter', 'just a quick measurement')
             ->inc();
@@ -192,7 +207,7 @@ EOF
      */
     public function itShouldForbidRegisteringTheSameCounterTwice() : void
     {
-        $registry = new CollectorRegistry($this->adapter);
+        $registry = new CollectorRegistry($this->getStorage());
         $registry->registerCounter('foo', 'metric', 'help');
         $this->expectException(MetricsRegistrationException::class);
         $registry->registerCounter('foo', 'metric', 'help');
@@ -203,7 +218,7 @@ EOF
      */
     public function itShouldForbidRegisteringTheSameCounterWithDifferentLabels() : void
     {
-        $registry = new CollectorRegistry($this->adapter);
+        $registry = new CollectorRegistry($this->getStorage());
         $registry->registerCounter('foo', 'metric', 'help', ['foo', 'bar']);
         $this->expectException(MetricsRegistrationException::class);
         $registry->registerCounter('foo', 'metric', 'help', ['spam', 'eggs']);
@@ -214,7 +229,7 @@ EOF
      */
     public function itShouldForbidRegisteringTheSameHistogramTwice() : void
     {
-        $registry = new CollectorRegistry($this->adapter);
+        $registry = new CollectorRegistry($this->getStorage());
         $registry->registerHistogram('foo', 'metric', 'help');
         $this->expectException(MetricsRegistrationException::class);
         $registry->registerHistogram('foo', 'metric', 'help');
@@ -225,7 +240,7 @@ EOF
      */
     public function itShouldForbidRegisteringTheSameHistogramWithDifferentLabels() : void
     {
-        $registry = new CollectorRegistry($this->adapter);
+        $registry = new CollectorRegistry($this->getStorage());
         $registry->registerCounter('foo', 'metric', 'help', ['foo', 'bar']);
         $this->expectException(MetricsRegistrationException::class);
         $registry->registerCounter('foo', 'metric', 'help', ['spam', 'eggs']);
@@ -236,7 +251,7 @@ EOF
      */
     public function itShouldForbidRegisteringTheSameGaugeTwice() : void
     {
-        $registry = new CollectorRegistry($this->adapter);
+        $registry = new CollectorRegistry($this->getStorage());
         $registry->registerGauge('foo', 'metric', 'help');
         $this->expectException(MetricsRegistrationException::class);
         $registry->registerGauge('foo', 'metric', 'help');
@@ -247,7 +262,7 @@ EOF
      */
     public function itShouldForbidRegisteringTheSameGaugeWithDifferentLabels() : void
     {
-        $registry = new CollectorRegistry($this->adapter);
+        $registry = new CollectorRegistry($this->getStorage());
         $registry->registerGauge('foo', 'metric', 'help', ['foo', 'bar']);
         $this->expectException(MetricsRegistrationException::class);
         $registry->registerGauge('foo', 'metric', 'help', ['spam', 'eggs']);
@@ -258,7 +273,7 @@ EOF
      */
     public function itShouldThrowAnExceptionWhenGettingANonExistentMetric() : void
     {
-        $registry = new CollectorRegistry($this->adapter);
+        $registry = new CollectorRegistry($this->getStorage());
         $this->expectException(MetricNotFoundException::class);
         $registry->getGauge('not_here', 'go_away');
     }
@@ -268,7 +283,7 @@ EOF
      */
     public function itShouldNotRegisterACounterTwice() : void
     {
-        $registry = new CollectorRegistry($this->adapter);
+        $registry = new CollectorRegistry($this->getStorage());
         $counterA = $registry->getOrRegisterCounter('foo', 'bar', 'Help text');
         $counterB = $registry->getOrRegisterCounter('foo', 'bar', 'Help text');
 
@@ -280,7 +295,7 @@ EOF
      */
     public function itShouldNotRegisterAGaugeTwice() : void
     {
-        $registry = new CollectorRegistry($this->adapter);
+        $registry = new CollectorRegistry($this->getStorage());
         $gaugeA   = $registry->getOrRegisterGauge('foo', 'bar', 'Help text');
         $gaugeB   = $registry->getOrRegisterGauge('foo', 'bar', 'Help text');
 
@@ -292,12 +307,10 @@ EOF
      */
     public function itShouldNotRegisterAHistogramTwice() : void
     {
-        $registry   = new CollectorRegistry($this->adapter);
+        $registry   = new CollectorRegistry($this->getStorage());
         $histogramA = $registry->getOrRegisterHistogram('foo', 'bar', 'Help text');
         $histogramB = $registry->getOrRegisterHistogram('foo', 'bar', 'Help text');
 
         $this->assertSame($histogramA, $histogramB);
     }
-
-    abstract public function configureAdapter() : void;
 }

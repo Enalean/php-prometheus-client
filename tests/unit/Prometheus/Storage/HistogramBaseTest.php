@@ -9,7 +9,9 @@ use PHPUnit\Framework\TestCase;
 use Prometheus\Histogram;
 use Prometheus\MetricFamilySamples;
 use Prometheus\Sample;
-use Prometheus\Storage\Storage;
+use Prometheus\Storage\FlushableStorage;
+use Prometheus\Storage\HistogramStorage;
+use Prometheus\Storage\Store;
 use function array_combine;
 use function array_merge;
 use function chr;
@@ -20,12 +22,22 @@ use function reset;
  */
 abstract class HistogramBaseTest extends TestCase
 {
-    /** @var Storage */
-    public $adapter;
+    /**
+     * @return HistogramStorage&Store
+     */
+    abstract protected function getStorage();
 
-    protected function setUp() : void
+    /**
+     * @before
+     */
+    protected function flushStorage() : void
     {
-        $this->configureAdapter();
+        $storage = $this->getStorage();
+        if (! ($storage instanceof FlushableStorage)) {
+            return;
+        }
+
+        $storage->flush();
     }
 
     /**
@@ -33,8 +45,9 @@ abstract class HistogramBaseTest extends TestCase
      */
     public function itShouldObserveWithLabels() : void
     {
+        $storage   = $this->getStorage();
         $histogram = new Histogram(
-            $this->adapter,
+            $storage,
             'test',
             'some_metric',
             'this is for testing',
@@ -45,7 +58,7 @@ abstract class HistogramBaseTest extends TestCase
         $histogram->observe(245, ['lalal', 'lululu']);
 
         $this->assertThat(
-            $this->adapter->collect(),
+            $storage->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
@@ -71,8 +84,9 @@ abstract class HistogramBaseTest extends TestCase
      */
     public function itShouldObserveWithoutLabelWhenNoLabelsAreDefined() : void
     {
+        $storage   = $this->getStorage();
         $histogram = new Histogram(
-            $this->adapter,
+            $storage,
             'test',
             'some_metric',
             'this is for testing',
@@ -81,7 +95,7 @@ abstract class HistogramBaseTest extends TestCase
         );
         $histogram->observe(245);
         $this->assertThat(
-            $this->adapter->collect(),
+            $storage->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
@@ -107,8 +121,9 @@ abstract class HistogramBaseTest extends TestCase
      */
     public function itShouldObserveValuesOfTypeFloat() : void
     {
+        $storage   = $this->getStorage();
         $histogram = new Histogram(
-            $this->adapter,
+            $storage,
             'test',
             'some_metric',
             'this is for testing',
@@ -118,7 +133,7 @@ abstract class HistogramBaseTest extends TestCase
         $histogram->observe(0.11);
         $histogram->observe(0.3);
         $this->assertThat(
-            $this->adapter->collect(),
+            $storage->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
@@ -144,10 +159,10 @@ abstract class HistogramBaseTest extends TestCase
      */
     public function itShouldProvideDefaultBuckets() : void
     {
+        $storage = $this->getStorage();
         // .005, .01, .025, .05, .075, .1, .25, .5, .75, 1.0, 2.5, 5.0, 7.5, 10.0
-
         $histogram = new Histogram(
-            $this->adapter,
+            $storage,
             'test',
             'some_metric',
             'this is for testing',
@@ -156,7 +171,7 @@ abstract class HistogramBaseTest extends TestCase
         $histogram->observe(0.11);
         $histogram->observe(0.03);
         $this->assertThat(
-            $this->adapter->collect(),
+            $storage->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
@@ -195,7 +210,7 @@ abstract class HistogramBaseTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Histogram buckets must be in increasing order');
-        new Histogram($this->adapter, 'test', 'some_metric', 'this is for testing', [], [1, 1]);
+        new Histogram($this->getStorage(), 'test', 'some_metric', 'this is for testing', [], [1, 1]);
     }
 
     /**
@@ -205,7 +220,7 @@ abstract class HistogramBaseTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Histogram must have at least one bucket');
-        new Histogram($this->adapter, 'test', 'some_metric', 'this is for testing', [], []);
+        new Histogram($this->getStorage(), 'test', 'some_metric', 'this is for testing', [], []);
     }
 
     /**
@@ -215,7 +230,7 @@ abstract class HistogramBaseTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Histogram cannot have a label named');
-        new Histogram($this->adapter, 'test', 'some_metric', 'this is for testing', ['le'], [1]);
+        new Histogram($this->getStorage(), 'test', 'some_metric', 'this is for testing', ['le'], [1]);
     }
 
     /**
@@ -225,7 +240,7 @@ abstract class HistogramBaseTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid metric name');
-        new Histogram($this->adapter, 'test', 'some invalid metric', 'help', [], [1]);
+        new Histogram($this->getStorage(), 'test', 'some invalid metric', 'help', [], [1]);
     }
 
     /**
@@ -235,7 +250,7 @@ abstract class HistogramBaseTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid label name');
-        new Histogram($this->adapter, 'test', 'some_metric', 'help', ['invalid label'], [1]);
+        new Histogram($this->getStorage(), 'test', 'some_metric', 'help', ['invalid label'], [1]);
     }
 
     /**
@@ -246,11 +261,12 @@ abstract class HistogramBaseTest extends TestCase
      */
     public function isShouldAcceptAnySequenceOfBasicLatinCharactersForLabelValues($value) : void
     {
+        $storage   = $this->getStorage();
         $label     = 'foo';
-        $histogram = new Histogram($this->adapter, 'test', 'some_metric', 'help', [$label], [1]);
+        $histogram = new Histogram($storage, 'test', 'some_metric', 'help', [$label], [1]);
         $histogram->observe(1, [$value]);
 
-        $metrics = $this->adapter->collect();
+        $metrics = $storage->collect();
         self::assertCount(1, $metrics);
         self::assertContainsOnlyInstancesOf(MetricFamilySamples::class, $metrics);
 
@@ -283,6 +299,4 @@ abstract class HistogramBaseTest extends TestCase
 
         return $cases;
     }
-
-    abstract public function configureAdapter() : void;
 }

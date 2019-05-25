@@ -9,7 +9,9 @@ use PHPUnit\Framework\TestCase;
 use Prometheus\Counter;
 use Prometheus\MetricFamilySamples;
 use Prometheus\Sample;
-use Prometheus\Storage\Storage;
+use Prometheus\Storage\CounterStorage;
+use Prometheus\Storage\FlushableStorage;
+use Prometheus\Storage\Store;
 use function array_combine;
 use function array_merge;
 use function chr;
@@ -20,12 +22,22 @@ use function reset;
  */
 abstract class CounterBaseTest extends TestCase
 {
-    /** @var Storage */
-    public $adapter;
+    /**
+     * @return CounterStorage&Store
+     */
+    abstract protected function getStorage();
 
-    protected function setUp() : void
+    /**
+     * @before
+     */
+    protected function flushStorage() : void
     {
-        $this->configureAdapter();
+        $storage = $this->getStorage();
+        if (! ($storage instanceof FlushableStorage)) {
+            return;
+        }
+
+        $storage->flush();
     }
 
     /**
@@ -33,12 +45,13 @@ abstract class CounterBaseTest extends TestCase
      */
     public function itShouldIncreaseWithLabels() : void
     {
-        $gauge = new Counter($this->adapter, 'test', 'some_metric', 'this is for testing', ['foo', 'bar']);
+        $storage = $this->getStorage();
+        $gauge   = new Counter($storage, 'test', 'some_metric', 'this is for testing', ['foo', 'bar']);
         $gauge->inc(['lalal', 'lululu']);
         $gauge->inc(['lalal', 'lululu']);
         $gauge->inc(['lalal', 'lululu']);
         $this->assertThat(
-            $this->adapter->collect(),
+            $storage->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
@@ -57,10 +70,11 @@ abstract class CounterBaseTest extends TestCase
      */
     public function itShouldIncreaseWithoutLabelWhenNoLabelsAreDefined() : void
     {
-        $gauge = new Counter($this->adapter, 'test', 'some_metric', 'this is for testing');
+        $storage = $this->getStorage();
+        $gauge   = new Counter($storage, 'test', 'some_metric', 'this is for testing');
         $gauge->inc();
         $this->assertThat(
-            $this->adapter->collect(),
+            $storage->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
@@ -79,11 +93,12 @@ abstract class CounterBaseTest extends TestCase
      */
     public function itShouldIncreaseTheCounterByAnArbitraryInteger() : void
     {
-        $gauge = new Counter($this->adapter, 'test', 'some_metric', 'this is for testing', ['foo', 'bar']);
+        $storage = $this->getStorage();
+        $gauge   = new Counter($storage, 'test', 'some_metric', 'this is for testing', ['foo', 'bar']);
         $gauge->inc(['lalal', 'lululu']);
         $gauge->incBy(123, ['lalal', 'lululu']);
         $this->assertThat(
-            $this->adapter->collect(),
+            $storage->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
@@ -103,7 +118,7 @@ abstract class CounterBaseTest extends TestCase
     public function itShouldRejectInvalidMetricsNames() : void
     {
         $this->expectException(InvalidArgumentException::class);
-        new Counter($this->adapter, 'test', 'some metric invalid metric', 'help');
+        new Counter($this->getStorage(), 'test', 'some metric invalid metric', 'help');
     }
 
     /**
@@ -112,7 +127,7 @@ abstract class CounterBaseTest extends TestCase
     public function itShouldRejectInvalidLabelNames() : void
     {
         $this->expectException(InvalidArgumentException::class);
-        new Counter($this->adapter, 'test', 'some_metric', 'help', ['invalid label']);
+        new Counter($this->getStorage(), 'test', 'some_metric', 'help', ['invalid label']);
     }
 
     /**
@@ -123,11 +138,12 @@ abstract class CounterBaseTest extends TestCase
      */
     public function isShouldAcceptAnySequenceOfBasicLatinCharactersForLabelValues($value) : void
     {
-        $label     = 'foo';
-        $histogram = new Counter($this->adapter, 'test', 'some_metric', 'help', [$label]);
-        $histogram->inc([$value]);
+        $storage = $this->getStorage();
+        $label   = 'foo';
+        $counter = new Counter($storage, 'test', 'some_metric', 'help', [$label]);
+        $counter->inc([$value]);
 
-        $metrics = $this->adapter->collect();
+        $metrics = $storage->collect();
         self::assertCount(1, $metrics);
         self::assertContainsOnlyInstancesOf(MetricFamilySamples::class, $metrics);
 
@@ -160,6 +176,4 @@ abstract class CounterBaseTest extends TestCase
 
         return $cases;
     }
-
-    abstract public function configureAdapter() : void;
 }

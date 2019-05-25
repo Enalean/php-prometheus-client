@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace Prometheus;
 
 use InvalidArgumentException;
-use Prometheus\Storage\Storage;
+use Prometheus\Storage\HistogramStorage;
 use function count;
 
-class Histogram extends Collector
+class Histogram extends Metric
 {
     private const TYPE = 'histogram';
+
+    /** @var HistogramStorage */
+    private $storage;
 
     /** @var float[] */
     private $buckets;
@@ -19,9 +22,10 @@ class Histogram extends Collector
      * @param string[] $labels
      * @param float[]  $buckets
      */
-    public function __construct(Storage $adapter, string $namespace, string $name, string $help, array $labels = [], ?array $buckets = null)
+    public function __construct(HistogramStorage $storage, string $namespace, string $name, string $help, array $labels = [], ?array $buckets = null)
     {
-        parent::__construct($adapter, $namespace, $name, $help, $labels);
+        parent::__construct($namespace, $name, $help, $labels);
+        $this->storage = $storage;
 
         if ($buckets === null) {
             $buckets = self::getDefaultBuckets();
@@ -80,7 +84,7 @@ class Histogram extends Collector
     {
         $this->assertLabelsAreDefinedCorrectly($labels);
 
-        $this->storageAdapter->updateHistogram(
+        $this->storage->updateHistogram(
             [
                 'value' => $value,
                 'name' => $this->getName(),

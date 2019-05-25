@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 use Prometheus\MetricFamilySamples;
 use Prometheus\PushGateway\PSR18Pusher;
 use Prometheus\PushGateway\UnexpectedPushGatewayResponse;
-use Prometheus\Registry\Registry;
+use Prometheus\Registry\Collector;
 use Psr\Http\Client\ClientExceptionInterface;
 
 /**
@@ -34,17 +34,17 @@ final class PSR18PusherTest extends TestCase
 
         $client->setDefaultResponse($responseFactory->createResponse(202));
 
-        $pusher   = new PSR18Pusher(
+        $pusher    = new PSR18Pusher(
             $givenAddress,
             $client,
             Psr17FactoryDiscovery::findRequestFactory(),
             Psr17FactoryDiscovery::findStreamFactory()
         );
-        $registry = $this->createMock(Registry::class);
+        $collector = $this->createMock(Collector::class);
 
-        $pusher->push($registry, 'myjob');
+        $pusher->push($collector, 'myjob');
         $this->assertEquals('PUT', $client->getLastRequest()->getMethod());
-        $pusher->pushAdd($registry, 'myjob');
+        $pusher->pushAdd($collector, 'myjob');
         $this->assertEquals('POST', $client->getLastRequest()->getMethod());
         $pusher->delete('myjob');
         $this->assertEquals('DELETE', $client->getLastRequest()->getMethod());
@@ -64,19 +64,19 @@ final class PSR18PusherTest extends TestCase
 
         $client->setDefaultResponse($responseFactory->createResponse(202));
 
-        $pusher   = new PSR18Pusher(
+        $pusher    = new PSR18Pusher(
             'https://example.com',
             $client,
             Psr17FactoryDiscovery::findRequestFactory(),
             Psr17FactoryDiscovery::findStreamFactory()
         );
-        $registry = $this->createMock(Registry::class);
+        $collector = $this->createMock(Collector::class);
         /** @psalm-suppress InternalMethod */
-        $registry->method('getMetricFamilySamples')->willReturn([new MetricFamilySamples('name', 'type', 'help', [], [])]);
+        $collector->method('getMetricFamilySamples')->willReturn([new MetricFamilySamples('name', 'type', 'help', [], [])]);
 
-        $pusher->push($registry, 'myjob');
+        $pusher->push($collector, 'myjob');
         $this->assertNotEmpty($client->getLastRequest()->getBody()->getContents());
-        $pusher->pushAdd($registry, 'myjob');
+        $pusher->pushAdd($collector, 'myjob');
         $this->assertNotEmpty($client->getLastRequest()->getBody()->getContents());
         $pusher->delete('myjob');
         $this->assertEmpty($client->getLastRequest()->getBody()->getContents());
@@ -90,16 +90,16 @@ final class PSR18PusherTest extends TestCase
 
         $client->setDefaultResponse($responseFactory->createResponse(202));
 
-        $pusher   = new PSR18Pusher(
+        $pusher    = new PSR18Pusher(
             'https://example.com',
             $client,
             Psr17FactoryDiscovery::findRequestFactory(),
             Psr17FactoryDiscovery::findStreamFactory()
         );
-        $registry = $this->createMock(Registry::class);
+        $collector = $this->createMock(Collector::class);
 
-        $pusher->push($registry, 'myjob', ['job' => 'some_job', 'instance' => 'some_instance']);
-        $pusher->pushAdd($registry, 'myjob', ['job' => 'some_job', 'instance' => 'some_instance']);
+        $pusher->push($collector, 'myjob', ['job' => 'some_job', 'instance' => 'some_instance']);
+        $pusher->pushAdd($collector, 'myjob', ['job' => 'some_job', 'instance' => 'some_instance']);
         $pusher->delete('myjob', ['job' => 'some_job', 'instance' => 'some_instance']);
 
         $sentRequests = $client->getRequests();

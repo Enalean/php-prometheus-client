@@ -26,7 +26,8 @@ final class CollectorRegistryTest extends CollectorRegistryBaseTest
         $redis = $this->getRedisClient();
         $redis->set('foo', 'bar');
 
-        $registry = new CollectorRegistry($this->adapter);
+        $storage  = $this->getStorage();
+        $registry = new CollectorRegistry($storage);
 
         $counter = $registry->registerCounter('test', 'some_counter', 'it increases', ['type']);
         $counter->incBy(6, ['blue']);
@@ -43,7 +44,7 @@ final class CollectorRegistryTest extends CollectorRegistryBaseTest
         $histogramRedisKey = 'PROMETHEUS_histogram' . RedisStore::PROMETHEUS_METRIC_KEYS_SUFFIX;
         $this->assertEquals(['PROMETHEUS_:histogram:test_some_histogram'], $redis->sMembers($histogramRedisKey));
 
-        $this->adapter->flush();
+        $storage->flush();
 
         $this->assertEquals('bar', $redis->get('foo'));
 

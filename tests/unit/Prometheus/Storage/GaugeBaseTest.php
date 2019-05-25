@@ -9,7 +9,9 @@ use PHPUnit\Framework\TestCase;
 use Prometheus\Gauge;
 use Prometheus\MetricFamilySamples;
 use Prometheus\Sample;
-use Prometheus\Storage\Storage;
+use Prometheus\Storage\FlushableStorage;
+use Prometheus\Storage\GaugeStorage;
+use Prometheus\Storage\Store;
 use function array_combine;
 use function array_merge;
 use function chr;
@@ -20,12 +22,22 @@ use function reset;
  */
 abstract class GaugeBaseTest extends TestCase
 {
-    /** @var Storage */
-    public $adapter;
+    /**
+     * @return GaugeStorage&Store
+     */
+    abstract protected function getStorage();
 
-    protected function setUp() : void
+    /**
+     * @before
+     */
+    protected function flushStorage() : void
     {
-        $this->configureAdapter();
+        $storage = $this->getStorage();
+        if (! ($storage instanceof FlushableStorage)) {
+            return;
+        }
+
+        $storage->flush();
     }
 
     /**
@@ -33,10 +45,11 @@ abstract class GaugeBaseTest extends TestCase
      */
     public function itShouldAllowSetWithLabels() : void
     {
-        $gauge = new Gauge($this->adapter, 'test', 'some_metric', 'this is for testing', ['foo', 'bar']);
+        $storage = $this->getStorage();
+        $gauge   = new Gauge($storage, 'test', 'some_metric', 'this is for testing', ['foo', 'bar']);
         $gauge->set(123, ['lalal', 'lululu']);
         $this->assertThat(
-            $this->adapter->collect(),
+            $storage->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
@@ -57,10 +70,11 @@ abstract class GaugeBaseTest extends TestCase
      */
     public function itShouldAllowSetWithoutLabelWhenNoLabelsAreDefined() : void
     {
-        $gauge = new Gauge($this->adapter, 'test', 'some_metric', 'this is for testing');
+        $storage = $this->getStorage();
+        $gauge   = new Gauge($storage, 'test', 'some_metric', 'this is for testing');
         $gauge->set(123);
         $this->assertThat(
-            $this->adapter->collect(),
+            $storage->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
@@ -81,10 +95,11 @@ abstract class GaugeBaseTest extends TestCase
      */
     public function itShouldAllowSetWithAFloatValue() : void
     {
-        $gauge = new Gauge($this->adapter, 'test', 'some_metric', 'this is for testing');
+        $storage = $this->getStorage();
+        $gauge   = new Gauge($storage, 'test', 'some_metric', 'this is for testing');
         $gauge->set(123.5);
         $this->assertThat(
-            $this->adapter->collect(),
+            $storage->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
@@ -105,11 +120,12 @@ abstract class GaugeBaseTest extends TestCase
      */
     public function itShouldIncrementAValue() : void
     {
-        $gauge = new Gauge($this->adapter, 'test', 'some_metric', 'this is for testing', ['foo', 'bar']);
+        $storage = $this->getStorage();
+        $gauge   = new Gauge($storage, 'test', 'some_metric', 'this is for testing', ['foo', 'bar']);
         $gauge->inc(['lalal', 'lululu']);
         $gauge->incBy(123, ['lalal', 'lululu']);
         $this->assertThat(
-            $this->adapter->collect(),
+            $storage->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
@@ -128,11 +144,12 @@ abstract class GaugeBaseTest extends TestCase
      */
     public function itShouldIncrementWithFloatValue() : void
     {
-        $gauge = new Gauge($this->adapter, 'test', 'some_metric', 'this is for testing', ['foo', 'bar']);
+        $storage = $this->getStorage();
+        $gauge   = new Gauge($storage, 'test', 'some_metric', 'this is for testing', ['foo', 'bar']);
         $gauge->inc(['lalal', 'lululu']);
         $gauge->incBy(123.5, ['lalal', 'lululu']);
         $this->assertThat(
-            $this->adapter->collect(),
+            $storage->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
@@ -151,11 +168,12 @@ abstract class GaugeBaseTest extends TestCase
      */
     public function itShouldDecrementAValue() : void
     {
-        $gauge = new Gauge($this->adapter, 'test', 'some_metric', 'this is for testing', ['foo', 'bar']);
+        $storage = $this->getStorage();
+        $gauge   = new Gauge($storage, 'test', 'some_metric', 'this is for testing', ['foo', 'bar']);
         $gauge->dec(['lalal', 'lululu']);
         $gauge->decBy(123, ['lalal', 'lululu']);
         $this->assertThat(
-            $this->adapter->collect(),
+            $storage->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
@@ -174,11 +192,12 @@ abstract class GaugeBaseTest extends TestCase
      */
     public function itShouldDecrementWithFloatValue() : void
     {
-        $gauge = new Gauge($this->adapter, 'test', 'some_metric', 'this is for testing', ['foo', 'bar']);
+        $storage = $this->getStorage();
+        $gauge   = new Gauge($storage, 'test', 'some_metric', 'this is for testing', ['foo', 'bar']);
         $gauge->dec(['lalal', 'lululu']);
         $gauge->decBy(122.5, ['lalal', 'lululu']);
         $this->assertThat(
-            $this->adapter->collect(),
+            $storage->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
@@ -197,11 +216,12 @@ abstract class GaugeBaseTest extends TestCase
      */
     public function itShouldOverwriteWhenSettingTwice() : void
     {
-        $gauge = new Gauge($this->adapter, 'test', 'some_metric', 'this is for testing', ['foo', 'bar']);
+        $storage = $this->getStorage();
+        $gauge   = new Gauge($storage, 'test', 'some_metric', 'this is for testing', ['foo', 'bar']);
         $gauge->set(123, ['lalal', 'lululu']);
         $gauge->set(321, ['lalal', 'lululu']);
         $this->assertThat(
-            $this->adapter->collect(),
+            $storage->collect(),
             $this->equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
@@ -221,7 +241,7 @@ abstract class GaugeBaseTest extends TestCase
     public function itShouldRejectInvalidMetricsNames() : void
     {
         $this->expectException(InvalidArgumentException::class);
-        new Gauge($this->adapter, 'test', 'some metric invalid metric', 'help');
+        new Gauge($this->getStorage(), 'test', 'some metric invalid metric', 'help');
     }
 
     /**
@@ -230,7 +250,7 @@ abstract class GaugeBaseTest extends TestCase
     public function itShouldRejectInvalidLabelNames() : void
     {
         $this->expectException(InvalidArgumentException::class);
-        new Gauge($this->adapter, 'test', 'some_metric', 'help', ['invalid label']);
+        new Gauge($this->getStorage(), 'test', 'some_metric', 'help', ['invalid label']);
     }
 
     /**
@@ -241,11 +261,12 @@ abstract class GaugeBaseTest extends TestCase
      */
     public function isShouldAcceptAnySequenceOfBasicLatinCharactersForLabelValues($value) : void
     {
+        $storage   = $this->getStorage();
         $label     = 'foo';
-        $histogram = new Gauge($this->adapter, 'test', 'some_metric', 'help', [$label]);
+        $histogram = new Gauge($storage, 'test', 'some_metric', 'help', [$label]);
         $histogram->inc([$value]);
 
-        $metrics = $this->adapter->collect();
+        $metrics = $storage->collect();
         self::assertCount(1, $metrics);
         self::assertContainsOnlyInstancesOf(MetricFamilySamples::class, $metrics);
 
@@ -278,6 +299,4 @@ abstract class GaugeBaseTest extends TestCase
 
         return $cases;
     }
-
-    abstract public function configureAdapter() : void;
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Prometheus\Storage;
 
-final class NullStore implements Storage
+final class NullStore implements Store, CounterStorage, GaugeStorage, HistogramStorage
 {
     /**
      * @inheritdoc

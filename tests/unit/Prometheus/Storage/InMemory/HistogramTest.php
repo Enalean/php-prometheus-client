@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Test\Prometheus\Storage\InMemory;
 
-use Prometheus\Storage\InMemoryStore;
 use Test\Prometheus\Storage\HistogramBaseTest;
 
 /**
@@ -14,9 +13,5 @@ use Test\Prometheus\Storage\HistogramBaseTest;
  */
 final class HistogramTest extends HistogramBaseTest
 {
-    public function configureAdapter() : void
-    {
-        $this->adapter = new InMemoryStore();
-        $this->adapter->flush();
-    }
+    use ConfigureInMemoryStorage;
 }

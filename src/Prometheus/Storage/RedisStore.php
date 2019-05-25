@@ -19,7 +19,7 @@ use function sort;
 use function strcmp;
 use function usort;
 
-final class RedisStore implements Storage, FlushableStorage
+final class RedisStore implements Store, CounterStorage, GaugeStorage, HistogramStorage, FlushableStorage
 {
     public const PROMETHEUS_METRIC_KEYS_SUFFIX = '_METRIC_KEYS';
 
@@ -58,7 +58,7 @@ LUA
     }
 
     /**
-     * @return MetricFamilySamples[]
+     * @inheritdoc
      */
     public function collect() : array
     {
@@ -329,11 +329,11 @@ LUA
     private function getRedisCommand(int $cmd) : string
     {
         switch ($cmd) {
-            case self::COMMAND_INCREMENT_INTEGER:
+            case StorageCommand::COMMAND_INCREMENT_INTEGER:
                 return 'hIncrBy';
-            case self::COMMAND_INCREMENT_FLOAT:
+            case StorageCommand::COMMAND_INCREMENT_FLOAT:
                 return 'hIncrByFloat';
-            case self::COMMAND_SET:
+            case StorageCommand::COMMAND_SET:
                 return 'hSet';
             default:
                 throw new InvalidArgumentException('Unknown command');

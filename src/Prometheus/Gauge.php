@@ -4,11 +4,24 @@ declare(strict_types=1);
 
 namespace Prometheus;
 
-use Prometheus\Storage\Storage;
+use Prometheus\Storage\GaugeStorage;
+use Prometheus\Storage\StorageCommand;
 
-class Gauge extends Collector
+class Gauge extends Metric
 {
     private const TYPE = 'gauge';
+
+    /** @var GaugeStorage */
+    private $storage;
+
+    /**
+     * @inheritdoc
+     */
+    public function __construct(GaugeStorage $storage, string $namespace, string $name, string $help, array $labels = [])
+    {
+        parent::__construct($namespace, $name, $help, $labels);
+        $this->storage = $storage;
+    }
 
     /**
      * @param float    $value  e.g. 123
@@ -18,7 +31,7 @@ class Gauge extends Collector
     {
         $this->assertLabelsAreDefinedCorrectly($labels);
 
-        $this->storageAdapter->updateGauge(
+        $this->storage->updateGauge(
             [
                 'name' => $this->getName(),
                 'help' => $this->getHelp(),
@@ -26,7 +39,7 @@ class Gauge extends Collector
                 'labelNames' => $this->getLabelNames(),
                 'labelValues' => $labels,
                 'value' => $value,
-                'command' => Storage::COMMAND_SET,
+                'command' => StorageCommand::COMMAND_SET,
             ]
         );
     }
@@ -51,7 +64,7 @@ class Gauge extends Collector
     {
         $this->assertLabelsAreDefinedCorrectly($labels);
 
-        $this->storageAdapter->updateGauge(
+        $this->storage->updateGauge(
             [
                 'name' => $this->getName(),
                 'help' => $this->getHelp(),
@@ -59,7 +72,7 @@ class Gauge extends Collector
                 'labelNames' => $this->getLabelNames(),
                 'labelValues' => $labels,
                 'value' => $value,
-                'command' => Storage::COMMAND_INCREMENT_FLOAT,
+                'command' => StorageCommand::COMMAND_INCREMENT_FLOAT,
             ]
         );
     }
