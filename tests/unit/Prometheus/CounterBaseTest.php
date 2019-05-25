@@ -45,7 +45,7 @@ abstract class CounterBaseTest extends TestCase
                     'counter',
                     'this is for testing',
                     ['foo', 'bar'],
-                    [new Sample('test_some_metric', 3, [], ['lalal', 'lululu'])],
+                    [new Sample('test_some_metric', 3, [], ['lalal', 'lululu'])]
                 ),
                 ]
             )
@@ -67,7 +67,7 @@ abstract class CounterBaseTest extends TestCase
                     'counter',
                     'this is for testing',
                     [],
-                    [new Sample('test_some_metric', 1, [], [])],
+                    [new Sample('test_some_metric', 1, [], [])]
                 ),
                 ]
             )

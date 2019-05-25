@@ -59,7 +59,7 @@ abstract class HistogramBaseTest extends TestCase
                         new Sample('test_some_metric_bucket', 2, ['le'], ['lalal', 'lululu', '+Inf']),
                         new Sample('test_some_metric_count', 2, [], ['lalal', 'lululu']),
                         new Sample('test_some_metric_sum', 368, [], ['lalal', 'lululu']),
-                    ],
+                    ]
                 ),
                 ]
             )
@@ -132,7 +132,7 @@ abstract class HistogramBaseTest extends TestCase
                         new Sample('test_some_metric_bucket', 2, ['le'], ['+Inf']),
                         new Sample('test_some_metric_count', 2, [], []),
                         new Sample('test_some_metric_sum', 0.41, [], []),
-                    ],
+                    ]
                 ),
                 ]
             )
@@ -181,7 +181,7 @@ abstract class HistogramBaseTest extends TestCase
                         new Sample('test_some_metric_bucket', 2, ['le'], ['+Inf']),
                         new Sample('test_some_metric_count', 2, [], []),
                         new Sample('test_some_metric_sum', 0.14, [], []),
-                    ],
+                    ]
                 ),
                 ]
             )
