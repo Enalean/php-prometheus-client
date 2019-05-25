@@ -5,6 +5,7 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use Prometheus\Registry\CollectorRegistry;
+use Prometheus\Value\MetricName;
 
 error_log('c=' . $_GET['c']);
 
@@ -21,7 +22,7 @@ if ($adapter === 'redis') {
 }
 $registry = new CollectorRegistry($adapter);
 
-$gauge = $registry->registerGauge('test', 'some_gauge', 'it sets', ['type']);
+$gauge = $registry->registerGauge(MetricName::fromNamespacedName('test', 'some_gauge'), 'it sets', ['type']);
 $gauge->set((float) $_GET['c'], ['blue']);
 
 echo "OK\n";

@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 use Prometheus\PushGateway\Pusher;
 use Prometheus\Registry\CollectorRegistry;
 use Prometheus\Storage\APCUStore;
+use Prometheus\Value\MetricName;
 
 abstract class BlackBoxPushGatewayTest extends TestCase
 {
@@ -23,7 +24,7 @@ abstract class BlackBoxPushGatewayTest extends TestCase
         $adapter  = new APCUStore();
         $registry = new CollectorRegistry($adapter);
 
-        $counter = $registry->registerCounter('test', 'some_counter', 'it increases', ['type']);
+        $counter = $registry->registerCounter(MetricName::fromNamespacedName('test', 'some_counter'), 'it increases', ['type']);
         $counter->incBy(6, ['blue']);
 
         $pusher = $this->getPusher('pushgateway:9091');

@@ -6,6 +6,7 @@ namespace Prometheus;
 
 use InvalidArgumentException;
 use Prometheus\Storage\HistogramStorage;
+use Prometheus\Value\MetricName;
 use function count;
 
 class Histogram extends Metric
@@ -22,9 +23,9 @@ class Histogram extends Metric
      * @param string[] $labels
      * @param float[]  $buckets
      */
-    public function __construct(HistogramStorage $storage, string $namespace, string $name, string $help, array $labels = [], ?array $buckets = null)
+    public function __construct(HistogramStorage $storage, MetricName $name, string $help, array $labels = [], ?array $buckets = null)
     {
-        parent::__construct($namespace, $name, $help, $labels);
+        parent::__construct($name, $help, $labels);
         $this->storage = $storage;
 
         if ($buckets === null) {
@@ -85,9 +86,9 @@ class Histogram extends Metric
         $this->assertLabelsAreDefinedCorrectly($labels);
 
         $this->storage->updateHistogram(
+            $this->getName(),
             [
                 'value' => $value,
-                'name' => $this->getName(),
                 'help' => $this->getHelp(),
                 'type' => $this->getType(),
                 'labelNames' => $this->getLabelNames(),

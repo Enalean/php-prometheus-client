@@ -14,6 +14,7 @@ use Prometheus\Storage\FlushableStorage;
 use Prometheus\Storage\GaugeStorage;
 use Prometheus\Storage\HistogramStorage;
 use Prometheus\Storage\Store;
+use Prometheus\Value\MetricName;
 
 abstract class CollectorRegistryBaseTest extends TestCase
 {
@@ -44,7 +45,7 @@ abstract class CollectorRegistryBaseTest extends TestCase
         $storage  = $this->getStorage();
         $registry = new CollectorRegistry($storage);
 
-        $g = $registry->registerGauge('test', 'some_metric', 'this is for testing', ['foo']);
+        $g = $registry->registerGauge(MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing', ['foo']);
         $g->set(35, ['bbb']);
         $g->set(35, ['ddd']);
         $g->set(35, ['aaa']);
@@ -71,12 +72,13 @@ EOF
      */
     public function itShouldSaveCounters() : void
     {
-        $storage  = $this->getStorage();
-        $registry = new CollectorRegistry($storage);
-        $metric   = $registry->registerCounter('test', 'some_metric', 'this is for testing', ['foo', 'bar']);
+        $storage    = $this->getStorage();
+        $registry   = new CollectorRegistry($storage);
+        $metricName = MetricName::fromNamespacedName('test', 'some_metric');
+        $metric     = $registry->registerCounter($metricName, 'this is for testing', ['foo', 'bar']);
         $metric->incBy(2, ['lalal', 'lululu']);
-        $registry->getCounter('test', 'some_metric')->inc(['lalal', 'lululu']);
-        $registry->getCounter('test', 'some_metric')->inc(['lalal', 'lvlvlv']);
+        $registry->getCounter($metricName)->inc(['lalal', 'lululu']);
+        $registry->getCounter($metricName)->inc(['lalal', 'lvlvlv']);
 
         $registry = new CollectorRegistry($storage);
         $this->assertThat(
@@ -97,14 +99,15 @@ EOF
      */
     public function itShouldSaveHistograms() : void
     {
-        $storage  = $this->getStorage();
-        $registry = new CollectorRegistry($storage);
-        $metric   = $registry->registerHistogram('test', 'some_metric', 'this is for testing', ['foo', 'bar'], [0.1, 1, 5, 10]);
+        $storage    = $this->getStorage();
+        $registry   = new CollectorRegistry($storage);
+        $metricName = MetricName::fromNamespacedName('test', 'some_metric');
+        $metric     = $registry->registerHistogram($metricName, 'this is for testing', ['foo', 'bar'], [0.1, 1, 5, 10]);
         $metric->observe(2, ['lalal', 'lululu']);
-        $registry->getHistogram('test', 'some_metric')->observe(7.1, ['lalal', 'lvlvlv']);
-        $registry->getHistogram('test', 'some_metric')->observe(13, ['lalal', 'lululu']);
-        $registry->getHistogram('test', 'some_metric')->observe(7.1, ['lalal', 'lululu']);
-        $registry->getHistogram('test', 'some_metric')->observe(7.1, ['gnaaha', 'hihihi']);
+        $registry->getHistogram($metricName)->observe(7.1, ['lalal', 'lvlvlv']);
+        $registry->getHistogram($metricName)->observe(13, ['lalal', 'lululu']);
+        $registry->getHistogram($metricName)->observe(7.1, ['lalal', 'lululu']);
+        $registry->getHistogram($metricName)->observe(7.1, ['gnaaha', 'hihihi']);
 
         $registry = new CollectorRegistry($storage);
         $this->assertThat(
@@ -144,12 +147,13 @@ EOF
      */
     public function itShouldSaveHistogramsWithoutLabels() : void
     {
-        $storage  = $this->getStorage();
-        $registry = new CollectorRegistry($storage);
-        $metric   = $registry->registerHistogram('test', 'some_metric', 'this is for testing');
+        $storage    = $this->getStorage();
+        $registry   = new CollectorRegistry($storage);
+        $metricName = MetricName::fromNamespacedName('test', 'some_metric');
+        $metric     = $registry->registerHistogram($metricName, 'this is for testing');
         $metric->observe(2);
-        $registry->getHistogram('test', 'some_metric')->observe(13);
-        $registry->getHistogram('test', 'some_metric')->observe(7.1);
+        $registry->getHistogram($metricName)->observe(13);
+        $registry->getHistogram($metricName)->observe(7.1);
 
         $registry = new CollectorRegistry($storage);
         $this->assertThat(
@@ -187,7 +191,7 @@ EOF
     {
         $registry = new CollectorRegistry($this->getStorage());
         $registry
-            ->registerCounter('', 'some_quick_counter', 'just a quick measurement')
+            ->registerCounter(MetricName::fromName('some_quick_counter'), 'just a quick measurement')
             ->inc();
 
         $this->assertThat(
@@ -207,10 +211,11 @@ EOF
      */
     public function itShouldForbidRegisteringTheSameCounterTwice() : void
     {
-        $registry = new CollectorRegistry($this->getStorage());
-        $registry->registerCounter('foo', 'metric', 'help');
+        $registry   = new CollectorRegistry($this->getStorage());
+        $metricName = MetricName::fromNamespacedName('foo', 'metric');
+        $registry->registerCounter($metricName, 'help');
         $this->expectException(MetricsRegistrationException::class);
-        $registry->registerCounter('foo', 'metric', 'help');
+        $registry->registerCounter($metricName, 'help');
     }
 
     /**
@@ -218,10 +223,11 @@ EOF
      */
     public function itShouldForbidRegisteringTheSameCounterWithDifferentLabels() : void
     {
-        $registry = new CollectorRegistry($this->getStorage());
-        $registry->registerCounter('foo', 'metric', 'help', ['foo', 'bar']);
+        $registry   = new CollectorRegistry($this->getStorage());
+        $metricName = MetricName::fromNamespacedName('foo', 'metric');
+        $registry->registerCounter($metricName, 'help', ['foo', 'bar']);
         $this->expectException(MetricsRegistrationException::class);
-        $registry->registerCounter('foo', 'metric', 'help', ['spam', 'eggs']);
+        $registry->registerCounter($metricName, 'help', ['spam', 'eggs']);
     }
 
     /**
@@ -229,10 +235,11 @@ EOF
      */
     public function itShouldForbidRegisteringTheSameHistogramTwice() : void
     {
-        $registry = new CollectorRegistry($this->getStorage());
-        $registry->registerHistogram('foo', 'metric', 'help');
+        $registry   = new CollectorRegistry($this->getStorage());
+        $metricName = MetricName::fromNamespacedName('foo', 'metric');
+        $registry->registerHistogram($metricName, 'help');
         $this->expectException(MetricsRegistrationException::class);
-        $registry->registerHistogram('foo', 'metric', 'help');
+        $registry->registerHistogram($metricName, 'help');
     }
 
     /**
@@ -240,10 +247,11 @@ EOF
      */
     public function itShouldForbidRegisteringTheSameHistogramWithDifferentLabels() : void
     {
-        $registry = new CollectorRegistry($this->getStorage());
-        $registry->registerCounter('foo', 'metric', 'help', ['foo', 'bar']);
+        $registry   = new CollectorRegistry($this->getStorage());
+        $metricName = MetricName::fromNamespacedName('foo', 'metric');
+        $registry->registerCounter($metricName, 'help', ['foo', 'bar']);
         $this->expectException(MetricsRegistrationException::class);
-        $registry->registerCounter('foo', 'metric', 'help', ['spam', 'eggs']);
+        $registry->registerCounter($metricName, 'help', ['spam', 'eggs']);
     }
 
     /**
@@ -251,10 +259,11 @@ EOF
      */
     public function itShouldForbidRegisteringTheSameGaugeTwice() : void
     {
-        $registry = new CollectorRegistry($this->getStorage());
-        $registry->registerGauge('foo', 'metric', 'help');
+        $registry   = new CollectorRegistry($this->getStorage());
+        $metricName = MetricName::fromNamespacedName('foo', 'metric');
+        $registry->registerGauge($metricName, 'help');
         $this->expectException(MetricsRegistrationException::class);
-        $registry->registerGauge('foo', 'metric', 'help');
+        $registry->registerGauge($metricName, 'help');
     }
 
     /**
@@ -262,10 +271,11 @@ EOF
      */
     public function itShouldForbidRegisteringTheSameGaugeWithDifferentLabels() : void
     {
-        $registry = new CollectorRegistry($this->getStorage());
-        $registry->registerGauge('foo', 'metric', 'help', ['foo', 'bar']);
+        $registry   = new CollectorRegistry($this->getStorage());
+        $metricName = MetricName::fromNamespacedName('foo', 'metric');
+        $registry->registerGauge($metricName, 'help', ['foo', 'bar']);
         $this->expectException(MetricsRegistrationException::class);
-        $registry->registerGauge('foo', 'metric', 'help', ['spam', 'eggs']);
+        $registry->registerGauge($metricName, 'help', ['spam', 'eggs']);
     }
 
     /**
@@ -275,7 +285,7 @@ EOF
     {
         $registry = new CollectorRegistry($this->getStorage());
         $this->expectException(MetricNotFoundException::class);
-        $registry->getGauge('not_here', 'go_away');
+        $registry->getGauge(MetricName::fromNamespacedName('not_here', 'go_away'));
     }
 
     /**
@@ -283,9 +293,10 @@ EOF
      */
     public function itShouldNotRegisterACounterTwice() : void
     {
-        $registry = new CollectorRegistry($this->getStorage());
-        $counterA = $registry->getOrRegisterCounter('foo', 'bar', 'Help text');
-        $counterB = $registry->getOrRegisterCounter('foo', 'bar', 'Help text');
+        $registry   = new CollectorRegistry($this->getStorage());
+        $metricName = MetricName::fromNamespacedName('foo', 'bar');
+        $counterA   = $registry->getOrRegisterCounter($metricName, 'Help text');
+        $counterB   = $registry->getOrRegisterCounter($metricName, 'Help text');
 
         $this->assertSame($counterA, $counterB);
     }
@@ -295,9 +306,10 @@ EOF
      */
     public function itShouldNotRegisterAGaugeTwice() : void
     {
-        $registry = new CollectorRegistry($this->getStorage());
-        $gaugeA   = $registry->getOrRegisterGauge('foo', 'bar', 'Help text');
-        $gaugeB   = $registry->getOrRegisterGauge('foo', 'bar', 'Help text');
+        $registry   = new CollectorRegistry($this->getStorage());
+        $metricName = MetricName::fromNamespacedName('foo', 'bar');
+        $gaugeA     = $registry->getOrRegisterGauge($metricName, 'Help text');
+        $gaugeB     = $registry->getOrRegisterGauge($metricName, 'Help text');
 
         $this->assertSame($gaugeA, $gaugeB);
     }
@@ -308,8 +320,9 @@ EOF
     public function itShouldNotRegisterAHistogramTwice() : void
     {
         $registry   = new CollectorRegistry($this->getStorage());
-        $histogramA = $registry->getOrRegisterHistogram('foo', 'bar', 'Help text');
-        $histogramB = $registry->getOrRegisterHistogram('foo', 'bar', 'Help text');
+        $metricName = MetricName::fromNamespacedName('foo', 'bar');
+        $histogramA = $registry->getOrRegisterHistogram($metricName, 'Help text');
+        $histogramB = $registry->getOrRegisterHistogram($metricName, 'Help text');
 
         $this->assertSame($histogramA, $histogramB);
     }

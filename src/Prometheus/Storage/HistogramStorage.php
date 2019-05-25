@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Prometheus\Storage;
 
+use Prometheus\Value\MetricName;
+
 interface HistogramStorage
 {
     /**
      * @param array<string,string|float|array> $data
      *
      * @psalm-param array{
-     *      name:string,
      *      help:string,
      *      type:string,
      *      labelNames:string[],
@@ -19,5 +20,5 @@ interface HistogramStorage
      *      labelValues:string[]
      * } $data
      */
-    public function updateHistogram(array $data) : void;
+    public function updateHistogram(MetricName $name, array $data) : void;
 }

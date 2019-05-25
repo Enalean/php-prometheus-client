@@ -6,6 +6,7 @@ namespace Prometheus;
 
 use Prometheus\Storage\GaugeStorage;
 use Prometheus\Storage\StorageCommand;
+use Prometheus\Value\MetricName;
 
 class Gauge extends Metric
 {
@@ -17,9 +18,9 @@ class Gauge extends Metric
     /**
      * @inheritdoc
      */
-    public function __construct(GaugeStorage $storage, string $namespace, string $name, string $help, array $labels = [])
+    public function __construct(GaugeStorage $storage, MetricName $name, string $help, array $labels = [])
     {
-        parent::__construct($namespace, $name, $help, $labels);
+        parent::__construct($name, $help, $labels);
         $this->storage = $storage;
     }
 
@@ -32,8 +33,9 @@ class Gauge extends Metric
         $this->assertLabelsAreDefinedCorrectly($labels);
 
         $this->storage->updateGauge(
+            $this->getName(),
             [
-                'name' => $this->getName(),
+                'name' => $this->getName()->toString(),
                 'help' => $this->getHelp(),
                 'type' => $this->getType(),
                 'labelNames' => $this->getLabelNames(),
@@ -65,8 +67,9 @@ class Gauge extends Metric
         $this->assertLabelsAreDefinedCorrectly($labels);
 
         $this->storage->updateGauge(
+            $this->getName(),
             [
-                'name' => $this->getName(),
+                'name' => $this->getName()->toString(),
                 'help' => $this->getHelp(),
                 'type' => $this->getType(),
                 'labelNames' => $this->getLabelNames(),

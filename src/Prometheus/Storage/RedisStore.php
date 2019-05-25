@@ -7,6 +7,7 @@ namespace Prometheus\Storage;
 use InvalidArgumentException;
 use Prometheus\MetricFamilySamples;
 use Prometheus\Sample;
+use Prometheus\Value\MetricName;
 use Redis;
 use function array_keys;
 use function array_map;
@@ -24,7 +25,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
     public const PROMETHEUS_METRIC_KEYS_SUFFIX = '_METRIC_KEYS';
 
     /** @var string */
-    private $prefix = 'PROMETHEUS_';
+    private $prefix;
 
     /** @var Redis */
     private $redis;
@@ -79,9 +80,9 @@ LUA
     }
 
     /**
-     * @param array<string,mixed> $data
+     * @inheritdoc
      */
-    public function updateHistogram(array $data) : void
+    public function updateHistogram(MetricName $name, array $data) : void
     {
         $bucketToIncrease = '+Inf';
         foreach ($data['buckets'] as $bucket) {
@@ -90,7 +91,8 @@ LUA
                 break;
             }
         }
-        $metaData = $data;
+        $metaData         = $data;
+        $metaData['name'] = $name->toString();
         unset($metaData['value']);
         unset($metaData['labelValues']);
         $this->redis->eval(
@@ -104,7 +106,7 @@ end
 LUA
             ,
             [
-                $this->toMetricKey($data),
+                $this->toMetricKey($name, $data['type']),
                 json_encode(['b' => 'sum', 'labelValues' => $data['labelValues']]),
                 json_encode(['b' => $bucketToIncrease, 'labelValues' => $data['labelValues']]),
                 $this->prefix . 'histogram' . self::PROMETHEUS_METRIC_KEYS_SUFFIX,
@@ -116,11 +118,12 @@ LUA
     }
 
     /**
-     * @param array<string,mixed> $data
+     * @inheritdoc
      */
-    public function updateGauge(array $data) : void
+    public function updateGauge(MetricName $name, array $data) : void
     {
-        $metaData = $data;
+        $metaData         = $data;
+        $metaData['name'] = $name->toString();
         unset($metaData['value']);
         unset($metaData['labelValues']);
         unset($metaData['command']);
@@ -142,7 +145,7 @@ end
 LUA
             ,
             [
-                $this->toMetricKey($data),
+                $this->toMetricKey($name, $data['type']),
                 $this->getRedisCommand($data['command']),
                 $this->prefix . 'gauge' . self::PROMETHEUS_METRIC_KEYS_SUFFIX,
                 json_encode($data['labelValues']),
@@ -154,11 +157,12 @@ LUA
     }
 
     /**
-     * @param array<string,mixed> $data
+     * @inheritdoc
      */
-    public function updateCounter(array $data) : void
+    public function updateCounter(MetricName $name, array $data) : void
     {
-        $metaData = $data;
+        $metaData         = $data;
+        $metaData['name'] = $name->toString();
         unset($metaData['value']);
         unset($metaData['labelValues']);
         unset($metaData['command']);
@@ -174,7 +178,7 @@ return result
 LUA
             ,
             [
-                $this->toMetricKey($data),
+                $this->toMetricKey($name, $data['type']),
                 $this->getRedisCommand($data['command']),
                 $this->prefix . 'counter' . self::PROMETHEUS_METRIC_KEYS_SUFFIX,
                 json_encode($data['labelValues']),
@@ -340,11 +344,8 @@ LUA
         }
     }
 
-    /**
-     * @param array<string,string> $data
-     */
-    private function toMetricKey(array $data) : string
+    private function toMetricKey(MetricName $name, string $type) : string
     {
-        return implode(':', [$this->prefix, $data['type'], $data['name']]);
+        return implode(':', [$this->prefix, $type, $name->toString()]);
     }
 }

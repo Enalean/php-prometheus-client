@@ -9,6 +9,7 @@ use Http\Discovery\Psr18ClientDiscovery;
 use Prometheus\PushGateway\PSR18Pusher;
 use Prometheus\Registry\CollectorRegistry;
 use Prometheus\Storage\RedisStore;
+use Prometheus\Value\MetricName;
 
 $adapter = $_GET['adapter'] ?? '';
 
@@ -24,7 +25,7 @@ if ($adapter === 'redis') {
 
 $registry = new CollectorRegistry($adapter);
 
-$counter = $registry->registerCounter('test', 'some_counter', 'it increases', ['type']);
+$counter = $registry->registerCounter(MetricName::fromNamespacedName('test', 'some_counter'), 'it increases', ['type']);
 $counter->incBy(6, ['blue']);
 
 $pusher = new PSR18Pusher('192.168.59.100:9091', Psr18ClientDiscovery::find(), Psr17FactoryDiscovery::findRequestFactory(), Psr17FactoryDiscovery::findStreamFactory());

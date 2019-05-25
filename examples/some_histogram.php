@@ -5,6 +5,7 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use Prometheus\Registry\CollectorRegistry;
+use Prometheus\Value\MetricName;
 
 error_log('c=' . $_GET['c']);
 
@@ -21,7 +22,7 @@ if ($adapter === 'redis') {
 }
 $registry = new CollectorRegistry($adapter);
 
-$histogram = $registry->registerHistogram('test', 'some_histogram', 'it observes', ['type'], [0.1, 1, 2, 3.5, 4, 5, 6, 7, 8, 9]);
+$histogram = $registry->registerHistogram(MetricName::fromNamespacedName('test', 'some_histogram'), 'it observes', ['type'], [0.1, 1, 2, 3.5, 4, 5, 6, 7, 8, 9]);
 $histogram->observe((float) $_GET['c'], ['blue']);
 
 echo "OK\n";

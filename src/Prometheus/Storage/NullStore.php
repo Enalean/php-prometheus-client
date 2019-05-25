@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Prometheus\Storage;
 
+use Prometheus\Value\MetricName;
+
 final class NullStore implements Store, CounterStorage, GaugeStorage, HistogramStorage
 {
     /**
@@ -17,7 +19,7 @@ final class NullStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function updateHistogram(array $data) : void
+    public function updateHistogram(MetricName $name, array $data) : void
     {
         return;
     }
@@ -25,7 +27,7 @@ final class NullStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function updateGauge(array $data) : void
+    public function updateGauge(MetricName $name, array $data) : void
     {
         return;
     }
@@ -33,7 +35,7 @@ final class NullStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function updateCounter(array $data) : void
+    public function updateCounter(MetricName $name, array $data) : void
     {
         return;
     }

@@ -7,6 +7,7 @@ namespace Prometheus\Storage;
 use APCUIterator;
 use Prometheus\MetricFamilySamples;
 use Prometheus\Sample;
+use Prometheus\Value\MetricName;
 use RuntimeException;
 use function apcu_add;
 use function apcu_cas;
@@ -46,17 +47,17 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     }
 
     /**
-     * @param array<string,mixed> $data
+     * @inheritdoc
      */
-    public function updateHistogram(array $data) : void
+    public function updateHistogram(MetricName $name, array $data) : void
     {
         // Initialize the sum
-        $sumKey = $this->histogramBucketValueKey($data, 'sum');
+        $sumKey = $this->histogramBucketValueKey($name, $data, 'sum');
         $new    = apcu_add($sumKey, $this->toInteger(0));
 
         // If sum does not exist, assume a new histogram and store the metadata
         if ($new) {
-            apcu_store($this->metaKey($data), json_encode($this->metaData($data)));
+            apcu_store($this->metaKey($name, $data['type']), json_encode($this->metaData($name, $data)));
         }
 
         // Atomically increment the sum
@@ -77,23 +78,23 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
         }
 
         // Initialize and increment the bucket
-        apcu_add($this->histogramBucketValueKey($data, (string) $bucketToIncrease), 0);
-        apcu_inc($this->histogramBucketValueKey($data, (string) $bucketToIncrease));
+        apcu_add($this->histogramBucketValueKey($name, $data, (string) $bucketToIncrease), 0);
+        apcu_inc($this->histogramBucketValueKey($name, $data, (string) $bucketToIncrease));
     }
 
     /**
-     * @param array<string,mixed> $data
+     * @inheritdoc
      */
-    public function updateGauge(array $data) : void
+    public function updateGauge(MetricName $name, array $data) : void
     {
-        $valueKey = $this->valueKey($data);
+        $valueKey = $this->valueKey($name, $data);
         if ($data['command'] === StorageCommand::COMMAND_SET) {
             apcu_store($valueKey, $this->toInteger($data['value']));
-            apcu_store($this->metaKey($data), json_encode($this->metaData($data)));
+            apcu_store($this->metaKey($name, $data['type']), json_encode($this->metaData($name, $data)));
         } else {
             $new = apcu_add($valueKey, $this->toInteger(0));
             if ($new) {
-                apcu_store($this->metaKey($data), json_encode($this->metaData($data)));
+                apcu_store($this->metaKey($name, $data['type']), json_encode($this->metaData($name, $data)));
             }
             // Taken from https://github.com/prometheus/client_golang/blob/66058aac3a83021948e5fb12f1f408ff556b9037/prometheus/value.go#L91
             $done = false;
@@ -107,13 +108,13 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @param array<string,mixed> $data
      */
-    public function updateCounter(array $data) : void
+    public function updateCounter(MetricName $name, array $data) : void
     {
-        $new = apcu_add($this->valueKey($data), 0);
+        $new = apcu_add($this->valueKey($name, $data), 0);
         if ($new) {
-            apcu_store($this->metaKey($data), json_encode($this->metaData($data)));
+            apcu_store($this->metaKey($name, $data['type']), json_encode($this->metaData($name, $data)));
         }
-        apcu_inc($this->valueKey($data), $data['value']);
+        apcu_inc($this->valueKey($name, $data), $data['value']);
     }
 
     public function flush() : void
@@ -121,25 +122,22 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
         apcu_clear_cache();
     }
 
-    /**
-     * @param array<string,string> $data
-     */
-    private function metaKey(array $data) : string
+    private function metaKey(MetricName $name, string $type) : string
     {
-        return implode(':', [self::PROMETHEUS_PREFIX, $data['type'], $data['name'], 'meta']);
+        return implode(':', [self::PROMETHEUS_PREFIX, $type, $name->toString(), 'meta']);
     }
 
     /**
      * @param array<string,string|string[]> $data
      *
-     * @psalm-param array{type:string, name:string, labelValues: string[]} $data
+     * @psalm-param array{type:string, labelValues: string[]} $data
      */
-    private function valueKey(array $data) : string
+    private function valueKey(MetricName $name, array $data) : string
     {
         return implode(':', [
             self::PROMETHEUS_PREFIX,
             $data['type'],
-            $data['name'],
+            $name->toString(),
             $this->encodeLabelValues($data['labelValues']),
             'value',
         ]);
@@ -148,14 +146,14 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @param array<string,string|string[]> $data
      *
-     * @psalm-param array{type:string, name:string, labelValues: string[]} $data
+     * @psalm-param array{type:string, labelValues: string[]} $data
      */
-    private function histogramBucketValueKey(array $data, string $bucket) : string
+    private function histogramBucketValueKey(MetricName $name, array $data, string $bucket) : string
     {
         return implode(':', [
             self::PROMETHEUS_PREFIX,
             $data['type'],
-            $data['name'],
+            $name->toString(),
             $this->encodeLabelValues($data['labelValues']),
             $bucket,
             'value',
@@ -163,16 +161,17 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     }
 
     /**
-     * @param array<string,string> $data
+     * @param array<string,mixed> $data
      *
      * @return array<string,string>
      */
-    private function metaData(array $data) : array
+    private function metaData(MetricName $name, array $data) : array
     {
         $metricsMetaData = $data;
         unset($metricsMetaData['value']);
         unset($metricsMetaData['command']);
         unset($metricsMetaData['labelValues']);
+        $metricsMetaData['name'] = $name->toString();
 
         return $metricsMetaData;
     }

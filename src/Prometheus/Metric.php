@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Prometheus;
 
 use InvalidArgumentException;
+use Prometheus\Value\MetricName;
 use function count;
 use function preg_match;
 use function print_r;
@@ -14,8 +15,8 @@ abstract class Metric
 {
     public const RE_METRIC_LABEL_NAME = '/^[a-zA-Z_:][a-zA-Z0-9_:]*$/';
 
-    /** @var string */
-    protected $name;
+    /** @var MetricName */
+    private $name;
     /** @var string */
     protected $help;
     /** @var string[] */
@@ -24,13 +25,9 @@ abstract class Metric
     /**
      * @param string[] $labels
      */
-    public function __construct(string $namespace, string $name, string $help, array $labels = [])
+    public function __construct(MetricName $name, string $help, array $labels = [])
     {
-        $metricName = ($namespace ? $namespace . '_' : '') . $name;
-        if (! preg_match(self::RE_METRIC_LABEL_NAME, $metricName)) {
-            throw new InvalidArgumentException("Invalid metric name: '" . $metricName . "'");
-        }
-        $this->name = $metricName;
+        $this->name = $name;
         $this->help = $help;
         foreach ($labels as $label) {
             if (! preg_match(self::RE_METRIC_LABEL_NAME, $label)) {
@@ -42,7 +39,7 @@ abstract class Metric
 
     abstract public function getType() : string;
 
-    public function getName() : string
+    public function getName() : MetricName
     {
         return $this->name;
     }
