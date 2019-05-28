@@ -9,8 +9,6 @@ use Prometheus\Value\MetricName;
 
 class Counter extends Metric
 {
-    private const TYPE = 'counter';
-
     /** @var CounterStorage */
     private $storage;
 
@@ -21,11 +19,6 @@ class Counter extends Metric
     {
         parent::__construct($name, $help, $labels);
         $this->storage = $storage;
-    }
-
-    public function getType() : string
-    {
-        return self::TYPE;
     }
 
     /**

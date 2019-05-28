@@ -63,7 +63,6 @@ abstract class GaugeBaseTest extends TestCase
             )
         );
         $this->assertThat($gauge->getHelp(), $this->equalTo('this is for testing'));
-        $this->assertThat($gauge->getType(), $this->equalTo('gauge'));
     }
 
     /**
@@ -88,7 +87,6 @@ abstract class GaugeBaseTest extends TestCase
             )
         );
         $this->assertThat($gauge->getHelp(), $this->equalTo('this is for testing'));
-        $this->assertThat($gauge->getType(), $this->equalTo('gauge'));
     }
 
     /**
@@ -113,7 +111,6 @@ abstract class GaugeBaseTest extends TestCase
             )
         );
         $this->assertThat($gauge->getHelp(), $this->equalTo('this is for testing'));
-        $this->assertThat($gauge->getType(), $this->equalTo('gauge'));
     }
 
     /**

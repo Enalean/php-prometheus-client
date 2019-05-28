@@ -11,8 +11,6 @@ use function count;
 
 class Histogram extends Metric
 {
-    private const TYPE = 'histogram';
-
     /** @var HistogramStorage */
     private $storage;
 
@@ -95,10 +93,5 @@ class Histogram extends Metric
                 'buckets' => $this->buckets,
             ]
         );
-    }
-
-    public function getType() : string
-    {
-        return self::TYPE;
     }
 }

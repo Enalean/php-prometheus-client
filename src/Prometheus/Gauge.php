@@ -9,8 +9,6 @@ use Prometheus\Value\MetricName;
 
 class Gauge extends Metric
 {
-    private const TYPE = 'gauge';
-
     /** @var GaugeStorage */
     private $storage;
 
@@ -40,11 +38,6 @@ class Gauge extends Metric
                 'value' => $value,
             ]
         );
-    }
-
-    public function getType() : string
-    {
-        return self::TYPE;
     }
 
     /**

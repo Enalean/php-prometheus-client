@@ -37,8 +37,6 @@ abstract class Metric
         $this->labels = $labels;
     }
 
-    abstract public function getType() : string;
-
     public function getName() : MetricName
     {
         return $this->name;
