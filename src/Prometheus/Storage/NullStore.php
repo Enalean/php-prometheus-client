@@ -27,7 +27,7 @@ final class NullStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function updateGauge(MetricName $name, string $help, array $data) : void
+    public function setGaugeTo(MetricName $name, string $help, array $data) : void
     {
         return;
     }
@@ -35,7 +35,15 @@ final class NullStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function updateCounter(MetricName $name, string $help, array $data) : void
+    public function addToGauge(MetricName $name, string $help, array $data) : void
+    {
+        return;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function incrementCounter(MetricName $name, string $help, array $data) : void
     {
         return;
     }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Prometheus\Storage;
 
-use InvalidArgumentException;
 use Prometheus\MetricFamilySamples;
 use Prometheus\Sample;
 use Prometheus\Value\MetricName;
@@ -121,14 +120,35 @@ LUA
     /**
      * @inheritdoc
      */
-    public function updateGauge(MetricName $name, string $help, array $data) : void
+    public function setGaugeTo(MetricName $name, string $help, array $data) : void
+    {
+        $this->updateGauge($name, $help, 'hSet', $data);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function addToGauge(MetricName $name, string $help, array $data) : void
+    {
+        $this->updateGauge($name, $help, 'hIncrByFloat', $data);
+    }
+
+    /**
+     * @param array<string,float|string[]> $data
+     *
+     * @psalm-param array{
+     *      labelNames:string[],
+     *      value:float,
+     *      labelValues:string[]
+     * } $data
+     */
+    private function updateGauge(MetricName $name, string $help, string $command, array $data) : void
     {
         $metaData         = $data;
         $metaData['name'] = $name->toString();
         $metaData['help'] = $help;
         unset($metaData['value']);
         unset($metaData['labelValues']);
-        unset($metaData['command']);
         $this->redis->eval(
             <<<LUA
 local result = redis.call(KEYS[2], KEYS[1], KEYS[4], ARGV[1])
@@ -148,7 +168,7 @@ LUA
             ,
             [
                 $this->toMetricKey($name, 'gauge'),
-                $this->getRedisCommand($data['command']),
+                $command,
                 $this->prefix . 'gauge' . self::PROMETHEUS_METRIC_KEYS_SUFFIX,
                 json_encode($data['labelValues']),
                 $data['value'],
@@ -161,34 +181,32 @@ LUA
     /**
      * @inheritdoc
      */
-    public function updateCounter(MetricName $name, string $help, array $data) : void
+    public function incrementCounter(MetricName $name, string $help, array $data) : void
     {
         $metaData         = $data;
         $metaData['name'] = $name->toString();
         $metaData['help'] = $help;
         unset($metaData['value']);
         unset($metaData['labelValues']);
-        unset($metaData['command']);
 
         $this->redis->eval(
             <<<LUA
-local result = redis.call(KEYS[2], KEYS[1], KEYS[4], ARGV[1])
+local result = redis.call('hIncrBy', KEYS[1], KEYS[3], ARGV[1])
 if result == tonumber(ARGV[1]) then
     redis.call('hMSet', KEYS[1], '__meta', ARGV[2])
-    redis.call('sAdd', KEYS[3], KEYS[1])
+    redis.call('sAdd', KEYS[2], KEYS[1])
 end
 return result
 LUA
             ,
             [
                 $this->toMetricKey($name, 'counter'),
-                $this->getRedisCommand($data['command']),
                 $this->prefix . 'counter' . self::PROMETHEUS_METRIC_KEYS_SUFFIX,
                 json_encode($data['labelValues']),
                 $data['value'],
                 json_encode($metaData),
             ],
-            4
+            3
         );
     }
 
@@ -334,20 +352,6 @@ LUA
         }
 
         return $counters;
-    }
-
-    private function getRedisCommand(int $cmd) : string
-    {
-        switch ($cmd) {
-            case StorageCommand::COMMAND_INCREMENT_INTEGER:
-                return 'hIncrBy';
-            case StorageCommand::COMMAND_INCREMENT_FLOAT:
-                return 'hIncrByFloat';
-            case StorageCommand::COMMAND_SET:
-                return 'hSet';
-            default:
-                throw new InvalidArgumentException('Unknown command');
-        }
     }
 
     private function toMetricKey(MetricName $name, string $type) : string

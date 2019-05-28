@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Prometheus;
 
 use Prometheus\Storage\GaugeStorage;
-use Prometheus\Storage\StorageCommand;
 use Prometheus\Value\MetricName;
 
 class Gauge extends Metric
@@ -32,14 +31,13 @@ class Gauge extends Metric
     {
         $this->assertLabelsAreDefinedCorrectly($labels);
 
-        $this->storage->updateGauge(
+        $this->storage->setGaugeTo(
             $this->getName(),
             $this->getHelp(),
             [
                 'labelNames' => $this->getLabelNames(),
                 'labelValues' => $labels,
                 'value' => $value,
-                'command' => StorageCommand::COMMAND_SET,
             ]
         );
     }
@@ -64,14 +62,13 @@ class Gauge extends Metric
     {
         $this->assertLabelsAreDefinedCorrectly($labels);
 
-        $this->storage->updateGauge(
+        $this->storage->addToGauge(
             $this->getName(),
             $this->getHelp(),
             [
                 'labelNames' => $this->getLabelNames(),
                 'labelValues' => $labels,
                 'value' => $value,
-                'command' => StorageCommand::COMMAND_INCREMENT_FLOAT,
             ]
         );
     }

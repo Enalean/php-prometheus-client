@@ -85,36 +85,41 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function updateGauge(MetricName $name, string $help, array $data) : void
+    public function setGaugeTo(MetricName $name, string $help, array $data) : void
     {
         $valueKey = $this->valueKey($name, 'gauge', $data['labelValues']);
-        if ($data['command'] === StorageCommand::COMMAND_SET) {
-            apcu_store($valueKey, $this->toInteger($data['value']));
+        apcu_store($valueKey, $this->toInteger($data['value']));
+        apcu_store($this->metaKey($name, 'gauge'), json_encode($this->metaData($name, $help, $data)));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function addToGauge(MetricName $name, string $help, array $data) : void
+    {
+        $valueKey = $this->valueKey($name, 'gauge', $data['labelValues']);
+        $new      = apcu_add($valueKey, $this->toInteger(0));
+        if ($new) {
             apcu_store($this->metaKey($name, 'gauge'), json_encode($this->metaData($name, $help, $data)));
-        } else {
-            $new = apcu_add($valueKey, $this->toInteger(0));
-            if ($new) {
-                apcu_store($this->metaKey($name, 'gauge'), json_encode($this->metaData($name, $help, $data)));
-            }
+        }
             // Taken from https://github.com/prometheus/client_golang/blob/66058aac3a83021948e5fb12f1f408ff556b9037/prometheus/value.go#L91
             $done = false;
-            while (! $done) {
-                $old  = apcu_fetch($valueKey);
-                $done = apcu_cas($valueKey, $old, $this->toInteger($this->fromInteger($old) + $data['value']));
-            }
+        while (! $done) {
+            $old  = apcu_fetch($valueKey);
+            $done = apcu_cas($valueKey, $old, $this->toInteger($this->fromInteger($old) + $data['value']));
         }
     }
 
     /**
-     * @param array<string,mixed> $data
+     * @inheritdoc
      */
-    public function updateCounter(MetricName $name, string $help, array $data) : void
+    public function incrementCounter(MetricName $name, string $help, array $data) : void
     {
         $new = apcu_add($this->valueKey($name, 'counter', $data['labelValues']), 0);
         if ($new) {
             apcu_store($this->metaKey($name, 'counter'), json_encode($this->metaData($name, $help, $data)));
         }
-        apcu_inc($this->valueKey($name, 'counter', $data['labelValues']), $data['value']);
+        apcu_inc($this->valueKey($name, 'counter', $data['labelValues']), (int) $data['value']);
     }
 
     public function flush() : void

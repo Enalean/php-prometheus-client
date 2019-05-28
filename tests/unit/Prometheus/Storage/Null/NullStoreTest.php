@@ -20,10 +20,11 @@ final class NullStoreTest extends TestCase
     {
         $null_store = new NullStore();
 
-        $gauge = new Counter($null_store, MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing');
-        $gauge->inc();
+        $counter = new Counter($null_store, MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing');
+        $counter->inc();
         $gauge = new Gauge($null_store, MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing');
         $gauge->set(12.1);
+        $gauge->incBy(2);
         $histogram = new Histogram(
             $null_store,
             MetricName::fromNamespacedName('test', 'some_metric'),

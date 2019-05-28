@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Prometheus;
 
 use Prometheus\Storage\CounterStorage;
-use Prometheus\Storage\StorageCommand;
 use Prometheus\Value\MetricName;
 
 class Counter extends Metric
@@ -45,14 +44,13 @@ class Counter extends Metric
     {
         $this->assertLabelsAreDefinedCorrectly($labels);
 
-        $this->storage->updateCounter(
+        $this->storage->incrementCounter(
             $this->getName(),
             $this->getHelp(),
             [
                 'labelNames' => $this->getLabelNames(),
                 'labelValues' => $labels,
                 'value' => $count,
-                'command' => StorageCommand::COMMAND_INCREMENT_INTEGER,
             ]
         );
     }

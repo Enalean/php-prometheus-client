@@ -14,9 +14,8 @@ interface CounterStorage
      * @psalm-param array{
      *      labelNames:string[],
      *      value:float,
-     *      command:int,
      *      labelValues:string[]
      * } $data
      */
-    public function updateCounter(MetricName $name, string $help, array $data) : void;
+    public function incrementCounter(MetricName $name, string $help, array $data) : void;
 }
