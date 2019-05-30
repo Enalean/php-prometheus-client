@@ -35,7 +35,7 @@ final class Gauge extends Metric
             $value,
             $this->getHelp(),
             $this->getLabelNames(),
-            $labelValues
+            ...$labelValues
         );
     }
 
@@ -59,7 +59,7 @@ final class Gauge extends Metric
             $value,
             $this->getHelp(),
             $this->getLabelNames(),
-            $labelValues
+            ...$labelValues
         );
     }
 

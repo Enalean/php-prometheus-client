@@ -21,31 +21,22 @@ final class NullStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, array $labelValues) : void
+    public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, string ...$labelValues) : void
     {
         return;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues) : void
+    public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
     {
         return;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function addToGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues) : void
+    public function addToGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
     {
         return;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues) : void
+    public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
     {
         return;
     }

@@ -190,7 +190,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
     /**
      * @inheritdoc
      */
-    public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, array $labelValues) : void
+    public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, string ...$labelValues) : void
     {
         // Initialize the sum
         $metaKey = $this->metaKey($name);
@@ -224,10 +224,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
         $this->histograms[$metaKey]['samples'][$bucketKey] += 1;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues) : void
+    public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
     {
         $metaKey  = $this->initializeGaugeIfNecessary($name, $help, $labelNames);
         $valueKey = $this->valueKey($name, $labelValues);
@@ -235,10 +232,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
         $this->gauges[$metaKey]['samples'][$valueKey] = $value;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function addToGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues) : void
+    public function addToGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
     {
         $metaKey  = $this->initializeGaugeIfNecessary($name, $help, $labelNames);
         $valueKey = $this->valueKey($name, $labelValues);
@@ -265,7 +259,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
     /**
      * @inheritdoc
      */
-    public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues) : void
+    public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
     {
         $metaKey  = $this->metaKey($name);
         $valueKey = $this->valueKey($name, $labelValues);

@@ -52,7 +52,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, array $labelValues) : void
+    public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, string ...$labelValues) : void
     {
         // Initialize the sum
         $sumKey = $this->histogramBucketValueKey($name, $labelValues, 'sum');
@@ -87,20 +87,14 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
         apcu_inc($this->histogramBucketValueKey($name, $labelValues, (string) $bucketToIncrease));
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues) : void
+    public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
     {
         $valueKey = $this->valueKey($name, 'gauge', $labelValues);
         apcu_store($valueKey, $this->toInteger($value));
         apcu_store($this->metaKey($name, 'gauge'), json_encode($this->metaData($name, $help, $labelNames)));
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function addToGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues) : void
+    public function addToGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
     {
         $valueKey = $this->valueKey($name, 'gauge', $labelValues);
         $new      = apcu_add($valueKey, $this->toInteger(0));
@@ -115,10 +109,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
         }
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues) : void
+    public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
     {
         $new = apcu_add($this->valueKey($name, 'counter', $labelValues), 0);
         if ($new) {

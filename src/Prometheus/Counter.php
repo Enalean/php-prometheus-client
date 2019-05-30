@@ -43,7 +43,7 @@ final class Counter extends Metric
             $count,
             $this->getHelp(),
             $this->getLabelNames(),
-            $labelValues
+            ...$labelValues
         );
     }
 }

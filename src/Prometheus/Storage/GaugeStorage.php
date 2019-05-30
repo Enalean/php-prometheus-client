@@ -9,13 +9,7 @@ use Prometheus\Value\MetricName;
 
 interface GaugeStorage
 {
-    /**
-     * @param string[] $labelValues
-     */
-    public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues) : void;
+    public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void;
 
-    /**
-     * @param string[] $labelValues
-     */
-    public function addToGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues) : void;
+    public function addToGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void;
 }

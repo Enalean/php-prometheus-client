@@ -9,8 +9,5 @@ use Prometheus\Value\MetricName;
 
 interface CounterStorage
 {
-    /**
-     * @param string[] $labelValues
-     */
-    public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues) : void;
+    public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void;
 }

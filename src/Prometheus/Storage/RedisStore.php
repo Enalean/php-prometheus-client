@@ -83,7 +83,7 @@ LUA
     /**
      * @inheritdoc
      */
-    public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, array $labelValues) : void
+    public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, string ...$labelValues) : void
     {
         $bucketToIncrease = '+Inf';
         foreach ($buckets as $bucket) {
@@ -120,18 +120,12 @@ LUA
         );
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues) : void
+    public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
     {
         $this->updateGauge($name, $value, $help, $labelNames, $labelValues, 'hSet');
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function addToGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues) : void
+    public function addToGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
     {
         $this->updateGauge($name, $value, $help, $labelNames, $labelValues, 'hIncrByFloat');
     }
@@ -176,10 +170,7 @@ LUA
         );
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues) : void
+    public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
     {
         $metaData = [
             'name' => $name->toString(),

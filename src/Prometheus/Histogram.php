@@ -87,7 +87,7 @@ final class Histogram extends Metric
             $this->buckets,
             $this->getHelp(),
             $this->getLabelNames(),
-            $labelValues
+            ...$labelValues
         );
     }
 }
