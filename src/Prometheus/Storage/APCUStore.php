@@ -52,10 +52,10 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function updateHistogram(MetricName $name, string $help, HistogramLabelNames $labelNames, array $data) : void
+    public function updateHistogram(MetricName $name, string $help, HistogramLabelNames $labelNames, array $labelValues, array $data) : void
     {
         // Initialize the sum
-        $sumKey = $this->histogramBucketValueKey($name, $data['labelValues'], 'sum');
+        $sumKey = $this->histogramBucketValueKey($name, $labelValues, 'sum');
         $new    = apcu_add($sumKey, $this->toInteger(0));
 
         // If sum does not exist, assume a new histogram and store the metadata
@@ -81,16 +81,16 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
         }
 
         // Initialize and increment the bucket
-        apcu_add($this->histogramBucketValueKey($name, $data['labelValues'], (string) $bucketToIncrease), 0);
-        apcu_inc($this->histogramBucketValueKey($name, $data['labelValues'], (string) $bucketToIncrease));
+        apcu_add($this->histogramBucketValueKey($name, $labelValues, (string) $bucketToIncrease), 0);
+        apcu_inc($this->histogramBucketValueKey($name, $labelValues, (string) $bucketToIncrease));
     }
 
     /**
      * @inheritdoc
      */
-    public function setGaugeTo(MetricName $name, string $help, MetricLabelNames $labelNames, array $data) : void
+    public function setGaugeTo(MetricName $name, string $help, MetricLabelNames $labelNames, array $labelValues, array $data) : void
     {
-        $valueKey = $this->valueKey($name, 'gauge', $data['labelValues']);
+        $valueKey = $this->valueKey($name, 'gauge', $labelValues);
         apcu_store($valueKey, $this->toInteger($data['value']));
         apcu_store($this->metaKey($name, 'gauge'), json_encode($this->metaData($name, $help, $labelNames, $data)));
     }
@@ -98,9 +98,9 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function addToGauge(MetricName $name, string $help, MetricLabelNames $labelNames, array $data) : void
+    public function addToGauge(MetricName $name, string $help, MetricLabelNames $labelNames, array $labelValues, array $data) : void
     {
-        $valueKey = $this->valueKey($name, 'gauge', $data['labelValues']);
+        $valueKey = $this->valueKey($name, 'gauge', $labelValues);
         $new      = apcu_add($valueKey, $this->toInteger(0));
         if ($new) {
             apcu_store($this->metaKey($name, 'gauge'), json_encode($this->metaData($name, $help, $labelNames, $data)));
@@ -116,13 +116,13 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function incrementCounter(MetricName $name, string $help, MetricLabelNames $labelNames, array $data) : void
+    public function incrementCounter(MetricName $name, string $help, MetricLabelNames $labelNames, array $labelValues, array $data) : void
     {
-        $new = apcu_add($this->valueKey($name, 'counter', $data['labelValues']), 0);
+        $new = apcu_add($this->valueKey($name, 'counter', $labelValues), 0);
         if ($new) {
             apcu_store($this->metaKey($name, 'counter'), json_encode($this->metaData($name, $help, $labelNames, $data)));
         }
-        apcu_inc($this->valueKey($name, 'counter', $data['labelValues']), (int) $data['value']);
+        apcu_inc($this->valueKey($name, 'counter', $labelValues), (int) $data['value']);
     }
 
     public function flush() : void

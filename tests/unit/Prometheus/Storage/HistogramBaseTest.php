@@ -55,8 +55,8 @@ abstract class HistogramBaseTest extends TestCase
             HistogramLabelNames::fromNames('foo', 'bar'),
             [100, 200, 300]
         );
-        $histogram->observe(123, ['lalal', 'lululu']);
-        $histogram->observe(245, ['lalal', 'lululu']);
+        $histogram->observe(123, 'lalal', 'lululu');
+        $histogram->observe(245, 'lalal', 'lululu');
 
         $this->assertThat(
             $storage->collect(),
@@ -222,17 +222,15 @@ abstract class HistogramBaseTest extends TestCase
     }
 
     /**
-     * @param mixed $value The label value
-     *
-     * @tes
+     * @test
      * @dataProvider labelValuesDataProvider
      */
-    public function isShouldAcceptAnySequenceOfBasicLatinCharactersForLabelValues($value) : void
+    public function isShouldAcceptAnySequenceOfBasicLatinCharactersForLabelValues(string $value) : void
     {
         $storage   = $this->getStorage();
         $label     = 'foo';
         $histogram = new Histogram($storage, MetricName::fromNamespacedName('test', 'some_metric'), 'help', HistogramLabelNames::fromNames($label), [1]);
-        $histogram->observe(1, [$value]);
+        $histogram->observe(1, $value);
 
         $metrics = $storage->collect();
         self::assertCount(1, $metrics);

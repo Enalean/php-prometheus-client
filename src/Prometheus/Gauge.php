@@ -23,63 +23,59 @@ final class Gauge extends Metric
     }
 
     /**
-     * @param float    $value  e.g. 123
-     * @param string[] $labels e.g. ['status', 'opcode']
+     * @param float    $value       e.g. 123
+     * @param string[] $labelValues e.g. ['status', 'opcode']
      */
-    public function set(float $value, array $labels = []) : void
+    public function set(float $value, string ...$labelValues) : void
     {
-        $this->assertLabelsAreDefinedCorrectly($labels);
+        $this->assertLabelsAreDefinedCorrectly(...$labelValues);
 
         $this->storage->setGaugeTo(
             $this->getName(),
             $this->getHelp(),
             $this->getLabelNames(),
-            [
-                'labelValues' => $labels,
-                'value' => $value,
-            ]
+            $labelValues,
+            ['value' => $value]
         );
     }
 
     /**
-     * @param string[] $labels e.g. ['status', 'opcode']
+     * @param string[] $labelValues e.g. ['status', 'opcode']
      */
-    public function inc(array $labels = []) : void
+    public function inc(string ...$labelValues) : void
     {
-        $this->incBy(1, $labels);
+        $this->incBy(1, ...$labelValues);
     }
 
     /**
-     * @param string[] $labels e.g. ['status', 'opcode']
+     * @param string[] $labelValues e.g. ['status', 'opcode']
      */
-    public function incBy(float $value, array $labels = []) : void
+    public function incBy(float $value, string ...$labelValues) : void
     {
-        $this->assertLabelsAreDefinedCorrectly($labels);
+        $this->assertLabelsAreDefinedCorrectly(...$labelValues);
 
         $this->storage->addToGauge(
             $this->getName(),
             $this->getHelp(),
             $this->getLabelNames(),
-            [
-                'labelValues' => $labels,
-                'value' => $value,
-            ]
+            $labelValues,
+            ['value' => $value]
         );
     }
 
     /**
-     * @param string[] $labels e.g. ['status', 'opcode']
+     * @param string[] $labelValues e.g. ['status', 'opcode']
      */
-    public function dec(array $labels = []) : void
+    public function dec(string ...$labelValues) : void
     {
-        $this->decBy(1, $labels);
+        $this->decBy(1, ...$labelValues);
     }
 
     /**
-     * @param string[] $labels e.g. ['status', 'opcode']
+     * @param string[] $labelValues e.g. ['status', 'opcode']
      */
-    public function decBy(float $value, array $labels = []) : void
+    public function decBy(float $value, string ...$labelValues) : void
     {
-        $this->incBy(-$value, $labels);
+        $this->incBy(-$value, ...$labelValues);
     }
 }

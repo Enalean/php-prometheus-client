@@ -56,13 +56,10 @@ abstract class Metric
         return $this->help;
     }
 
-    /**
-     * @param string[] $labels
-     */
-    final protected function assertLabelsAreDefinedCorrectly(array $labels) : void
+    final protected function assertLabelsAreDefinedCorrectly(string ...$labelValues) : void
     {
-        if (count($labels) !== count($this->labelNames)) {
-            throw new InvalidArgumentException(sprintf('Labels are not defined correctly: ', print_r($labels, true)));
+        if (count($labelValues) !== count($this->labelNames)) {
+            throw new InvalidArgumentException(sprintf('Labels are not defined correctly: ', print_r($labelValues, true)));
         }
     }
 }

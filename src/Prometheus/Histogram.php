@@ -74,20 +74,20 @@ final class Histogram extends Metric
     }
 
     /**
-     * @param float    $value  e.g. 123
-     * @param string[] $labels e.g. ['status', 'opcode']
+     * @param float    $value       e.g. 123
+     * @param string[] $labelValues e.g. ['status', 'opcode']
      */
-    public function observe(float $value, array $labels = []) : void
+    public function observe(float $value, string ...$labelValues) : void
     {
-        $this->assertLabelsAreDefinedCorrectly($labels);
+        $this->assertLabelsAreDefinedCorrectly(...$labelValues);
 
         $this->storage->updateHistogram(
             $this->getName(),
             $this->getHelp(),
             $this->getLabelNames(),
+            $labelValues,
             [
                 'value' => $value,
-                'labelValues' => $labels,
                 'buckets' => $this->buckets,
             ]
         );

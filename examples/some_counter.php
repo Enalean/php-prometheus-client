@@ -26,6 +26,6 @@ $counter = $registry->registerCounter(
     'it increases',
     MetricLabelNames::fromNames('type')
 );
-$counter->incBy((int) $_GET['c'], ['blue']);
+$counter->incBy((int) $_GET['c'], 'blue');
 
 echo "OK\n";

@@ -29,6 +29,6 @@ $histogram = $registry->registerHistogram(
     HistogramLabelNames::fromNames('type'),
     [0.1, 1, 2, 3.5, 4, 5, 6, 7, 8, 9]
 );
-$histogram->observe((float) $_GET['c'], ['blue']);
+$histogram->observe((float) $_GET['c'], 'blue');
 
 echo "OK\n";

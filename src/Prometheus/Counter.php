@@ -23,29 +23,27 @@ final class Counter extends Metric
     }
 
     /**
-     * @param string[] $labels e.g. ['status', 'opcode']
+     * @param string[] $labelValues e.g. ['status', 'opcode']
      */
-    public function inc(array $labels = []) : void
+    public function inc(string ...$labelValues) : void
     {
-        $this->incBy(1, $labels);
+        $this->incBy(1, ...$labelValues);
     }
 
     /**
-     * @param int      $count  e.g. 2
-     * @param string[] $labels e.g. ['status', 'opcode']
+     * @param int      $count       e.g. 2
+     * @param string[] $labelValues e.g. ['status', 'opcode']
      */
-    public function incBy(int $count, array $labels = []) : void
+    public function incBy(int $count, string ...$labelValues) : void
     {
-        $this->assertLabelsAreDefinedCorrectly($labels);
+        $this->assertLabelsAreDefinedCorrectly(...$labelValues);
 
         $this->storage->incrementCounter(
             $this->getName(),
             $this->getHelp(),
             $this->getLabelNames(),
-            [
-                'labelValues' => $labels,
-                'value' => $count,
-            ]
+            $labelValues,
+            ['value' => $count]
         );
     }
 }

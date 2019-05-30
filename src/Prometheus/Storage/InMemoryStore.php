@@ -190,7 +190,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
     /**
      * @inheritdoc
      */
-    public function updateHistogram(MetricName $name, string $help, HistogramLabelNames $labelNames, array $data) : void
+    public function updateHistogram(MetricName $name, string $help, HistogramLabelNames $labelNames, array $labelValues, array $data) : void
     {
         // Initialize the sum
         $metaKey = $this->metaKey($name);
@@ -200,7 +200,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
                 'samples' => [],
             ];
         }
-        $sumKey = $this->histogramBucketValueKey($name, $data['labelValues'], 'sum');
+        $sumKey = $this->histogramBucketValueKey($name, $labelValues, 'sum');
         if (array_key_exists($sumKey, $this->histograms[$metaKey]['samples']) === false) {
             $this->histograms[$metaKey]['samples'][$sumKey] = 0;
         }
@@ -215,7 +215,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
             }
         }
 
-        $bucketKey = $this->histogramBucketValueKey($name, $data['labelValues'], (string) $bucketToIncrease);
+        $bucketKey = $this->histogramBucketValueKey($name, $labelValues, (string) $bucketToIncrease);
         if (array_key_exists($bucketKey, $this->histograms[$metaKey]['samples']) === false) {
             $this->histograms[$metaKey]['samples'][$bucketKey] = 0;
         }
@@ -225,10 +225,10 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
     /**
      * @inheritdoc
      */
-    public function setGaugeTo(MetricName $name, string $help, MetricLabelNames $labelNames, array $data) : void
+    public function setGaugeTo(MetricName $name, string $help, MetricLabelNames $labelNames, array $labelValues, array $data) : void
     {
         $metaKey  = $this->initializeGaugeIfNecessary($name, $help, $labelNames, $data);
-        $valueKey = $this->valueKey($name, $data['labelValues']);
+        $valueKey = $this->valueKey($name, $labelValues);
 
         $this->gauges[$metaKey]['samples'][$valueKey] = $data['value'];
     }
@@ -236,21 +236,20 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
     /**
      * @inheritdoc
      */
-    public function addToGauge(MetricName $name, string $help, MetricLabelNames $labelNames, array $data) : void
+    public function addToGauge(MetricName $name, string $help, MetricLabelNames $labelNames, array $labelValues, array $data) : void
     {
         $metaKey  = $this->initializeGaugeIfNecessary($name, $help, $labelNames, $data);
-        $valueKey = $this->valueKey($name, $data['labelValues']);
+        $valueKey = $this->valueKey($name, $labelValues);
 
         $oldValue                                     = $this->gauges[$metaKey]['samples'][$valueKey] ?? 0;
         $this->gauges[$metaKey]['samples'][$valueKey] = $oldValue + $data['value'];
     }
 
     /**
-     * @param array<string,float|string[]> $data
+     * @param array<string,float> $data
      *
      * @psalm-param array{
-     *      value:float,
-     *      labelValues:string[]
+     *      value:float
      * } $data
      */
     private function initializeGaugeIfNecessary(MetricName $name, string $help, LabelNames $labelNames, array $data) : string
@@ -271,10 +270,10 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
     /**
      * @inheritdoc
      */
-    public function incrementCounter(MetricName $name, string $help, MetricLabelNames $labelNames, array $data) : void
+    public function incrementCounter(MetricName $name, string $help, MetricLabelNames $labelNames, array $labelValues, array $data) : void
     {
         $metaKey  = $this->metaKey($name);
-        $valueKey = $this->valueKey($name, $data['labelValues']);
+        $valueKey = $this->valueKey($name, $labelValues);
         if (array_key_exists($metaKey, $this->counters) === false) {
             /** @psalm-suppress InvalidArgument */
             $meta                     = $this->metaData($name, $help, $labelNames, $data);

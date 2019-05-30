@@ -33,12 +33,12 @@ final class CollectorRegistryTest extends CollectorRegistryBaseTest
         $registry = new CollectorRegistry($storage);
 
         $counter = $registry->registerCounter(MetricName::fromNamespacedName('test', 'some_counter'), 'it increases', MetricLabelNames::fromNames('type'));
-        $counter->incBy(6, ['blue']);
+        $counter->incBy(6, 'blue');
         $counterRedisKey = 'PROMETHEUS_counter' . RedisStore::PROMETHEUS_METRIC_KEYS_SUFFIX;
         $this->assertEquals(['PROMETHEUS_:counter:test_some_counter'], $redis->sMembers($counterRedisKey));
 
         $gauge = $registry->registerGauge(MetricName::fromNamespacedName('test', 'some_gauge'), 'this is for testing', MetricLabelNames::fromNames('foo'));
-        $gauge->set(35, ['bar']);
+        $gauge->set(35, 'bar');
         $gaugeRedisKey = 'PROMETHEUS_gauge' . RedisStore::PROMETHEUS_METRIC_KEYS_SUFFIX;
         $this->assertEquals(['PROMETHEUS_:gauge:test_some_gauge'], $redis->sMembers($gaugeRedisKey));
 
@@ -48,7 +48,7 @@ final class CollectorRegistryTest extends CollectorRegistryBaseTest
             HistogramLabelNames::fromNames('foo', 'bar'),
             [0.1, 1, 5, 10]
         );
-        $histogram->observe(2, ['cat', 'meow']);
+        $histogram->observe(2, 'cat', 'meow');
         $histogramRedisKey = 'PROMETHEUS_histogram' . RedisStore::PROMETHEUS_METRIC_KEYS_SUFFIX;
         $this->assertEquals(['PROMETHEUS_:histogram:test_some_histogram'], $redis->sMembers($histogramRedisKey));
 

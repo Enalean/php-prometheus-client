@@ -53,7 +53,7 @@ abstract class GaugeBaseTest extends TestCase
             'this is for testing',
             MetricLabelNames::fromNames('foo', 'bar')
         );
-        $gauge->set(123, ['lalal', 'lululu']);
+        $gauge->set(123, 'lalal', 'lululu');
         $this->assertThat(
             $storage->collect(),
             $this->equalTo(
@@ -130,8 +130,8 @@ abstract class GaugeBaseTest extends TestCase
             'this is for testing',
             MetricLabelNames::fromNames('foo', 'bar')
         );
-        $gauge->inc(['lalal', 'lululu']);
-        $gauge->incBy(123, ['lalal', 'lululu']);
+        $gauge->inc('lalal', 'lululu');
+        $gauge->incBy(123, 'lalal', 'lululu');
         $this->assertThat(
             $storage->collect(),
             $this->equalTo(
@@ -159,8 +159,8 @@ abstract class GaugeBaseTest extends TestCase
             'this is for testing',
             MetricLabelNames::fromNames('foo', 'bar')
         );
-        $gauge->inc(['lalal', 'lululu']);
-        $gauge->incBy(123.5, ['lalal', 'lululu']);
+        $gauge->inc('lalal', 'lululu');
+        $gauge->incBy(123.5, 'lalal', 'lululu');
         $this->assertThat(
             $storage->collect(),
             $this->equalTo(
@@ -188,8 +188,8 @@ abstract class GaugeBaseTest extends TestCase
             'this is for testing',
             MetricLabelNames::fromNames('foo', 'bar')
         );
-        $gauge->dec(['lalal', 'lululu']);
-        $gauge->decBy(123, ['lalal', 'lululu']);
+        $gauge->dec('lalal', 'lululu');
+        $gauge->decBy(123, 'lalal', 'lululu');
         $this->assertThat(
             $storage->collect(),
             $this->equalTo(
@@ -217,8 +217,8 @@ abstract class GaugeBaseTest extends TestCase
             'this is for testing',
             MetricLabelNames::fromNames('foo', 'bar')
         );
-        $gauge->dec(['lalal', 'lululu']);
-        $gauge->decBy(122.5, ['lalal', 'lululu']);
+        $gauge->dec('lalal', 'lululu');
+        $gauge->decBy(122.5, 'lalal', 'lululu');
         $this->assertThat(
             $storage->collect(),
             $this->equalTo(
@@ -246,8 +246,8 @@ abstract class GaugeBaseTest extends TestCase
             'this is for testing',
             MetricLabelNames::fromNames('foo', 'bar')
         );
-        $gauge->set(123, ['lalal', 'lululu']);
-        $gauge->set(321, ['lalal', 'lululu']);
+        $gauge->set(123, 'lalal', 'lululu');
+        $gauge->set(321, 'lalal', 'lululu');
         $this->assertThat(
             $storage->collect(),
             $this->equalTo(
@@ -264,17 +264,15 @@ abstract class GaugeBaseTest extends TestCase
     }
 
     /**
-     * @param mixed $value The label value
-     *
      * @test
      * @dataProvider labelValuesDataProvider
      */
-    public function isShouldAcceptAnySequenceOfBasicLatinCharactersForLabelValues($value) : void
+    public function isShouldAcceptAnySequenceOfBasicLatinCharactersForLabelValues(string $value) : void
     {
         $storage   = $this->getStorage();
         $label     = 'foo';
         $histogram = new Gauge($storage, MetricName::fromNamespacedName('test', 'some_metric'), 'help', MetricLabelNames::fromNames($label));
-        $histogram->inc([$value]);
+        $histogram->inc($value);
 
         $metrics = $storage->collect();
         self::assertCount(1, $metrics);

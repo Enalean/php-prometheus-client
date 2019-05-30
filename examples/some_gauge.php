@@ -28,6 +28,6 @@ $gauge = $registry->registerGauge(
     'it sets',
     MetricLabelNames::fromNames('type')
 );
-$gauge->set((float) $_GET['c'], ['blue']);
+$gauge->set((float) $_GET['c'], 'blue');
 
 echo "OK\n";

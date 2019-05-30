@@ -31,7 +31,7 @@ $counter = $registry->registerCounter(
     'it increases',
     MetricLabelNames::fromNames('type')
 );
-$counter->incBy(6, ['blue']);
+$counter->incBy(6, 'blue');
 
 $pusher = new PSR18Pusher('192.168.59.100:9091', Psr18ClientDiscovery::find(), Psr17FactoryDiscovery::findRequestFactory(), Psr17FactoryDiscovery::findStreamFactory());
 $pusher->push($registry, 'my_job', ['instance' => 'foo']);

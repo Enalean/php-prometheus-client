@@ -30,7 +30,7 @@ abstract class BlackBoxPushGatewayTest extends TestCase
             'it increases',
             MetricLabelNames::fromNames('type')
         );
-        $counter->incBy(6, ['blue']);
+        $counter->incBy(6, 'blue');
 
         $pusher = $this->getPusher('pushgateway:9091');
         $pusher->push($registry, 'my_job', ['instance' => 'foo']);

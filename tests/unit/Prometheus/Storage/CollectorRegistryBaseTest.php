@@ -52,10 +52,10 @@ abstract class CollectorRegistryBaseTest extends TestCase
             'this is for testing',
             MetricLabelNames::fromNames('foo')
         );
-        $g->set(35, ['bbb']);
-        $g->set(35, ['ddd']);
-        $g->set(35, ['aaa']);
-        $g->set(35, ['ccc']);
+        $g->set(35, 'bbb');
+        $g->set(35, 'ddd');
+        $g->set(35, 'aaa');
+        $g->set(35, 'ccc');
 
         $registry = new CollectorRegistry($storage);
         $this->assertThat(
@@ -86,9 +86,9 @@ EOF
             'this is for testing',
             MetricLabelNames::fromNames('foo', 'bar')
         );
-        $metric->incBy(2, ['lalal', 'lululu']);
-        $registry->getCounter($metricName)->inc(['lalal', 'lululu']);
-        $registry->getCounter($metricName)->inc(['lalal', 'lvlvlv']);
+        $metric->incBy(2, 'lalal', 'lululu');
+        $registry->getCounter($metricName)->inc('lalal', 'lululu');
+        $registry->getCounter($metricName)->inc('lalal', 'lvlvlv');
 
         $registry = new CollectorRegistry($storage);
         $this->assertThat(
@@ -118,11 +118,11 @@ EOF
             HistogramLabelNames::fromNames('foo', 'bar'),
             [0.1, 1, 5, 10]
         );
-        $metric->observe(2, ['lalal', 'lululu']);
-        $registry->getHistogram($metricName)->observe(7.1, ['lalal', 'lvlvlv']);
-        $registry->getHistogram($metricName)->observe(13, ['lalal', 'lululu']);
-        $registry->getHistogram($metricName)->observe(7.1, ['lalal', 'lululu']);
-        $registry->getHistogram($metricName)->observe(7.1, ['gnaaha', 'hihihi']);
+        $metric->observe(2, 'lalal', 'lululu');
+        $registry->getHistogram($metricName)->observe(7.1, 'lalal', 'lvlvlv');
+        $registry->getHistogram($metricName)->observe(13, 'lalal', 'lululu');
+        $registry->getHistogram($metricName)->observe(7.1, 'lalal', 'lululu');
+        $registry->getHistogram($metricName)->observe(7.1, 'gnaaha', 'hihihi');
 
         $registry = new CollectorRegistry($storage);
         $this->assertThat(
