@@ -83,20 +83,21 @@ LUA
     /**
      * @inheritdoc
      */
-    public function updateHistogram(MetricName $name, string $help, HistogramLabelNames $labelNames, array $labelValues, array $data) : void
+    public function updateHistogram(MetricName $name, float $value, string $help, HistogramLabelNames $labelNames, array $labelValues, array $data) : void
     {
         $bucketToIncrease = '+Inf';
         foreach ($data['buckets'] as $bucket) {
-            if ($data['value'] <= $bucket) {
+            if ($value <= $bucket) {
                 $bucketToIncrease = $bucket;
                 break;
             }
         }
-        $metaData         = $data;
-        $metaData['name'] = $name->toString();
-        $metaData['help'] = $help;
-        unset($metaData['value']);
-        $metaData['labelNames'] = $labelNames->toStrings();
+        $metaData = [
+            'name' => $name->toString(),
+            'help' => $help,
+            'labelNames' => $labelNames->toStrings(),
+            'buckets' => $data['buckets'],
+        ];
         $this->redis->eval(
             <<<LUA
 local increment = redis.call('hIncrByFloat', KEYS[1], KEYS[2], ARGV[1])
@@ -112,7 +113,7 @@ LUA
                 json_encode(['b' => 'sum', 'labelValues' => $labelValues]),
                 json_encode(['b' => $bucketToIncrease, 'labelValues' => $labelValues]),
                 $this->prefix . 'histogram' . self::PROMETHEUS_METRIC_KEYS_SUFFIX,
-                $data['value'],
+                $value,
                 json_encode($metaData),
             ],
             4
@@ -122,34 +123,29 @@ LUA
     /**
      * @inheritdoc
      */
-    public function setGaugeTo(MetricName $name, string $help, MetricLabelNames $labelNames, array $labelValues, array $data) : void
+    public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues) : void
     {
-        $this->updateGauge($name, $help, $labelNames, $labelValues, 'hSet', $data);
+        $this->updateGauge($name, $value, $help, $labelNames, $labelValues, 'hSet');
     }
 
     /**
      * @inheritdoc
      */
-    public function addToGauge(MetricName $name, string $help, MetricLabelNames $labelNames, array $labelValues, array $data) : void
+    public function addToGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues) : void
     {
-        $this->updateGauge($name, $help, $labelNames, $labelValues, 'hIncrByFloat', $data);
+        $this->updateGauge($name, $value, $help, $labelNames, $labelValues, 'hIncrByFloat');
     }
 
     /**
-     * @param string[]                     $labelValues
-     * @param array<string,float|string[]> $data
-     *
-     * @psalm-param array{
-     *      value:float
-     * } $data
+     * @param string[] $labelValues
      */
-    private function updateGauge(MetricName $name, string $help, MetricLabelNames $labelNames, array $labelValues, string $command, array $data) : void
+    private function updateGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues, string $command) : void
     {
-        $metaData         = $data;
-        $metaData['name'] = $name->toString();
-        $metaData['help'] = $help;
-        unset($metaData['value']);
-        $metaData['labelNames'] = $labelNames->toStrings();
+        $metaData = [
+            'name' => $name->toString(),
+            'help' => $help,
+            'labelNames' => $labelNames->toStrings(),
+        ];
 
         $this->redis->eval(
             <<<LUA
@@ -173,7 +169,7 @@ LUA
                 $command,
                 $this->prefix . 'gauge' . self::PROMETHEUS_METRIC_KEYS_SUFFIX,
                 json_encode($labelValues),
-                $data['value'],
+                $value,
                 json_encode($metaData),
             ],
             4
@@ -183,13 +179,13 @@ LUA
     /**
      * @inheritdoc
      */
-    public function incrementCounter(MetricName $name, string $help, MetricLabelNames $labelNames, array $labelValues, array $data) : void
+    public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues) : void
     {
-        $metaData         = $data;
-        $metaData['name'] = $name->toString();
-        $metaData['help'] = $help;
-        unset($metaData['value']);
-        $metaData['labelNames'] = $labelNames->toStrings();
+        $metaData = [
+            'name' => $name->toString(),
+            'help' => $help,
+            'labelNames' => $labelNames->toStrings(),
+        ];
 
         $this->redis->eval(
             <<<LUA
@@ -205,7 +201,7 @@ LUA
                 $this->toMetricKey($name, 'counter'),
                 $this->prefix . 'counter' . self::PROMETHEUS_METRIC_KEYS_SUFFIX,
                 json_encode($labelValues),
-                $data['value'],
+                $value,
                 json_encode($metaData),
             ],
             3

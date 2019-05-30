@@ -40,10 +40,10 @@ final class Counter extends Metric
 
         $this->storage->incrementCounter(
             $this->getName(),
+            $count,
             $this->getHelp(),
             $this->getLabelNames(),
-            $labelValues,
-            ['value' => $count]
+            $labelValues
         );
     }
 }

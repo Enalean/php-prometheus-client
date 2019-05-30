@@ -10,13 +10,12 @@ use Prometheus\Value\MetricName;
 interface HistogramStorage
 {
     /**
-     * @param string[]                  $labelValues
-     * @param array<string,float|array> $data
+     * @param string[]                       $labelValues
+     * @param array<string,array<int|float>> $data
      *
      * @psalm-param array{
-     *      buckets:array<int|float>,
-     *      value:float
+     *      buckets:array<int|float>
      * } $data
      */
-    public function updateHistogram(MetricName $name, string $help, HistogramLabelNames $labelNames, array $labelValues, array $data) : void;
+    public function updateHistogram(MetricName $name, float $value, string $help, HistogramLabelNames $labelNames, array $labelValues, array $data) : void;
 }

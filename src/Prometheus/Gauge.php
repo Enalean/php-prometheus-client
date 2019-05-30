@@ -32,10 +32,10 @@ final class Gauge extends Metric
 
         $this->storage->setGaugeTo(
             $this->getName(),
+            $value,
             $this->getHelp(),
             $this->getLabelNames(),
-            $labelValues,
-            ['value' => $value]
+            $labelValues
         );
     }
 
@@ -56,10 +56,10 @@ final class Gauge extends Metric
 
         $this->storage->addToGauge(
             $this->getName(),
+            $value,
             $this->getHelp(),
             $this->getLabelNames(),
-            $labelValues,
-            ['value' => $value]
+            $labelValues
         );
     }
 

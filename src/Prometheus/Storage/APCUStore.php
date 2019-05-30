@@ -52,7 +52,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function updateHistogram(MetricName $name, string $help, HistogramLabelNames $labelNames, array $labelValues, array $data) : void
+    public function updateHistogram(MetricName $name, float $value, string $help, HistogramLabelNames $labelNames, array $labelValues, array $data) : void
     {
         // Initialize the sum
         $sumKey = $this->histogramBucketValueKey($name, $labelValues, 'sum');
@@ -60,7 +60,9 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
 
         // If sum does not exist, assume a new histogram and store the metadata
         if ($new) {
-            apcu_store($this->metaKey($name, 'histogram'), json_encode($this->metaData($name, $help, $labelNames, $data)));
+            $metaData            = $this->metaData($name, $help, $labelNames);
+            $metaData['buckets'] = $data['buckets'];
+            apcu_store($this->metaKey($name, 'histogram'), json_encode($metaData));
         }
 
         // Atomically increment the sum
@@ -68,13 +70,13 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
         $done = false;
         while (! $done) {
             $old  = apcu_fetch($sumKey);
-            $done = apcu_cas($sumKey, $old, $this->toInteger($this->fromInteger($old) + $data['value']));
+            $done = apcu_cas($sumKey, $old, $this->toInteger($this->fromInteger($old) + $value));
         }
 
         // Figure out in which bucket the observation belongs
         $bucketToIncrease = '+Inf';
         foreach ($data['buckets'] as $bucket) {
-            if ($data['value'] <= $bucket) {
+            if ($value <= $bucket) {
                 $bucketToIncrease = $bucket;
                 break;
             }
@@ -88,41 +90,41 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function setGaugeTo(MetricName $name, string $help, MetricLabelNames $labelNames, array $labelValues, array $data) : void
+    public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues) : void
     {
         $valueKey = $this->valueKey($name, 'gauge', $labelValues);
-        apcu_store($valueKey, $this->toInteger($data['value']));
-        apcu_store($this->metaKey($name, 'gauge'), json_encode($this->metaData($name, $help, $labelNames, $data)));
+        apcu_store($valueKey, $this->toInteger($value));
+        apcu_store($this->metaKey($name, 'gauge'), json_encode($this->metaData($name, $help, $labelNames)));
     }
 
     /**
      * @inheritdoc
      */
-    public function addToGauge(MetricName $name, string $help, MetricLabelNames $labelNames, array $labelValues, array $data) : void
+    public function addToGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues) : void
     {
         $valueKey = $this->valueKey($name, 'gauge', $labelValues);
         $new      = apcu_add($valueKey, $this->toInteger(0));
         if ($new) {
-            apcu_store($this->metaKey($name, 'gauge'), json_encode($this->metaData($name, $help, $labelNames, $data)));
+            apcu_store($this->metaKey($name, 'gauge'), json_encode($this->metaData($name, $help, $labelNames)));
         }
             // Taken from https://github.com/prometheus/client_golang/blob/66058aac3a83021948e5fb12f1f408ff556b9037/prometheus/value.go#L91
             $done = false;
         while (! $done) {
             $old  = apcu_fetch($valueKey);
-            $done = apcu_cas($valueKey, $old, $this->toInteger($this->fromInteger($old) + $data['value']));
+            $done = apcu_cas($valueKey, $old, $this->toInteger($this->fromInteger($old) + $value));
         }
     }
 
     /**
      * @inheritdoc
      */
-    public function incrementCounter(MetricName $name, string $help, MetricLabelNames $labelNames, array $labelValues, array $data) : void
+    public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues) : void
     {
         $new = apcu_add($this->valueKey($name, 'counter', $labelValues), 0);
         if ($new) {
-            apcu_store($this->metaKey($name, 'counter'), json_encode($this->metaData($name, $help, $labelNames, $data)));
+            apcu_store($this->metaKey($name, 'counter'), json_encode($this->metaData($name, $help, $labelNames)));
         }
-        apcu_inc($this->valueKey($name, 'counter', $labelValues), (int) $data['value']);
+        apcu_inc($this->valueKey($name, 'counter', $labelValues), (int) $value);
     }
 
     public function flush() : void
@@ -165,21 +167,17 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     }
 
     /**
-     * @param array<string,mixed> $data
+     * @return array<string,string|string[]>
      *
-     * @return array<string,string>
+     * @psalm-return array{name:string, help:string, labelNames:string[]}
      */
-    private function metaData(MetricName $name, string $help, LabelNames $labelNames, array $data) : array
+    private function metaData(MetricName $name, string $help, LabelNames $labelNames) : array
     {
-        $metricsMetaData = $data;
-        unset($metricsMetaData['value']);
-        unset($metricsMetaData['command']);
-        unset($metricsMetaData['labelValues']);
-        $metricsMetaData['name']       = $name->toString();
-        $metricsMetaData['help']       = $help;
-        $metricsMetaData['labelNames'] = $labelNames->toStrings();
-
-        return $metricsMetaData;
+        return [
+            'name' => $name->toString(),
+            'help' => $help,
+            'labelNames' => $labelNames->toStrings(),
+        ];
     }
 
     /**
