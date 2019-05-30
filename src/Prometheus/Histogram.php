@@ -15,6 +15,26 @@ use function count;
  */
 final class Histogram extends Metric
 {
+    /**
+     * List of default buckets suitable for typical web application latency metrics
+     */
+    public const DEFAULT_BUCKETS = [
+        0.005,
+        0.01,
+        0.025,
+        0.05,
+        0.075,
+        0.1,
+        0.25,
+        0.5,
+        0.75,
+        1.0,
+        2.5,
+        5.0,
+        7.5,
+        10.0,
+    ];
+
     /** @var HistogramStorage */
     private $storage;
 
@@ -30,7 +50,7 @@ final class Histogram extends Metric
         $this->storage = $storage;
 
         if ($buckets === null) {
-            $buckets = self::getDefaultBuckets();
+            $buckets = self::DEFAULT_BUCKETS;
         }
 
         if (count($buckets) === 0) {
@@ -46,31 +66,6 @@ final class Histogram extends Metric
             }
         }
         $this->buckets = $buckets;
-    }
-
-    /**
-     * List of default buckets suitable for typical web application latency metrics
-     *
-     * @return float[]
-     */
-    public static function getDefaultBuckets() : array
-    {
-        return [
-            0.005,
-            0.01,
-            0.025,
-            0.05,
-            0.075,
-            0.1,
-            0.25,
-            0.5,
-            0.75,
-            1.0,
-            2.5,
-            5.0,
-            7.5,
-            10.0,
-        ];
     }
 
     /**
