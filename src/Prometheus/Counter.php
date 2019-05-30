@@ -5,19 +5,20 @@ declare(strict_types=1);
 namespace Prometheus;
 
 use Prometheus\Storage\CounterStorage;
+use Prometheus\Value\MetricLabelNames;
 use Prometheus\Value\MetricName;
 
-class Counter extends Metric
+/**
+ * @extends Metric<MetricLabelNames>
+ */
+final class Counter extends Metric
 {
     /** @var CounterStorage */
     private $storage;
 
-    /**
-     * @inheritdoc
-     */
-    public function __construct(CounterStorage $storage, MetricName $name, string $help, array $labels = [])
+    public function __construct(CounterStorage $storage, MetricName $name, string $help, ?MetricLabelNames $labelNames = null)
     {
-        parent::__construct($name, $help, $labels);
+        parent::__construct($name, $help, $labelNames ?? MetricLabelNames::fromNames());
         $this->storage = $storage;
     }
 
@@ -40,8 +41,8 @@ class Counter extends Metric
         $this->storage->incrementCounter(
             $this->getName(),
             $this->getHelp(),
+            $this->getLabelNames(),
             [
-                'labelNames' => $this->getLabelNames(),
                 'labelValues' => $labels,
                 'value' => $count,
             ]

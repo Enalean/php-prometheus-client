@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Test\Prometheus\Storage;
 
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Prometheus\Gauge;
 use Prometheus\MetricFamilySamples;
@@ -12,6 +11,7 @@ use Prometheus\Sample;
 use Prometheus\Storage\FlushableStorage;
 use Prometheus\Storage\GaugeStorage;
 use Prometheus\Storage\Store;
+use Prometheus\Value\MetricLabelNames;
 use Prometheus\Value\MetricName;
 use function array_combine;
 use function array_merge;
@@ -47,7 +47,12 @@ abstract class GaugeBaseTest extends TestCase
     public function itShouldAllowSetWithLabels() : void
     {
         $storage = $this->getStorage();
-        $gauge   = new Gauge($storage, MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing', ['foo', 'bar']);
+        $gauge   = new Gauge(
+            $storage,
+            MetricName::fromNamespacedName('test', 'some_metric'),
+            'this is for testing',
+            MetricLabelNames::fromNames('foo', 'bar')
+        );
         $gauge->set(123, ['lalal', 'lululu']);
         $this->assertThat(
             $storage->collect(),
@@ -119,7 +124,12 @@ abstract class GaugeBaseTest extends TestCase
     public function itShouldIncrementAValue() : void
     {
         $storage = $this->getStorage();
-        $gauge   = new Gauge($storage, MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing', ['foo', 'bar']);
+        $gauge   = new Gauge(
+            $storage,
+            MetricName::fromNamespacedName('test', 'some_metric'),
+            'this is for testing',
+            MetricLabelNames::fromNames('foo', 'bar')
+        );
         $gauge->inc(['lalal', 'lululu']);
         $gauge->incBy(123, ['lalal', 'lululu']);
         $this->assertThat(
@@ -143,7 +153,12 @@ abstract class GaugeBaseTest extends TestCase
     public function itShouldIncrementWithFloatValue() : void
     {
         $storage = $this->getStorage();
-        $gauge   = new Gauge($storage, MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing', ['foo', 'bar']);
+        $gauge   = new Gauge(
+            $storage,
+            MetricName::fromNamespacedName('test', 'some_metric'),
+            'this is for testing',
+            MetricLabelNames::fromNames('foo', 'bar')
+        );
         $gauge->inc(['lalal', 'lululu']);
         $gauge->incBy(123.5, ['lalal', 'lululu']);
         $this->assertThat(
@@ -167,7 +182,12 @@ abstract class GaugeBaseTest extends TestCase
     public function itShouldDecrementAValue() : void
     {
         $storage = $this->getStorage();
-        $gauge   = new Gauge($storage, MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing', ['foo', 'bar']);
+        $gauge   = new Gauge(
+            $storage,
+            MetricName::fromNamespacedName('test', 'some_metric'),
+            'this is for testing',
+            MetricLabelNames::fromNames('foo', 'bar')
+        );
         $gauge->dec(['lalal', 'lululu']);
         $gauge->decBy(123, ['lalal', 'lululu']);
         $this->assertThat(
@@ -191,7 +211,12 @@ abstract class GaugeBaseTest extends TestCase
     public function itShouldDecrementWithFloatValue() : void
     {
         $storage = $this->getStorage();
-        $gauge   = new Gauge($storage, MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing', ['foo', 'bar']);
+        $gauge   = new Gauge(
+            $storage,
+            MetricName::fromNamespacedName('test', 'some_metric'),
+            'this is for testing',
+            MetricLabelNames::fromNames('foo', 'bar')
+        );
         $gauge->dec(['lalal', 'lululu']);
         $gauge->decBy(122.5, ['lalal', 'lululu']);
         $this->assertThat(
@@ -215,7 +240,12 @@ abstract class GaugeBaseTest extends TestCase
     public function itShouldOverwriteWhenSettingTwice() : void
     {
         $storage = $this->getStorage();
-        $gauge   = new Gauge($storage, MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing', ['foo', 'bar']);
+        $gauge   = new Gauge(
+            $storage,
+            MetricName::fromNamespacedName('test', 'some_metric'),
+            'this is for testing',
+            MetricLabelNames::fromNames('foo', 'bar')
+        );
         $gauge->set(123, ['lalal', 'lululu']);
         $gauge->set(321, ['lalal', 'lululu']);
         $this->assertThat(
@@ -234,15 +264,6 @@ abstract class GaugeBaseTest extends TestCase
     }
 
     /**
-     * @test
-     */
-    public function itShouldRejectInvalidLabelNames() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        new Gauge($this->getStorage(), MetricName::fromNamespacedName('test', 'some_metric'), 'help', ['invalid label']);
-    }
-
-    /**
      * @param mixed $value The label value
      *
      * @test
@@ -252,7 +273,7 @@ abstract class GaugeBaseTest extends TestCase
     {
         $storage   = $this->getStorage();
         $label     = 'foo';
-        $histogram = new Gauge($storage, MetricName::fromNamespacedName('test', 'some_metric'), 'help', [$label]);
+        $histogram = new Gauge($storage, MetricName::fromNamespacedName('test', 'some_metric'), 'help', MetricLabelNames::fromNames($label));
         $histogram->inc([$value]);
 
         $metrics = $storage->collect();

@@ -14,6 +14,8 @@ use Prometheus\Storage\FlushableStorage;
 use Prometheus\Storage\GaugeStorage;
 use Prometheus\Storage\HistogramStorage;
 use Prometheus\Storage\Store;
+use Prometheus\Value\HistogramLabelNames;
+use Prometheus\Value\MetricLabelNames;
 use Prometheus\Value\MetricName;
 
 abstract class CollectorRegistryBaseTest extends TestCase
@@ -45,7 +47,11 @@ abstract class CollectorRegistryBaseTest extends TestCase
         $storage  = $this->getStorage();
         $registry = new CollectorRegistry($storage);
 
-        $g = $registry->registerGauge(MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing', ['foo']);
+        $g = $registry->registerGauge(
+            MetricName::fromNamespacedName('test', 'some_metric'),
+            'this is for testing',
+            MetricLabelNames::fromNames('foo')
+        );
         $g->set(35, ['bbb']);
         $g->set(35, ['ddd']);
         $g->set(35, ['aaa']);
@@ -75,7 +81,11 @@ EOF
         $storage    = $this->getStorage();
         $registry   = new CollectorRegistry($storage);
         $metricName = MetricName::fromNamespacedName('test', 'some_metric');
-        $metric     = $registry->registerCounter($metricName, 'this is for testing', ['foo', 'bar']);
+        $metric     = $registry->registerCounter(
+            $metricName,
+            'this is for testing',
+            MetricLabelNames::fromNames('foo', 'bar')
+        );
         $metric->incBy(2, ['lalal', 'lululu']);
         $registry->getCounter($metricName)->inc(['lalal', 'lululu']);
         $registry->getCounter($metricName)->inc(['lalal', 'lvlvlv']);
@@ -102,7 +112,12 @@ EOF
         $storage    = $this->getStorage();
         $registry   = new CollectorRegistry($storage);
         $metricName = MetricName::fromNamespacedName('test', 'some_metric');
-        $metric     = $registry->registerHistogram($metricName, 'this is for testing', ['foo', 'bar'], [0.1, 1, 5, 10]);
+        $metric     = $registry->registerHistogram(
+            $metricName,
+            'this is for testing',
+            HistogramLabelNames::fromNames('foo', 'bar'),
+            [0.1, 1, 5, 10]
+        );
         $metric->observe(2, ['lalal', 'lululu']);
         $registry->getHistogram($metricName)->observe(7.1, ['lalal', 'lvlvlv']);
         $registry->getHistogram($metricName)->observe(13, ['lalal', 'lululu']);
@@ -225,9 +240,9 @@ EOF
     {
         $registry   = new CollectorRegistry($this->getStorage());
         $metricName = MetricName::fromNamespacedName('foo', 'metric');
-        $registry->registerCounter($metricName, 'help', ['foo', 'bar']);
+        $registry->registerCounter($metricName, 'help', MetricLabelNames::fromNames('foo', 'bar'));
         $this->expectException(MetricsRegistrationException::class);
-        $registry->registerCounter($metricName, 'help', ['spam', 'eggs']);
+        $registry->registerCounter($metricName, 'help', MetricLabelNames::fromNames('spam', 'eggs'));
     }
 
     /**
@@ -249,9 +264,9 @@ EOF
     {
         $registry   = new CollectorRegistry($this->getStorage());
         $metricName = MetricName::fromNamespacedName('foo', 'metric');
-        $registry->registerCounter($metricName, 'help', ['foo', 'bar']);
+        $registry->registerHistogram($metricName, 'help', HistogramLabelNames::fromNames('foo', 'bar'));
         $this->expectException(MetricsRegistrationException::class);
-        $registry->registerCounter($metricName, 'help', ['spam', 'eggs']);
+        $registry->registerHistogram($metricName, 'help', HistogramLabelNames::fromNames('spam', 'eggs'));
     }
 
     /**
@@ -273,9 +288,9 @@ EOF
     {
         $registry   = new CollectorRegistry($this->getStorage());
         $metricName = MetricName::fromNamespacedName('foo', 'metric');
-        $registry->registerGauge($metricName, 'help', ['foo', 'bar']);
+        $registry->registerGauge($metricName, 'help', MetricLabelNames::fromNames('foo', 'bar'));
         $this->expectException(MetricsRegistrationException::class);
-        $registry->registerGauge($metricName, 'help', ['spam', 'eggs']);
+        $registry->registerGauge($metricName, 'help', MetricLabelNames::fromNames('spam', 'eggs'));
     }
 
     /**

@@ -12,6 +12,7 @@ use Prometheus\Sample;
 use Prometheus\Storage\FlushableStorage;
 use Prometheus\Storage\HistogramStorage;
 use Prometheus\Storage\Store;
+use Prometheus\Value\HistogramLabelNames;
 use Prometheus\Value\MetricName;
 use function array_combine;
 use function array_merge;
@@ -51,7 +52,7 @@ abstract class HistogramBaseTest extends TestCase
             $storage,
             MetricName::fromNamespacedName('test', 'some_metric'),
             'this is for testing',
-            ['foo', 'bar'],
+            HistogramLabelNames::fromNames('foo', 'bar'),
             [100, 200, 300]
         );
         $histogram->observe(123, ['lalal', 'lululu']);
@@ -89,7 +90,7 @@ abstract class HistogramBaseTest extends TestCase
             $storage,
             MetricName::fromNamespacedName('test', 'some_metric'),
             'this is for testing',
-            [],
+            null,
             [100, 200, 300]
         );
         $histogram->observe(245);
@@ -125,7 +126,7 @@ abstract class HistogramBaseTest extends TestCase
             $storage,
             MetricName::fromNamespacedName('test', 'some_metric'),
             'this is for testing',
-            [],
+            null,
             [0.1, 0.2, 0.3]
         );
         $histogram->observe(0.11);
@@ -163,7 +164,7 @@ abstract class HistogramBaseTest extends TestCase
             $storage,
             MetricName::fromNamespacedName('test', 'some_metric'),
             'this is for testing',
-            []
+            null
         );
         $histogram->observe(0.11);
         $histogram->observe(0.03);
@@ -207,7 +208,7 @@ abstract class HistogramBaseTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Histogram buckets must be in increasing order');
-        new Histogram($this->getStorage(), MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing', [], [1, 1]);
+        new Histogram($this->getStorage(), MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing', null, [1, 1]);
     }
 
     /**
@@ -217,27 +218,7 @@ abstract class HistogramBaseTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Histogram must have at least one bucket');
-        new Histogram($this->getStorage(), MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing', [], []);
-    }
-
-    /**
-     * @test
-     */
-    public function itShouldThrowAnExceptionWhenThereIsALabelNamedLe() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Histogram cannot have a label named');
-        new Histogram($this->getStorage(), MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing', ['le'], [1]);
-    }
-
-    /**
-     * @test
-     */
-    public function itShouldRejectInvalidLabelNames() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid label name');
-        new Histogram($this->getStorage(), MetricName::fromNamespacedName('test', 'some_metric'), 'help', ['invalid label'], [1]);
+        new Histogram($this->getStorage(), MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing', null, []);
     }
 
     /**
@@ -250,7 +231,7 @@ abstract class HistogramBaseTest extends TestCase
     {
         $storage   = $this->getStorage();
         $label     = 'foo';
-        $histogram = new Histogram($storage, MetricName::fromNamespacedName('test', 'some_metric'), 'help', [$label], [1]);
+        $histogram = new Histogram($storage, MetricName::fromNamespacedName('test', 'some_metric'), 'help', HistogramLabelNames::fromNames($label), [1]);
         $histogram->observe(1, [$value]);
 
         $metrics = $storage->collect();

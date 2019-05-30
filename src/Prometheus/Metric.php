@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace Prometheus;
 
 use InvalidArgumentException;
+use Prometheus\Value\LabelNames;
 use Prometheus\Value\MetricName;
 use function count;
-use function preg_match;
 use function print_r;
 use function sprintf;
 
+/**
+ * @template TLabelNames of LabelNames
+ */
 abstract class Metric
 {
     public const RE_METRIC_LABEL_NAME = '/^[a-zA-Z_:][a-zA-Z0-9_:]*$/';
@@ -18,23 +21,21 @@ abstract class Metric
     /** @var MetricName */
     private $name;
     /** @var string */
-    protected $help;
-    /** @var string[] */
-    protected $labels;
+    private $help;
+    /**
+     * @var LabelNames
+     * @psalm-var TLabelNames
+     * */
+    private $labelNames;
 
     /**
-     * @param string[] $labels
+     * @psalm-param TLabelNames $labelNames
      */
-    public function __construct(MetricName $name, string $help, array $labels = [])
+    public function __construct(MetricName $name, string $help, LabelNames $labelNames)
     {
-        $this->name = $name;
-        $this->help = $help;
-        foreach ($labels as $label) {
-            if (! preg_match(self::RE_METRIC_LABEL_NAME, $label)) {
-                throw new InvalidArgumentException("Invalid label name: '" . $label . "'");
-            }
-        }
-        $this->labels = $labels;
+        $this->name       = $name;
+        $this->help       = $help;
+        $this->labelNames = $labelNames;
     }
 
     public function getName() : MetricName
@@ -43,11 +44,11 @@ abstract class Metric
     }
 
     /**
-     * @return string[]
+     * @psalm-return TLabelNames
      */
-    public function getLabelNames() : array
+    public function getLabelNames() : LabelNames
     {
-        return $this->labels;
+        return $this->labelNames;
     }
 
     public function getHelp() : string
@@ -58,9 +59,9 @@ abstract class Metric
     /**
      * @param string[] $labels
      */
-    protected function assertLabelsAreDefinedCorrectly(array $labels) : void
+    final protected function assertLabelsAreDefinedCorrectly(array $labels) : void
     {
-        if (count($labels) !== count($this->labels)) {
+        if (count($labels) !== count($this->labelNames)) {
             throw new InvalidArgumentException(sprintf('Labels are not defined correctly: ', print_r($labels, true)));
         }
     }

@@ -7,6 +7,9 @@ namespace Prometheus\Storage;
 use APCUIterator;
 use Prometheus\MetricFamilySamples;
 use Prometheus\Sample;
+use Prometheus\Value\HistogramLabelNames;
+use Prometheus\Value\LabelNames;
+use Prometheus\Value\MetricLabelNames;
 use Prometheus\Value\MetricName;
 use RuntimeException;
 use function apcu_add;
@@ -49,7 +52,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function updateHistogram(MetricName $name, string $help, array $data) : void
+    public function updateHistogram(MetricName $name, string $help, HistogramLabelNames $labelNames, array $data) : void
     {
         // Initialize the sum
         $sumKey = $this->histogramBucketValueKey($name, $data['labelValues'], 'sum');
@@ -57,7 +60,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
 
         // If sum does not exist, assume a new histogram and store the metadata
         if ($new) {
-            apcu_store($this->metaKey($name, 'histogram'), json_encode($this->metaData($name, $help, $data)));
+            apcu_store($this->metaKey($name, 'histogram'), json_encode($this->metaData($name, $help, $labelNames, $data)));
         }
 
         // Atomically increment the sum
@@ -85,22 +88,22 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function setGaugeTo(MetricName $name, string $help, array $data) : void
+    public function setGaugeTo(MetricName $name, string $help, MetricLabelNames $labelNames, array $data) : void
     {
         $valueKey = $this->valueKey($name, 'gauge', $data['labelValues']);
         apcu_store($valueKey, $this->toInteger($data['value']));
-        apcu_store($this->metaKey($name, 'gauge'), json_encode($this->metaData($name, $help, $data)));
+        apcu_store($this->metaKey($name, 'gauge'), json_encode($this->metaData($name, $help, $labelNames, $data)));
     }
 
     /**
      * @inheritdoc
      */
-    public function addToGauge(MetricName $name, string $help, array $data) : void
+    public function addToGauge(MetricName $name, string $help, MetricLabelNames $labelNames, array $data) : void
     {
         $valueKey = $this->valueKey($name, 'gauge', $data['labelValues']);
         $new      = apcu_add($valueKey, $this->toInteger(0));
         if ($new) {
-            apcu_store($this->metaKey($name, 'gauge'), json_encode($this->metaData($name, $help, $data)));
+            apcu_store($this->metaKey($name, 'gauge'), json_encode($this->metaData($name, $help, $labelNames, $data)));
         }
             // Taken from https://github.com/prometheus/client_golang/blob/66058aac3a83021948e5fb12f1f408ff556b9037/prometheus/value.go#L91
             $done = false;
@@ -113,11 +116,11 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function incrementCounter(MetricName $name, string $help, array $data) : void
+    public function incrementCounter(MetricName $name, string $help, MetricLabelNames $labelNames, array $data) : void
     {
         $new = apcu_add($this->valueKey($name, 'counter', $data['labelValues']), 0);
         if ($new) {
-            apcu_store($this->metaKey($name, 'counter'), json_encode($this->metaData($name, $help, $data)));
+            apcu_store($this->metaKey($name, 'counter'), json_encode($this->metaData($name, $help, $labelNames, $data)));
         }
         apcu_inc($this->valueKey($name, 'counter', $data['labelValues']), (int) $data['value']);
     }
@@ -166,14 +169,15 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
      *
      * @return array<string,string>
      */
-    private function metaData(MetricName $name, string $help, array $data) : array
+    private function metaData(MetricName $name, string $help, LabelNames $labelNames, array $data) : array
     {
         $metricsMetaData = $data;
         unset($metricsMetaData['value']);
         unset($metricsMetaData['command']);
         unset($metricsMetaData['labelValues']);
-        $metricsMetaData['name'] = $name->toString();
-        $metricsMetaData['help'] = $help;
+        $metricsMetaData['name']       = $name->toString();
+        $metricsMetaData['help']       = $help;
+        $metricsMetaData['labelNames'] = $labelNames->toStrings();
 
         return $metricsMetaData;
     }

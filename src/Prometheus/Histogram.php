@@ -6,10 +6,14 @@ namespace Prometheus;
 
 use InvalidArgumentException;
 use Prometheus\Storage\HistogramStorage;
+use Prometheus\Value\HistogramLabelNames;
 use Prometheus\Value\MetricName;
 use function count;
 
-class Histogram extends Metric
+/**
+ * @extends Metric<HistogramLabelNames>
+ */
+final class Histogram extends Metric
 {
     /** @var HistogramStorage */
     private $storage;
@@ -18,12 +22,11 @@ class Histogram extends Metric
     private $buckets;
 
     /**
-     * @param string[] $labels
-     * @param float[]  $buckets
+     * @param float[] $buckets
      */
-    public function __construct(HistogramStorage $storage, MetricName $name, string $help, array $labels = [], ?array $buckets = null)
+    public function __construct(HistogramStorage $storage, MetricName $name, string $help, ?HistogramLabelNames $labelNames = null, ?array $buckets = null)
     {
-        parent::__construct($name, $help, $labels);
+        parent::__construct($name, $help, $labelNames ?? HistogramLabelNames::fromNames());
         $this->storage = $storage;
 
         if ($buckets === null) {
@@ -40,11 +43,6 @@ class Histogram extends Metric
                     'Histogram buckets must be in increasing order: ' .
                     $buckets[$i] . ' >= ' . $buckets[$i + 1]
                 );
-            }
-        }
-        foreach ($labels as $label) {
-            if ($label === 'le') {
-                throw new InvalidArgumentException("Histogram cannot have a label named 'le'.");
             }
         }
         $this->buckets = $buckets;
@@ -86,9 +84,9 @@ class Histogram extends Metric
         $this->storage->updateHistogram(
             $this->getName(),
             $this->getHelp(),
+            $this->getLabelNames(),
             [
                 'value' => $value,
-                'labelNames' => $this->getLabelNames(),
                 'labelValues' => $labels,
                 'buckets' => $this->buckets,
             ]

@@ -5,6 +5,7 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use Prometheus\Registry\CollectorRegistry;
+use Prometheus\Value\MetricLabelNames;
 use Prometheus\Value\MetricName;
 
 $adapter = $_GET['adapter'];
@@ -20,7 +21,11 @@ if ($adapter === 'redis') {
 }
 $registry = new CollectorRegistry($adapter);
 
-$counter = $registry->registerCounter(MetricName::fromNamespacedName('test', 'some_counter'), 'it increases', ['type']);
+$counter = $registry->registerCounter(
+    MetricName::fromNamespacedName('test', 'some_counter'),
+    'it increases',
+    MetricLabelNames::fromNames('type')
+);
 $counter->incBy((int) $_GET['c'], ['blue']);
 
 echo "OK\n";

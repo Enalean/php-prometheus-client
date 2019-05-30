@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Prometheus\Storage;
 
+use Prometheus\Value\HistogramLabelNames;
+use Prometheus\Value\MetricLabelNames;
 use Prometheus\Value\MetricName;
 
 final class NullStore implements Store, CounterStorage, GaugeStorage, HistogramStorage
@@ -19,7 +21,7 @@ final class NullStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function updateHistogram(MetricName $name, string $help, array $data) : void
+    public function updateHistogram(MetricName $name, string $help, HistogramLabelNames $labelNames, array $data) : void
     {
         return;
     }
@@ -27,7 +29,7 @@ final class NullStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function setGaugeTo(MetricName $name, string $help, array $data) : void
+    public function setGaugeTo(MetricName $name, string $help, MetricLabelNames $labelNames, array $data) : void
     {
         return;
     }
@@ -35,7 +37,7 @@ final class NullStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function addToGauge(MetricName $name, string $help, array $data) : void
+    public function addToGauge(MetricName $name, string $help, MetricLabelNames $labelNames, array $data) : void
     {
         return;
     }
@@ -43,7 +45,7 @@ final class NullStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function incrementCounter(MetricName $name, string $help, array $data) : void
+    public function incrementCounter(MetricName $name, string $help, MetricLabelNames $labelNames, array $data) : void
     {
         return;
     }

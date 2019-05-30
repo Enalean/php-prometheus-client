@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Test\Prometheus\Storage;
 
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Prometheus\Counter;
 use Prometheus\MetricFamilySamples;
@@ -12,6 +11,7 @@ use Prometheus\Sample;
 use Prometheus\Storage\CounterStorage;
 use Prometheus\Storage\FlushableStorage;
 use Prometheus\Storage\Store;
+use Prometheus\Value\MetricLabelNames;
 use Prometheus\Value\MetricName;
 use function array_combine;
 use function array_merge;
@@ -47,7 +47,12 @@ abstract class CounterBaseTest extends TestCase
     public function itShouldIncreaseWithLabels() : void
     {
         $storage = $this->getStorage();
-        $gauge   = new Counter($storage, MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing', ['foo', 'bar']);
+        $gauge   = new Counter(
+            $storage,
+            MetricName::fromNamespacedName('test', 'some_metric'),
+            'this is for testing',
+            MetricLabelNames::fromNames('foo', 'bar')
+        );
         $gauge->inc(['lalal', 'lululu']);
         $gauge->inc(['lalal', 'lululu']);
         $gauge->inc(['lalal', 'lululu']);
@@ -95,7 +100,12 @@ abstract class CounterBaseTest extends TestCase
     public function itShouldIncreaseTheCounterByAnArbitraryInteger() : void
     {
         $storage = $this->getStorage();
-        $gauge   = new Counter($storage, MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing', ['foo', 'bar']);
+        $gauge   = new Counter(
+            $storage,
+            MetricName::fromNamespacedName('test', 'some_metric'),
+            'this is for testing',
+            MetricLabelNames::fromNames('foo', 'bar')
+        );
         $gauge->inc(['lalal', 'lululu']);
         $gauge->incBy(123, ['lalal', 'lululu']);
         $this->assertThat(
@@ -114,15 +124,6 @@ abstract class CounterBaseTest extends TestCase
     }
 
     /**
-     * @test
-     */
-    public function itShouldRejectInvalidLabelNames() : void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        new Counter($this->getStorage(), MetricName::fromNamespacedName('test', 'some_metric'), 'help', ['invalid label']);
-    }
-
-    /**
      * @param mixed $value The label value
      *
      * @test
@@ -132,7 +133,7 @@ abstract class CounterBaseTest extends TestCase
     {
         $storage = $this->getStorage();
         $label   = 'foo';
-        $counter = new Counter($storage, MetricName::fromNamespacedName('test', 'some_metric'), 'help', [$label]);
+        $counter = new Counter($storage, MetricName::fromNamespacedName('test', 'some_metric'), 'help', MetricLabelNames::fromNames($label));
         $counter->inc([$value]);
 
         $metrics = $storage->collect();

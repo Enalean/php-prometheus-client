@@ -6,6 +6,8 @@ namespace Prometheus\Storage;
 
 use Prometheus\MetricFamilySamples;
 use Prometheus\Sample;
+use Prometheus\Value\HistogramLabelNames;
+use Prometheus\Value\MetricLabelNames;
 use Prometheus\Value\MetricName;
 use Redis;
 use function array_keys;
@@ -81,7 +83,7 @@ LUA
     /**
      * @inheritdoc
      */
-    public function updateHistogram(MetricName $name, string $help, array $data) : void
+    public function updateHistogram(MetricName $name, string $help, HistogramLabelNames $labelNames, array $data) : void
     {
         $bucketToIncrease = '+Inf';
         foreach ($data['buckets'] as $bucket) {
@@ -95,6 +97,7 @@ LUA
         $metaData['help'] = $help;
         unset($metaData['value']);
         unset($metaData['labelValues']);
+        $metaData['labelNames'] = $labelNames->toStrings();
         $this->redis->eval(
             <<<LUA
 local increment = redis.call('hIncrByFloat', KEYS[1], KEYS[2], ARGV[1])
@@ -120,35 +123,36 @@ LUA
     /**
      * @inheritdoc
      */
-    public function setGaugeTo(MetricName $name, string $help, array $data) : void
+    public function setGaugeTo(MetricName $name, string $help, MetricLabelNames $labelNames, array $data) : void
     {
-        $this->updateGauge($name, $help, 'hSet', $data);
+        $this->updateGauge($name, $help, $labelNames, 'hSet', $data);
     }
 
     /**
      * @inheritdoc
      */
-    public function addToGauge(MetricName $name, string $help, array $data) : void
+    public function addToGauge(MetricName $name, string $help, MetricLabelNames $labelNames, array $data) : void
     {
-        $this->updateGauge($name, $help, 'hIncrByFloat', $data);
+        $this->updateGauge($name, $help, $labelNames, 'hIncrByFloat', $data);
     }
 
     /**
      * @param array<string,float|string[]> $data
      *
      * @psalm-param array{
-     *      labelNames:string[],
      *      value:float,
      *      labelValues:string[]
      * } $data
      */
-    private function updateGauge(MetricName $name, string $help, string $command, array $data) : void
+    private function updateGauge(MetricName $name, string $help, MetricLabelNames $labelNames, string $command, array $data) : void
     {
         $metaData         = $data;
         $metaData['name'] = $name->toString();
         $metaData['help'] = $help;
         unset($metaData['value']);
         unset($metaData['labelValues']);
+        $metaData['labelNames'] = $labelNames->toStrings();
+
         $this->redis->eval(
             <<<LUA
 local result = redis.call(KEYS[2], KEYS[1], KEYS[4], ARGV[1])
@@ -181,13 +185,14 @@ LUA
     /**
      * @inheritdoc
      */
-    public function incrementCounter(MetricName $name, string $help, array $data) : void
+    public function incrementCounter(MetricName $name, string $help, MetricLabelNames $labelNames, array $data) : void
     {
         $metaData         = $data;
         $metaData['name'] = $name->toString();
         $metaData['help'] = $help;
         unset($metaData['value']);
         unset($metaData['labelValues']);
+        $metaData['labelNames'] = $labelNames->toStrings();
 
         $this->redis->eval(
             <<<LUA
