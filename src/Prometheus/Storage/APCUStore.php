@@ -52,7 +52,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function updateHistogram(MetricName $name, float $value, string $help, HistogramLabelNames $labelNames, array $labelValues, array $data) : void
+    public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, array $labelValues) : void
     {
         // Initialize the sum
         $sumKey = $this->histogramBucketValueKey($name, $labelValues, 'sum');
@@ -61,7 +61,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
         // If sum does not exist, assume a new histogram and store the metadata
         if ($new) {
             $metaData            = $this->metaData($name, $help, $labelNames);
-            $metaData['buckets'] = $data['buckets'];
+            $metaData['buckets'] = $buckets;
             apcu_store($this->metaKey($name, 'histogram'), json_encode($metaData));
         }
 
@@ -75,7 +75,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
 
         // Figure out in which bucket the observation belongs
         $bucketToIncrease = '+Inf';
-        foreach ($data['buckets'] as $bucket) {
+        foreach ($buckets as $bucket) {
             if ($value <= $bucket) {
                 $bucketToIncrease = $bucket;
                 break;

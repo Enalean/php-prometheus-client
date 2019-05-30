@@ -84,12 +84,10 @@ final class Histogram extends Metric
         $this->storage->updateHistogram(
             $this->getName(),
             $value,
+            $this->buckets,
             $this->getHelp(),
             $this->getLabelNames(),
-            $labelValues,
-            [
-                'buckets' => $this->buckets,
-            ]
+            $labelValues
         );
     }
 }

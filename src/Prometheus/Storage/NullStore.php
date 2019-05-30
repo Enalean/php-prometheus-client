@@ -21,7 +21,7 @@ final class NullStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function updateHistogram(MetricName $name, float $value, string $help, HistogramLabelNames $labelNames, array $labelValues, array $data) : void
+    public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, array $labelValues) : void
     {
         return;
     }

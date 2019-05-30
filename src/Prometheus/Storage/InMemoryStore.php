@@ -190,13 +190,13 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
     /**
      * @inheritdoc
      */
-    public function updateHistogram(MetricName $name, float $value, string $help, HistogramLabelNames $labelNames, array $labelValues, array $data) : void
+    public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, array $labelValues) : void
     {
         // Initialize the sum
         $metaKey = $this->metaKey($name);
         if (array_key_exists($metaKey, $this->histograms) === false) {
             $metaData                   = $this->metaData($name, $help, $labelNames);
-            $metaData['buckets']        = $data['buckets'];
+            $metaData['buckets']        = $buckets;
             $this->histograms[$metaKey] = [
                 'meta' => $metaData,
                 'samples' => [],
@@ -210,7 +210,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
         $this->histograms[$metaKey]['samples'][$sumKey] += $value;
 
         $bucketToIncrease = '+Inf';
-        foreach ($data['buckets'] as $bucket) {
+        foreach ($buckets as $bucket) {
             if ($value <= $bucket) {
                 $bucketToIncrease = $bucket;
                 break;

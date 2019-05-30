@@ -83,10 +83,10 @@ LUA
     /**
      * @inheritdoc
      */
-    public function updateHistogram(MetricName $name, float $value, string $help, HistogramLabelNames $labelNames, array $labelValues, array $data) : void
+    public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, array $labelValues) : void
     {
         $bucketToIncrease = '+Inf';
-        foreach ($data['buckets'] as $bucket) {
+        foreach ($buckets as $bucket) {
             if ($value <= $bucket) {
                 $bucketToIncrease = $bucket;
                 break;
@@ -96,7 +96,7 @@ LUA
             'name' => $name->toString(),
             'help' => $help,
             'labelNames' => $labelNames->toStrings(),
-            'buckets' => $data['buckets'],
+            'buckets' => $buckets,
         ];
         $this->redis->eval(
             <<<LUA
