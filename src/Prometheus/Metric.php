@@ -16,8 +16,6 @@ use function sprintf;
  */
 abstract class Metric
 {
-    public const RE_METRIC_LABEL_NAME = '/^[a-zA-Z_:][a-zA-Z0-9_:]*$/';
-
     /** @var MetricName */
     private $name;
     /** @var string */
