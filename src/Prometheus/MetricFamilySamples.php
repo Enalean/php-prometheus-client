@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Prometheus;
 
-class MetricFamilySamples
+final class MetricFamilySamples
 {
     /** @var string */
     private $name;
