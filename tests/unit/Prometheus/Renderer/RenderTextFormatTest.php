@@ -36,6 +36,13 @@ final class RenderTextFormatTest extends TestCase
                     new Sample('test_some_metric_bucket', 0, ['le'], ['0.01']),
                 ]
             ),
+            new MetricFamilySamples(
+                'C',
+                'gauge',
+                'test C',
+                [],
+                [new Sample('test_some_metric_gauge', 0, [], [])]
+            ),
         ];
 
         $this->assertEquals(
@@ -46,6 +53,9 @@ test_some_metric_bucket{le="0.01"} 0
 # HELP B test B
 # TYPE B counter
 test_some_metric_counter{label1="value1",label2="value\\\\2",label3="value\n3"} 1
+# HELP C test C
+# TYPE C gauge
+test_some_metric_gauge 0
 ',
             $renderer->render($metrics)
         );
