@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Prometheus;
 
-class Sample
+final class Sample
 {
     /** @var string */
     private $name;
