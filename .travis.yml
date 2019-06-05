@@ -50,7 +50,10 @@ jobs:
         - docker-compose exec phpunit env ADAPTER=redis vendor/bin/phpunit --testsuite=functionnal
 
 script:
-  - vendor/bin/phpunit --verbose --colors
+  - vendor/bin/phpunit --verbose --colors --coverage-clover=coverage.xml
+
+after_success:
+- bash <(curl -s https://codecov.io/bash)
 
 stages:
   - "Code Quality"
