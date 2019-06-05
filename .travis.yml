@@ -48,6 +48,14 @@ jobs:
       script:
         - docker-compose exec phpunit env ADAPTER=apcu vendor/bin/phpunit --testsuite=functionnal
         - docker-compose exec phpunit env ADAPTER=redis vendor/bin/phpunit --testsuite=functionnal
+    - stage: test
+      name: Mutation testing
+      services:
+        - redis-server
+      install: travis_retry composer install --prefer-dist
+      php: 7.3
+      script:
+        - ./vendor/bin/infection --min-msi=85 --min-covered-msi=85
 
 script:
   - vendor/bin/phpunit --verbose --colors --coverage-clover=coverage.xml
