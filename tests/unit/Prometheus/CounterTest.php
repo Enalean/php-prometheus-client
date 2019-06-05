@@ -38,6 +38,18 @@ final class CounterTest extends TestCase
         $this->assertEquals($storage->value, 5);
     }
 
+    /**
+     * @testWith [-1]
+     *           [0]
+     */
+    public function testCounterCanOnlyBeIncremented(int $value) : void
+    {
+        $counter = new Counter($this->getEmptyStorage(), MetricName::fromName('name'), 'help');
+
+        $this->expectException(InvalidArgumentException::class);
+        $counter->incBy($value);
+    }
+
     public function testIncrementIsRejectedWhenLabelValuesAreNotDefinedCorrectly() : void
     {
         $counter = new Counter($this->getEmptyStorage(), MetricName::fromName('name'), 'help', MetricLabelNames::fromNames('labelA', 'labelB'));

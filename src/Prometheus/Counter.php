@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Prometheus;
 
+use InvalidArgumentException;
 use Prometheus\Storage\CounterStorage;
 use Prometheus\Value\MetricLabelNames;
 use Prometheus\Value\MetricName;
+use function sprintf;
 
 /**
  * @extends Metric<MetricLabelNames>
@@ -36,6 +38,10 @@ final class Counter extends Metric
      */
     public function incBy(int $count, string ...$labelValues) : void
     {
+        if ($count <= 0) {
+            throw new InvalidArgumentException(sprintf('Counter can only be incremented, %d is not positive', $count));
+        }
+
         $this->assertLabelsAreDefinedCorrectly(...$labelValues);
 
         $this->storage->incrementCounter(
