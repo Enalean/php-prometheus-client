@@ -57,6 +57,7 @@ abstract class HistogramBaseTest extends TestCase
         );
         $histogram->observe(123, 'lalal', 'lululu');
         $histogram->observe(245, 'lalal', 'lululu');
+        $histogram->observe(254, 'lalal', 'lululu');
 
         $this->assertThat(
             $storage->collect(),
@@ -69,10 +70,10 @@ abstract class HistogramBaseTest extends TestCase
                     [
                         new Sample('test_some_metric_bucket', 0, ['le'], ['lalal', 'lululu', '100']),
                         new Sample('test_some_metric_bucket', 1, ['le'], ['lalal', 'lululu', '200']),
-                        new Sample('test_some_metric_bucket', 2, ['le'], ['lalal', 'lululu', '300']),
-                        new Sample('test_some_metric_bucket', 2, ['le'], ['lalal', 'lululu', '+Inf']),
-                        new Sample('test_some_metric_count', 2, [], ['lalal', 'lululu']),
-                        new Sample('test_some_metric_sum', 368, [], ['lalal', 'lululu']),
+                        new Sample('test_some_metric_bucket', 3, ['le'], ['lalal', 'lululu', '300']),
+                        new Sample('test_some_metric_bucket', 3, ['le'], ['lalal', 'lululu', '+Inf']),
+                        new Sample('test_some_metric_count', 3, [], ['lalal', 'lululu']),
+                        new Sample('test_some_metric_sum', 622, [], ['lalal', 'lululu']),
                     ]
                 ),
                 ]
@@ -94,6 +95,7 @@ abstract class HistogramBaseTest extends TestCase
             [100, 200, 300]
         );
         $histogram->observe(245);
+        $histogram->observe(254);
         $this->assertThat(
             $storage->collect(),
             $this->equalTo(
@@ -105,10 +107,10 @@ abstract class HistogramBaseTest extends TestCase
                     [
                         new Sample('test_some_metric_bucket', 0, ['le'], ['100']),
                         new Sample('test_some_metric_bucket', 0, ['le'], ['200']),
-                        new Sample('test_some_metric_bucket', 1, ['le'], ['300']),
-                        new Sample('test_some_metric_bucket', 1, ['le'], ['+Inf']),
-                        new Sample('test_some_metric_count', 1, [], []),
-                        new Sample('test_some_metric_sum', 245, [], []),
+                        new Sample('test_some_metric_bucket', 2, ['le'], ['300']),
+                        new Sample('test_some_metric_bucket', 2, ['le'], ['+Inf']),
+                        new Sample('test_some_metric_count', 2, [], []),
+                        new Sample('test_some_metric_sum', 499, [], []),
                     ]
                 ),
                 ]
