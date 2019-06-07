@@ -22,6 +22,15 @@ final class CollectorRegistryTest extends CollectorRegistryBaseTest
     use ConfigureRedisStorage;
 
     /**
+     * @before
+     * @after
+     */
+    public function flushRedis() : void
+    {
+        $this->getRedisClient()->flushDb();
+    }
+
+    /**
      * @test
      */
     public function itShouldOnlyFlushMetricData() : void
