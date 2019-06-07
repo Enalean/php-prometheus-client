@@ -8,7 +8,7 @@ use Prometheus\Value\HistogramLabelNames;
 use Prometheus\Value\MetricLabelNames;
 use Prometheus\Value\MetricName;
 
-final class NullStore implements Store, CounterStorage, GaugeStorage, HistogramStorage
+final class NullStore implements Store, CounterStorage, GaugeStorage, HistogramStorage, FlushableStorage
 {
     /**
      * @inheritdoc
@@ -39,5 +39,9 @@ final class NullStore implements Store, CounterStorage, GaugeStorage, HistogramS
     public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
     {
         return;
+    }
+
+    public function flush() : void
+    {
     }
 }

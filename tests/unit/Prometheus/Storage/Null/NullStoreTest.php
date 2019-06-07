@@ -33,5 +33,7 @@ final class NullStoreTest extends TestCase
         $histogram->observe(123);
 
         $this->assertEmpty($null_store->collect());
+        $null_store->flush();
+        $this->assertEmpty($null_store->collect());
     }
 }
