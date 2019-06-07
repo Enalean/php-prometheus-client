@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Test\Prometheus;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Prometheus\Gauge;
 use Prometheus\Storage\GaugeStorage;
@@ -44,5 +45,47 @@ final class GaugeTest extends TestCase
         $this->assertEquals($storage->value, 0.1);
         $gauge->set(-10);
         $this->assertEquals($storage->value, -10);
+    }
+
+    public function testIncrementIsRejectedWhenLabelValuesAreNotDefinedCorrectly() : void
+    {
+        $gauge = new Gauge($this->getEmptyStorage(), MetricName::fromName('name'), 'help', MetricLabelNames::fromNames('labelA', 'labelB'));
+
+        $this->expectException(InvalidArgumentException::class);
+        $gauge->inc('valueA');
+    }
+
+    public function testSettingTheGaugeToAnArbitraryValueIsRejectedWhenLabelValuesAreNotDefinedCorrectly() : void
+    {
+        $gauge = new Gauge($this->getEmptyStorage(), MetricName::fromName('name'), 'help', MetricLabelNames::fromNames('labelA', 'labelB'));
+
+        $this->expectException(InvalidArgumentException::class);
+        $gauge->set(10, 'valueA');
+    }
+
+    public function testMetricInformationCanBeRetrieved() : void
+    {
+        $name       = MetricName::fromName('name');
+        $help       = 'help';
+        $labelNames = MetricLabelNames::fromNames('labelA', 'labelB');
+
+        $gauge = new Gauge($this->getEmptyStorage(), $name, $help, $labelNames);
+
+        $this->assertSame($name, $gauge->getName());
+        $this->assertSame($help, $gauge->getHelp());
+        $this->assertSame($labelNames, $gauge->getLabelNames());
+    }
+
+    private function getEmptyStorage() : GaugeStorage
+    {
+        return new class implements GaugeStorage {
+            public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
+            {
+            }
+
+            public function addToGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
+            {
+            }
+        };
     }
 }

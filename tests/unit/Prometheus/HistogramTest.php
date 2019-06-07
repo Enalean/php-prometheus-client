@@ -50,7 +50,36 @@ final class HistogramTest extends TestCase
     public function testHistogramNeedsToBeOrderedInIncreasingOrder() : void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Histogram buckets must be in increasing order: 2 >= 1');
         new Histogram($this->getEmptyStorage(), MetricName::fromName('name'), 'help', null, [2, 1]);
+    }
+
+    public function testHistogramCannotHaveIdenticalBuckets() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Histogram buckets must be in increasing order: 1 >= 1');
+        new Histogram($this->getEmptyStorage(), MetricName::fromName('name'), 'help', null, [1, 1]);
+    }
+
+    public function testObservationIsRejectedWhenLabelValuesAreNotDefinedCorrectly() : void
+    {
+        $counter = new Histogram($this->getEmptyStorage(), MetricName::fromName('name'), 'help', HistogramLabelNames::fromNames('labelA', 'labelB'));
+
+        $this->expectException(InvalidArgumentException::class);
+        $counter->observe(0, 'valueA');
+    }
+
+    public function testMetricInformationCanBeRetrieved() : void
+    {
+        $name       = MetricName::fromName('name');
+        $help       = 'help';
+        $labelNames = HistogramLabelNames::fromNames('labelA', 'labelB');
+
+        $histogram = new Histogram($this->getEmptyStorage(), $name, $help, $labelNames);
+
+        $this->assertSame($name, $histogram->getName());
+        $this->assertSame($help, $histogram->getHelp());
+        $this->assertSame($labelNames, $histogram->getLabelNames());
     }
 
     private function getEmptyStorage() : HistogramStorage

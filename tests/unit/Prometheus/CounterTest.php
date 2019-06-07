@@ -68,6 +68,19 @@ final class CounterTest extends TestCase
         $counter->inc('valueA');
     }
 
+    public function testMetricInformationCanBeRetrieved() : void
+    {
+        $name       = MetricName::fromName('name');
+        $help       = 'help';
+        $labelNames = MetricLabelNames::fromNames('labelA', 'labelB');
+
+        $counter = new Counter($this->getEmptyStorage(), $name, $help, $labelNames);
+
+        $this->assertSame($name, $counter->getName());
+        $this->assertSame($help, $counter->getHelp());
+        $this->assertSame($labelNames, $counter->getLabelNames());
+    }
+
     private function getEmptyStorage() : CounterStorage
     {
         return new class implements CounterStorage {
