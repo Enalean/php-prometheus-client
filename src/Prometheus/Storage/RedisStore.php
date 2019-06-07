@@ -180,12 +180,11 @@ LUA
 
         $this->redis->eval(
             <<<LUA
-local result = redis.call('hIncrBy', KEYS[1], KEYS[3], ARGV[1])
-if result == tonumber(ARGV[1]) then
+local result = redis.call('hIncrByFloat', KEYS[1], KEYS[3], ARGV[1])
+if result == ARGV[1] then
     redis.call('hMSet', KEYS[1], '__meta', ARGV[2])
     redis.call('sAdd', KEYS[2], KEYS[1])
 end
-return result
 LUA
             ,
             [

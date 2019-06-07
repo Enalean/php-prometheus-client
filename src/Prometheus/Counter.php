@@ -33,10 +33,10 @@ final class Counter extends Metric
     }
 
     /**
-     * @param int      $count       e.g. 2
+     * @param float    $count       e.g. 2
      * @param string[] $labelValues e.g. ['status', 'opcode']
      */
-    public function incBy(int $count, string ...$labelValues) : void
+    public function incBy(float $count, string ...$labelValues) : void
     {
         if ($count <= 0) {
             throw new InvalidArgumentException(sprintf('Counter can only be incremented, %d is not positive', $count));

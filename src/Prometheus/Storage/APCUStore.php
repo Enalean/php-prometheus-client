@@ -111,11 +111,18 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
 
     public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
     {
-        $new = apcu_add($this->valueKey($name, 'counter', $labelValues), 0);
+        $valueKey = $this->valueKey($name, 'counter', $labelValues);
+        $new      = apcu_add($valueKey, $this->toInteger(0));
         if ($new) {
             apcu_store($this->metaKey($name, 'counter'), json_encode($this->metaData($name, $help, $labelNames)));
         }
-        apcu_inc($this->valueKey($name, 'counter', $labelValues), (int) $value);
+
+        // Taken from https://github.com/prometheus/client_golang/blob/66058aac3a83021948e5fb12f1f408ff556b9037/prometheus/value.go#L91
+        $done = false;
+        while (! $done) {
+            $old  = apcu_fetch($valueKey);
+            $done = apcu_cas($valueKey, $old, $this->toInteger($this->fromInteger($old) + $value));
+        }
     }
 
     public function flush() : void
@@ -197,7 +204,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
                     'name' => (string) $metaData['name'],
                     'labelNames' => [],
                     'labelValues' => $this->decodeLabelValues($labelValues),
-                    'value' => (float) $value['value'],
+                    'value' => $this->fromInteger($value['value']),
                 ];
             }
             $this->sortSamples($data['samples']);

@@ -36,6 +36,8 @@ final class CounterTest extends TestCase
         $this->assertEquals($storage->value, 2);
         $counter->incBy(3);
         $this->assertEquals($storage->value, 5);
+        $counter->incBy(0.123);
+        $this->assertEquals($storage->value, 5.123);
     }
 
     /**

@@ -47,15 +47,15 @@ abstract class CounterBaseTest extends TestCase
     public function itShouldIncreaseWithLabels() : void
     {
         $storage = $this->getStorage();
-        $gauge   = new Counter(
+        $counter = new Counter(
             $storage,
             MetricName::fromNamespacedName('test', 'some_metric'),
             'this is for testing',
             MetricLabelNames::fromNames('foo', 'bar')
         );
-        $gauge->inc('lalal', 'lululu');
-        $gauge->inc('lalal', 'lululu');
-        $gauge->inc('lalal', 'lululu');
+        $counter->inc('lalal', 'lululu');
+        $counter->inc('lalal', 'lululu');
+        $counter->inc('lalal', 'lululu');
         $this->assertThat(
             $storage->collect(),
             $this->equalTo(
@@ -77,8 +77,8 @@ abstract class CounterBaseTest extends TestCase
     public function itShouldIncreaseWithoutLabelWhenNoLabelsAreDefined() : void
     {
         $storage = $this->getStorage();
-        $gauge   = new Counter($storage, MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing');
-        $gauge->inc();
+        $counter = new Counter($storage, MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing');
+        $counter->inc();
         $this->assertThat(
             $storage->collect(),
             $this->equalTo(
@@ -100,14 +100,14 @@ abstract class CounterBaseTest extends TestCase
     public function itShouldIncreaseTheCounterByAnArbitraryInteger() : void
     {
         $storage = $this->getStorage();
-        $gauge   = new Counter(
+        $counter = new Counter(
             $storage,
             MetricName::fromNamespacedName('test', 'some_metric'),
             'this is for testing',
             MetricLabelNames::fromNames('foo', 'bar')
         );
-        $gauge->inc('lalal', 'lululu');
-        $gauge->incBy(123, 'lalal', 'lululu');
+        $counter->inc('lalal', 'lululu');
+        $counter->incBy(123, 'lalal', 'lululu');
         $this->assertThat(
             $storage->collect(),
             $this->equalTo(
@@ -117,6 +117,35 @@ abstract class CounterBaseTest extends TestCase
                     'this is for testing',
                     ['foo', 'bar'],
                     [new Sample('test_some_metric', 124, [], ['lalal', 'lululu'])]
+                ),
+                ]
+            )
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function itShouldIncreaseTheCounterByAnArbitraryFloat() : void
+    {
+        $storage = $this->getStorage();
+        $counter = new Counter(
+            $storage,
+            MetricName::fromNamespacedName('test', 'some_metric'),
+            'this is for testing',
+            MetricLabelNames::fromNames('foo', 'bar')
+        );
+        $counter->inc('lalal', 'lululu');
+        $counter->incBy(123.5, 'lalal', 'lululu');
+        $this->assertThat(
+            $storage->collect(),
+            $this->equalTo(
+                [new MetricFamilySamples(
+                    'test_some_metric',
+                    'counter',
+                    'this is for testing',
+                    ['foo', 'bar'],
+                    [new Sample('test_some_metric', 124.5, [], ['lalal', 'lululu'])]
                 ),
                 ]
             )
