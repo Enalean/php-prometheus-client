@@ -25,6 +25,7 @@ final class PSR18UnexpectedPushGatewayResponseTest extends TestCase
         $this->assertSame($request, $exception->getRequest());
         $this->assertSame($response, $exception->getResponse());
         $this->assertNull($exception->getPrevious());
+        $this->assertEquals(0, $exception->getCode());
     }
 
     public function testRequestFailure() : void
@@ -38,5 +39,6 @@ final class PSR18UnexpectedPushGatewayResponseTest extends TestCase
         $this->assertSame($request, $exception->getRequest());
         $this->assertNull($exception->getResponse());
         $this->assertSame($clientException, $exception->getPrevious());
+        $this->assertEquals($clientException->getCode(), $exception->getCode());
     }
 }

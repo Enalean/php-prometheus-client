@@ -20,14 +20,17 @@ final class PSR18UnexpectedPushGatewayResponse extends UnexpectedPushGatewayResp
         $this->request  = $request;
         $this->response = $response;
 
-        $message = 'Cannot connect PushGateway server to ' . (string) $request->getUri() . ':';
+        $exceptionCode = 0;
+
+        $message = 'Cannot connect PushGateway server to ' . $request->getUri()->__toString() . ':';
         if ($response !== null) {
             $message = ' ' . $response->getStatusCode() . ' ' . $response->getReasonPhrase();
         }
         if ($clientException !== null) {
-            $message = ' ' . $clientException->getMessage();
+            $message       = ' ' . $clientException->getMessage();
+            $exceptionCode = (int) $clientException->getCode();
         }
-        parent::__construct($message, 0, $clientException);
+        parent::__construct($message, $exceptionCode, $clientException);
     }
 
     public static function invalidResponse(RequestInterface $request, ResponseInterface $response) : self

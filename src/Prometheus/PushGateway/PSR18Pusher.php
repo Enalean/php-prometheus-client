@@ -13,7 +13,6 @@ use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use function rawurlencode;
 use function strpos;
-use function substr;
 
 final class PSR18Pusher implements Pusher
 {
@@ -30,9 +29,6 @@ final class PSR18Pusher implements Pusher
     {
         if (strpos($address, '://') === false) {
             $address = 'http://' . $address;
-        }
-        if ($address[-1] === '/') {
-            $address = substr($address, 0, -1);
         }
         $this->address         = $address . '/metrics/job/';
         $this->client          = $client;
