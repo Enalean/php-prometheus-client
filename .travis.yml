@@ -55,7 +55,7 @@ jobs:
       install: travis_retry composer install --prefer-dist
       php: 7.3
       script:
-        - ./vendor/bin/infection --min-msi=85 --min-covered-msi=85
+        - ./vendor/bin/infection --min-msi=90 --min-covered-msi=90
 
 script:
   - vendor/bin/phpunit --verbose --colors --coverage-clover=coverage.xml
