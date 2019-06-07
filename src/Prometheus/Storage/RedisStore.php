@@ -242,7 +242,7 @@ LUA
                         $histogram['samples'][] = [
                             'name' => $histogram['name'] . '_bucket',
                             'labelNames' => ['le'],
-                            'labelValues' => array_merge($labelValues, [$bucket]),
+                            'labelValues' => array_merge($labelValues, [(string) $bucket]),
                             'value' => $acc,
                         ];
                     } else {
@@ -250,7 +250,7 @@ LUA
                         $histogram['samples'][] = [
                             'name' => $histogram['name'] . '_bucket',
                             'labelNames' => ['le'],
-                            'labelValues' => array_merge($labelValues, [$bucket]),
+                            'labelValues' => array_merge($labelValues, [(string) $bucket]),
                             'value' => $acc,
                         ];
                     }

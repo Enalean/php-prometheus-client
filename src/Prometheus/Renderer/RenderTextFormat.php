@@ -48,7 +48,7 @@ final class RenderTextFormat implements MetricsRenderer
         if ($metric->hasLabelNames() || $sample->hasLabelNames()) {
             $labels = array_combine(array_merge($labelNames, $sample->getLabelNames()), $sample->getLabelValues());
             foreach ($labels as $labelName => $labelValue) {
-                $escapedLabels[] = $labelName . '="' . $this->escapeLabelValue((string) $labelValue) . '"';
+                $escapedLabels[] = $labelName . '="' . $this->escapeLabelValue($labelValue) . '"';
             }
 
             return $sample->getName() . '{' . implode(',', $escapedLabels) . '} ' . $sample->getValue();
