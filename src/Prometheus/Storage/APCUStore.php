@@ -69,7 +69,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
         // Taken from https://github.com/prometheus/client_golang/blob/66058aac3a83021948e5fb12f1f408ff556b9037/prometheus/value.go#L91
         $done = false;
         while (! $done) {
-            $old  = apcu_fetch($sumKey);
+            $old  = (int) apcu_fetch($sumKey);
             $done = apcu_cas($sumKey, $old, $this->toInteger($this->fromInteger($old) + $value));
         }
 
@@ -104,7 +104,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
             // Taken from https://github.com/prometheus/client_golang/blob/66058aac3a83021948e5fb12f1f408ff556b9037/prometheus/value.go#L91
             $done = false;
         while (! $done) {
-            $old  = apcu_fetch($valueKey);
+            $old  = (int) apcu_fetch($valueKey);
             $done = apcu_cas($valueKey, $old, $this->toInteger($this->fromInteger($old) + $value));
         }
     }
@@ -120,7 +120,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
         // Taken from https://github.com/prometheus/client_golang/blob/66058aac3a83021948e5fb12f1f408ff556b9037/prometheus/value.go#L91
         $done = false;
         while (! $done) {
-            $old  = apcu_fetch($valueKey);
+            $old  = (int) apcu_fetch($valueKey);
             $done = apcu_cas($valueKey, $old, $this->toInteger($this->fromInteger($old) + $value));
         }
     }
