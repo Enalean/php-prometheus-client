@@ -56,7 +56,7 @@ interface Registry
     /**
      * @param string                   $help    e.g. A histogram of the duration in seconds.
      * @param HistogramLabelNames|null $labels  e.g. ['controller', 'action']
-     * @param int[]|float[]            $buckets e.g. [100, 200, 300]
+     * @param float[]                  $buckets e.g. [100, 200, 300]
      *
      * @throws MetricsRegistrationException
      */
@@ -70,7 +70,7 @@ interface Registry
     /**
      * @param string                   $help    e.g. A histogram of the duration in seconds.
      * @param HistogramLabelNames|null $labels  e.g. ['controller', 'action']
-     * @param int[]|float[]            $buckets e.g. [100, 200, 300]
+     * @param float[]                  $buckets e.g. [100, 200, 300]
      */
     public function getOrRegisterHistogram(MetricName $name, string $help, ?HistogramLabelNames $labelNames = null, ?array $buckets = null) : Histogram;
 }

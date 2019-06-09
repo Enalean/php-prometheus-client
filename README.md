@@ -20,70 +20,99 @@ While the first needs a separate binary running, the second just needs the [APC]
 
 A simple counter:
 ```php
-\Prometheus\CollectorRegistry::getDefault()
-    ->getOrRegisterCounter('', 'some_quick_counter', 'just a quick measurement')
+$storage = new \Prometheus\Storage\InMemoryStore();
+(new \Prometheus\Registry\CollectorRegistry($storage))
+    ->getOrRegisterCounter(\Prometheus\Value\MetricName::fromName('some_quick_counter'), 'just a quick measurement')
     ->inc();
 ```
 
 Write some enhanced metrics:
 ```php
-$registry = \Prometheus\CollectorRegistry::getDefault();
+$storage = new \Prometheus\Storage\InMemoryStore();
+$registry = new \Prometheus\Registry\CollectorRegistry($storage);
 
-$counter = $registry->getOrRegisterCounter('test', 'some_counter', 'it increases', ['type']);
-$counter->incBy(3, ['blue']);
+$counter = $registry->getOrRegisterCounter(
+    \Prometheus\Value\MetricName::fromNamespacedName('test', 'some_counter'),
+    'it increases',
+    \Prometheus\Value\MetricLabelNames::fromNames('type')
+);
+$counter->incBy(3, 'blue');
 
-$gauge = $registry->getOrRegisterGauge('test', 'some_gauge', 'it sets', ['type']);
-$gauge->set(2.5, ['blue']);
+$gauge = $registry->getOrRegisterGauge(
+    \Prometheus\Value\MetricName::fromNamespacedName('test', 'some_gauge'),
+    'it sets',
+    \Prometheus\Value\MetricLabelNames::fromNames('type')
+);
+$gauge->set(2.5, 'blue');
 
-$histogram = $registry->getOrRegisterHistogram('test', 'some_histogram', 'it observes', ['type'], [0.1, 1, 2, 3.5, 4, 5, 6, 7, 8, 9]);
-$histogram->observe(3.5, ['blue']);
+$histogram = $registry->getOrRegisterHistogram(
+    \Prometheus\Value\MetricName::fromNamespacedName('test', 'some_histogram'),
+    'it observes',
+    \Prometheus\Value\HistogramLabelNames::fromNames('type'),
+    [0.1, 1, 2, 3.5, 4, 5, 6, 7, 8, 9]
+);
+$histogram->observe(3.5, 'blue');
 ```
 
 Manually register and retrieve metrics (these steps are combined in the `getOrRegister...` methods):
 ```php
-$registry = \Prometheus\CollectorRegistry::getDefault();
+$storage = new \Prometheus\Storage\InMemoryStore();
+$registry = new \Prometheus\Registry\CollectorRegistry($storage);
 
-$counterA = $registry->registerCounter('test', 'some_counter', 'it increases', ['type']);
-$counterA->incBy(3, ['blue']);
+$counterA = $registry->registerCounter(
+    \Prometheus\Value\MetricName::fromNamespacedName('test', 'some_counter'),
+    'it increases',
+    \Prometheus\Value\MetricLabelNames::fromNames('type')
+);
+$counterA->incBy(3, 'blue');
 
 // once a metric is registered, it can be retrieved using e.g. getCounter:
-$counterB = $registry->getCounter('test', 'some_counter')
-$counterB->incBy(2, ['red']);
+$counterB = $registry->getCounter(\Prometheus\Value\MetricName::fromNamespacedName('test', 'some_counter'));
+$counterB->incBy(2, 'red');
 ```
 
 Expose the metrics:
 ```php
-$registry = \Prometheus\CollectorRegistry::getDefault();
+$storage = new \Prometheus\Storage\InMemoryStore();
+$registry = new \Prometheus\Registry\CollectorRegistry($storage);
 
-$renderer = new RenderTextFormat();
-$result = $renderer->render($registry->getMetricFamilySamples());
+$renderer = new \Prometheus\Renderer\RenderTextFormat();
 
-header('Content-type: ' . RenderTextFormat::MIME_TYPE);
-echo $result;
+header('Content-type: ' . $renderer->getMimeType());
+echo $renderer->render($registry->getMetricFamilySamples());
 ```
 
-Change the Redis options (the example shows the defaults):
+Using the Redis storage:
 ```php
-\Prometheus\Storage\Redis::setDefaultOptions(
-    [
-        'host' => '127.0.0.1',
-        'port' => 6379,
-        'password' => null,
-        'timeout' => 0.1, // in seconds
-        'read_timeout' => 10, // in seconds
-        'persistent_connections' => false
-    ]
+$redis = new \Redis();
+$redis->connect('127.0.0.1', 6379);
+$storage = new \Prometheus\Storage\RedisStore();
+$registry = new CollectorRegistry($storage);
+
+$counter = $registry->registerCounter(
+    \Prometheus\Value\MetricName::fromNamespacedName('test', 'some_counter'),
+    'it increases',
+    \Prometheus\Value\MetricLabelNames::fromNames('type')
 );
+$counter->incBy(3, 'blue');
+
+$renderer = new \Prometheus\Renderer\RenderTextFormat();
+$result = $renderer->render($registry->getMetricFamilySamples());
 ```
 
-Using the InMemory storage:
+Using the APCu storage:
 ```php
-$registry = new CollectorRegistry(new InMemory());
+$storage = new \Prometheus\Storage\APCUStore();
+$registry = new CollectorRegistry($storage);
 
-$counter = $registry->registerCounter('test', 'some_counter', 'it increases', ['type']);
-$counter->incBy(3, ['blue']);
+$counter = $registry->registerCounter(
+    \Prometheus\Value\MetricName::fromNamespacedName('test', 'some_counter'),
+    'it increases',
+    \Prometheus\Value\MetricLabelNames::fromNames('type')
+);
+$counter->incBy(3, 'blue');
 
-$renderer = new RenderTextFormat();
+$renderer = new \Prometheus\Renderer\RenderTextFormat();
 $result = $renderer->render($registry->getMetricFamilySamples());
 ```
 
@@ -93,7 +122,7 @@ Also look at the [examples](examples).
 
 ### Dependencies
 
-* PHP 5.6
+* PHP 7.2+
 * PHP Redis extension
 * PHP APCu extension
 * [Composer](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx)
@@ -101,9 +130,10 @@ Also look at the [examples](examples).
 
 Start a Redis instance:
 ```
-docker-compose up Redis
+docker-compose up redis
 ```
 
+### Tests
 Run the tests:
 ```
 composer install
@@ -111,9 +141,28 @@ composer install
 # when Redis is not listening on localhost:
 # export REDIS_HOST=192.168.59.100
 ./vendor/bin/phpunit
+# You might need to enable APCu on the CLI
+php -d apc.enable_cli=1 vendor/bin/phpunit
 ```
 
-## Black box testing
+Run the tests with mutation testing:
+```
+# when Redis is not listening on localhost:
+# export REDIS_HOST=192.168.59.100
+./vendor/bin/infection --initial-tests-php-options="-d apc.enable_cli=1"
+```
+
+Run the static analysis:
+```
+vendor/bin/psalm
+```
+
+Check conformance with the coding standards:
+```
+vendor/bin/phpcs
+```
+
+### Black box testing
 
 Just start the nginx, fpm & Redis setup with docker-compose:
 ```
@@ -122,6 +171,6 @@ docker-compose up
 Pick the adapter you want to test.
 
 ```
-docker-compose run phpunit env ADAPTER=apc vendor/bin/phpunit tests/Test/
-docker-compose run phpunit env ADAPTER=redis vendor/bin/phpunit tests/Test/
+docker-compose exec phpunit env ADAPTER=apcu vendor/bin/phpunit --testsuite=functionnal
+docker-compose exec phpunit env ADAPTER=redis vendor/bin/phpunit --testsuite=functionnal
 ```
