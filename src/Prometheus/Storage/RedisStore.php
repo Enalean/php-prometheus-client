@@ -100,23 +100,23 @@ LUA
         ];
         $this->redis->eval(
             <<<LUA
-local increment = redis.call('hIncrByFloat', KEYS[1], KEYS[2], ARGV[1])
-redis.call('hIncrBy', KEYS[1], KEYS[3], 1)
-if increment == ARGV[1] then
-    redis.call('hSet', KEYS[1], '__meta', ARGV[2])
-    redis.call('sAdd', KEYS[4], KEYS[1])
+local increment = redis.call('hIncrByFloat', KEYS[1], ARGV[1], ARGV[3])
+redis.call('hIncrBy', KEYS[1], ARGV[2], 1)
+if increment == ARGV[3] then
+    redis.call('hSet', KEYS[1], '__meta', ARGV[4])
+    redis.call('sAdd', KEYS[2], KEYS[1])
 end
 LUA
             ,
             [
                 $this->toMetricKey($name, 'histogram'),
+                $this->prefix . 'histogram' . self::PROMETHEUS_METRIC_KEYS_SUFFIX,
                 json_encode(['b' => 'sum', 'labelValues' => $labelValues]),
                 json_encode(['b' => $bucketToIncrease, 'labelValues' => $labelValues]),
-                $this->prefix . 'histogram' . self::PROMETHEUS_METRIC_KEYS_SUFFIX,
                 $value,
                 json_encode($metaData),
             ],
-            4
+            2
         );
     }
 
@@ -143,30 +143,30 @@ LUA
 
         $this->redis->eval(
             <<<LUA
-local result = redis.call(KEYS[2], KEYS[1], KEYS[4], ARGV[1])
+local result = redis.call(ARGV[1], KEYS[1], ARGV[2], ARGV[3])
 
-if KEYS[2] == 'hSet' then
+if ARGV[1] == 'hSet' then
     if result == 1 then
-        redis.call('hSet', KEYS[1], '__meta', ARGV[2])
-        redis.call('sAdd', KEYS[3], KEYS[1])
+        redis.call('hSet', KEYS[1], '__meta', ARGV[4])
+        redis.call('sAdd', KEYS[2], KEYS[1])
     end
 else
-    if result == ARGV[1] then
-        redis.call('hSet', KEYS[1], '__meta', ARGV[2])
-        redis.call('sAdd', KEYS[3], KEYS[1])
+    if result == ARGV[3] then
+        redis.call('hSet', KEYS[1], '__meta', ARGV[4])
+        redis.call('sAdd', KEYS[2], KEYS[1])
     end
 end
 LUA
             ,
             [
                 $this->toMetricKey($name, 'gauge'),
-                $command,
                 $this->prefix . 'gauge' . self::PROMETHEUS_METRIC_KEYS_SUFFIX,
+                $command,
                 json_encode($labelValues),
                 $value,
                 json_encode($metaData),
             ],
-            4
+            2
         );
     }
 
@@ -180,9 +180,9 @@ LUA
 
         $this->redis->eval(
             <<<LUA
-local result = redis.call('hIncrByFloat', KEYS[1], KEYS[3], ARGV[1])
-if result == ARGV[1] then
-    redis.call('hMSet', KEYS[1], '__meta', ARGV[2])
+local result = redis.call('hIncrByFloat', KEYS[1], ARGV[1], ARGV[2])
+if result == ARGV[2] then
+    redis.call('hMSet', KEYS[1], '__meta', ARGV[3])
     redis.call('sAdd', KEYS[2], KEYS[1])
 end
 LUA
@@ -194,7 +194,7 @@ LUA
                 $value,
                 json_encode($metaData),
             ],
-            3
+            2
         );
     }
 
