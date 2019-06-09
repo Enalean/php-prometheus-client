@@ -13,12 +13,8 @@
 
     <rule ref="Doctrine"/>
 
-    <rule ref="SlevomatCodingStandard.Classes.SuperfluousInterfaceNaming">
-        <exclude-pattern>src/Prometheus/RendererInterface.php</exclude-pattern>
-        <exclude-pattern>src/Prometheus/RegistryInterface.php</exclude-pattern>
-    </rule>
     <rule ref="SlevomatCodingStandard.Classes.SuperfluousExceptionNaming.SuperfluousSuffix">
-        <exclude-pattern>src/Prometheus/Exception/MetricNotFoundException.php</exclude-pattern>
-        <exclude-pattern>src/Prometheus/Exception/MetricsRegistrationException.php</exclude-pattern>
+        <exclude-pattern>src/Exception/MetricNotFoundException.php</exclude-pattern>
+        <exclude-pattern>src/Exception/MetricsRegistrationException.php</exclude-pattern>
     </rule>
 </ruleset>

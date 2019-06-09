@@ -1,5 +1,5 @@
 {
-    "name": "tgerbet/prometheus-client",
+    "name": "enalean/prometheus-client",
     "description": "Prometheus instrumentation library",
     "license": "Apache-2.0",
     "require": {
@@ -25,12 +25,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Prometheus\\": "src/Prometheus/"
+            "Enalean\\Prometheus\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Test\\Prometheus\\": ["tests/unit/Prometheus/", "tests/functionnal/"]
+            "Enalean\\PrometheusTest\\": "tests/unit/",
+            "Enalean\\PrometheusTestE2E\\": "tests/functionnal/"
         }
     },
     "config": {

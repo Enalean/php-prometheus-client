@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Test\Prometheus\PushGateway;
+namespace Enalean\PrometheusTestE2E\PushGateway;
 
+use Enalean\Prometheus\PushGateway\Pusher;
+use Enalean\Prometheus\Registry\CollectorRegistry;
+use Enalean\Prometheus\Storage\APCUStore;
+use Enalean\Prometheus\Value\MetricLabelNames;
+use Enalean\Prometheus\Value\MetricName;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Discovery\Psr18ClientDiscovery;
 use PHPUnit\Framework\TestCase;
-use Prometheus\PushGateway\Pusher;
-use Prometheus\Registry\CollectorRegistry;
-use Prometheus\Storage\APCUStore;
-use Prometheus\Value\MetricLabelNames;
-use Prometheus\Value\MetricName;
 
 abstract class BlackBoxPushGatewayTest extends TestCase
 {

@@ -4,8 +4,6 @@
 [![codecov](https://codecov.io/gh/Enalean/php-prometheus-client/branch/master/graph/badge.svg)](https://codecov.io/gh/Enalean/php-prometheus-client)
 [![Type Coverage](https://shepherd.dev/github/enalean/php-prometheus-client/coverage.svg)](https://shepherd.dev/github/enalean/php-prometheus-client)
 
-:warning: This a WIP fork of [Jimdo/prometheus_client_php](https://github.com/Jimdo/prometheus_client_php).
-
 This library uses Redis or APCu to do the client side aggregation.
 If using Redis, we recommend to run a local Redis instance next to your PHP workers.
 
@@ -20,35 +18,35 @@ While the first needs a separate binary running, the second just needs the [APC]
 
 A simple counter:
 ```php
-$storage = new \Prometheus\Storage\InMemoryStore();
-(new \Prometheus\Registry\CollectorRegistry($storage))
-    ->getOrRegisterCounter(\Prometheus\Value\MetricName::fromName('some_quick_counter'), 'just a quick measurement')
+$storage = new \Enalean\Prometheus\Storage\InMemoryStore();
+(new \Enalean\Prometheus\Registry\CollectorRegistry($storage))
+    ->getOrRegisterCounter(\Enalean\Prometheus\Value\MetricName::fromName('some_quick_counter'), 'just a quick measurement')
     ->inc();
 ```
 
 Write some enhanced metrics:
 ```php
-$storage = new \Prometheus\Storage\InMemoryStore();
-$registry = new \Prometheus\Registry\CollectorRegistry($storage);
+$storage = new \Enalean\Prometheus\Storage\InMemoryStore();
+$registry = new \Enalean\Prometheus\Registry\CollectorRegistry($storage);
 
 $counter = $registry->getOrRegisterCounter(
-    \Prometheus\Value\MetricName::fromNamespacedName('test', 'some_counter'),
+    \Enalean\Prometheus\Value\MetricName::fromNamespacedName('test', 'some_counter'),
     'it increases',
-    \Prometheus\Value\MetricLabelNames::fromNames('type')
+    \Enalean\Prometheus\Value\MetricLabelNames::fromNames('type')
 );
 $counter->incBy(3, 'blue');
 
 $gauge = $registry->getOrRegisterGauge(
-    \Prometheus\Value\MetricName::fromNamespacedName('test', 'some_gauge'),
+    \Enalean\Prometheus\Value\MetricName::fromNamespacedName('test', 'some_gauge'),
     'it sets',
-    \Prometheus\Value\MetricLabelNames::fromNames('type')
+    \Enalean\Prometheus\Value\MetricLabelNames::fromNames('type')
 );
 $gauge->set(2.5, 'blue');
 
 $histogram = $registry->getOrRegisterHistogram(
-    \Prometheus\Value\MetricName::fromNamespacedName('test', 'some_histogram'),
+    \Enalean\Prometheus\Value\MetricName::fromNamespacedName('test', 'some_histogram'),
     'it observes',
-    \Prometheus\Value\HistogramLabelNames::fromNames('type'),
+    \Enalean\Prometheus\Value\HistogramLabelNames::fromNames('type'),
     [0.1, 1, 2, 3.5, 4, 5, 6, 7, 8, 9]
 );
 $histogram->observe(3.5, 'blue');
@@ -56,27 +54,27 @@ $histogram->observe(3.5, 'blue');
 
 Manually register and retrieve metrics (these steps are combined in the `getOrRegister...` methods):
 ```php
-$storage = new \Prometheus\Storage\InMemoryStore();
-$registry = new \Prometheus\Registry\CollectorRegistry($storage);
+$storage = new \Enalean\Prometheus\Storage\InMemoryStore();
+$registry = new \Enalean\Prometheus\Registry\CollectorRegistry($storage);
 
 $counterA = $registry->registerCounter(
-    \Prometheus\Value\MetricName::fromNamespacedName('test', 'some_counter'),
+    \Enalean\Prometheus\Value\MetricName::fromNamespacedName('test', 'some_counter'),
     'it increases',
-    \Prometheus\Value\MetricLabelNames::fromNames('type')
+    \Enalean\Prometheus\Value\MetricLabelNames::fromNames('type')
 );
 $counterA->incBy(3, 'blue');
 
 // once a metric is registered, it can be retrieved using e.g. getCounter:
-$counterB = $registry->getCounter(\Prometheus\Value\MetricName::fromNamespacedName('test', 'some_counter'));
+$counterB = $registry->getCounter(\Enalean\Prometheus\Value\MetricName::fromNamespacedName('test', 'some_counter'));
 $counterB->incBy(2, 'red');
 ```
 
 Expose the metrics:
 ```php
-$storage = new \Prometheus\Storage\InMemoryStore();
-$registry = new \Prometheus\Registry\CollectorRegistry($storage);
+$storage = new \Enalean\Prometheus\Storage\InMemoryStore();
+$registry = new \Enalean\Prometheus\Registry\CollectorRegistry($storage);
 
-$renderer = new \Prometheus\Renderer\RenderTextFormat();
+$renderer = new \Enalean\Prometheus\Renderer\RenderTextFormat();
 
 header('Content-type: ' . $renderer->getMimeType());
 echo $renderer->render($registry->getMetricFamilySamples());
@@ -86,33 +84,33 @@ Using the Redis storage:
 ```php
 $redis = new \Redis();
 $redis->connect('127.0.0.1', 6379);
-$storage = new \Prometheus\Storage\RedisStore();
+$storage = new \Enalean\Prometheus\Storage\RedisStore();
 $registry = new CollectorRegistry($storage);
 
 $counter = $registry->registerCounter(
-    \Prometheus\Value\MetricName::fromNamespacedName('test', 'some_counter'),
+    \Enalean\Prometheus\Value\MetricName::fromNamespacedName('test', 'some_counter'),
     'it increases',
-    \Prometheus\Value\MetricLabelNames::fromNames('type')
+    \Enalean\Prometheus\Value\MetricLabelNames::fromNames('type')
 );
 $counter->incBy(3, 'blue');
 
-$renderer = new \Prometheus\Renderer\RenderTextFormat();
+$renderer = new \Enalean\Prometheus\Renderer\RenderTextFormat();
 $result = $renderer->render($registry->getMetricFamilySamples());
 ```
 
 Using the APCu storage:
 ```php
-$storage = new \Prometheus\Storage\APCUStore();
+$storage = new \Enalean\Prometheus\Storage\APCUStore();
 $registry = new CollectorRegistry($storage);
 
 $counter = $registry->registerCounter(
-    \Prometheus\Value\MetricName::fromNamespacedName('test', 'some_counter'),
+    \Enalean\Prometheus\Value\MetricName::fromNamespacedName('test', 'some_counter'),
     'it increases',
-    \Prometheus\Value\MetricLabelNames::fromNames('type')
+    \Enalean\Prometheus\Value\MetricLabelNames::fromNames('type')
 );
 $counter->incBy(3, 'blue');
 
-$renderer = new \Prometheus\Renderer\RenderTextFormat();
+$renderer = new \Enalean\Prometheus\Renderer\RenderTextFormat();
 $result = $renderer->render($registry->getMetricFamilySamples());
 ```
 
@@ -174,3 +172,7 @@ Pick the adapter you want to test.
 docker-compose exec phpunit env ADAPTER=apcu vendor/bin/phpunit --testsuite=functionnal
 docker-compose exec phpunit env ADAPTER=redis vendor/bin/phpunit --testsuite=functionnal
 ```
+
+## Acknowledgment
+
+This library is based on the work done on [Jimdo/prometheus_client_php](https://github.com/Jimdo/prometheus_client_php).

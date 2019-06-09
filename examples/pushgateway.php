@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
+use Enalean\Prometheus\PushGateway\PSR18Pusher;
+use Enalean\Prometheus\Registry\CollectorRegistry;
+use Enalean\Prometheus\Storage\RedisStore;
+use Enalean\Prometheus\Value\MetricLabelNames;
+use Enalean\Prometheus\Value\MetricName;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Discovery\Psr18ClientDiscovery;
-use Prometheus\PushGateway\PSR18Pusher;
-use Prometheus\Registry\CollectorRegistry;
-use Prometheus\Storage\RedisStore;
-use Prometheus\Value\MetricLabelNames;
-use Prometheus\Value\MetricName;
 
 $adapter = (string) $_GET['adapter'] ?? '';
 
@@ -19,11 +19,11 @@ if ($adapter === 'redis') {
     $redis_client->connect((string) $_SERVER['REDIS_HOST'] ?? '127.0.0.1');
     $adapter = new RedisStore($redis_client);
 } elseif ($adapter === 'apcu') {
-    $adapter = new Prometheus\Storage\APCUStore();
+    $adapter = new Enalean\Prometheus\Storage\APCUStore();
 } elseif ($adapter === 'in-memory') {
-    $adapter = new Prometheus\Storage\InMemoryStore();
+    $adapter = new Enalean\Prometheus\Storage\InMemoryStore();
 } else {
-    $adapter = new Prometheus\Storage\NullStore();
+    $adapter = new Enalean\Prometheus\Storage\NullStore();
 }
 
 $registry = new CollectorRegistry($adapter);

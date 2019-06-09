@@ -12,15 +12,15 @@ if ($adapter === 'redis') {
     $redis_client = new Redis();
     $redis_client->connect((string) $_SERVER['REDIS_HOST'] ?? '127.0.0.1');
 
-    $storage = new Prometheus\Storage\RedisStore($redis_client);
+    $storage = new Enalean\Prometheus\Storage\RedisStore($redis_client);
 }
 
 if ($adapter === 'apcu') {
-    $storage = new Prometheus\Storage\APCUStore();
+    $storage = new Enalean\Prometheus\Storage\APCUStore();
 }
 
 if ($adapter === 'in-memory') {
-    $storage = new Prometheus\Storage\InMemoryStore();
+    $storage = new Enalean\Prometheus\Storage\InMemoryStore();
 }
 
 if ($storage !== null) {

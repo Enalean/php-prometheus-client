@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Test\Prometheus\PushGateway;
+namespace Enalean\PrometheusTestE2E\PushGateway;
 
+use Enalean\Prometheus\PushGateway\PSR18Pusher;
+use Enalean\Prometheus\PushGateway\Pusher;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Discovery\Psr18ClientDiscovery;
-use Prometheus\PushGateway\PSR18Pusher;
-use Prometheus\PushGateway\Pusher;
 
 final class BackboxPusherPSR18Test extends BlackBoxPushGatewayTest
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Test\Prometheus;
+namespace Enalean\PrometheusTestE2E;
 
 use Http\Client\HttpAsyncClient;
 use Http\Discovery\HttpAsyncClientDiscovery;
