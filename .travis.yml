@@ -1,8 +1,7 @@
 language: php
 php:
-  - 7.2
-  - 7.3
-  - 7.4snapshot
+  - "7.3"
+  - "7.4snapshot"
 
 matrix:
   fast_finish: true
@@ -27,13 +26,13 @@ jobs:
     - stage: "Code Quality"
       name: PHPCS
       install: travis_retry composer install --prefer-dist
-      php: 7.3
+      php: "7.3"
       script:
         - ./vendor/bin/phpcs
     - stage: "Code Quality"
       name: Psalm
       install: travis_retry composer install --prefer-dist
-      php: 7.3
+      php: "7.3"
       script:
         - ./vendor/bin/psalm --shepherd
     - stage: test
@@ -53,7 +52,7 @@ jobs:
       services:
         - redis-server
       install: travis_retry composer install --prefer-dist
-      php: 7.3
+      php: "7.3"
       script:
         - ./vendor/bin/infection --min-msi=90 --min-covered-msi=90
 
