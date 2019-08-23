@@ -57,7 +57,7 @@ abstract class Metric
     final protected function assertLabelsAreDefinedCorrectly(string ...$labelValues) : void
     {
         if (count($labelValues) !== count($this->labelNames)) {
-            throw new InvalidArgumentException(sprintf('Labels are not defined correctly: ', print_r($labelValues, true)));
+            throw new InvalidArgumentException(sprintf('Labels are not defined correctly: %s', print_r($labelValues, true)));
         }
     }
 }
