@@ -32,7 +32,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
     /** @var array<string,mixed> */
     private $gauges = [];
     /**
-     * @var array<string,string[]>
+     * @var array<string,string[][]>
      * @psalm-var array<string, array{
      *      meta: array{name:string, help:string, labelNames:string[], buckets:array<int|float>},
      *      samples: array<string, float>
@@ -306,8 +306,6 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
     }
 
     /**
-     * @param array<int|float> $buckets
-     *
      * @return array<string,string|array>
      *
      * @psalm-return array{name:string, help:string, labelNames:string[]}

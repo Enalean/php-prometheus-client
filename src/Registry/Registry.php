@@ -54,9 +54,9 @@ interface Registry
     public function getOrRegisterCounter(MetricName $name, string $help, ?MetricLabelNames $labelNames = null) : Counter;
 
     /**
-     * @param string                   $help    e.g. A histogram of the duration in seconds.
-     * @param HistogramLabelNames|null $labels  e.g. ['controller', 'action']
-     * @param float[]                  $buckets e.g. [100, 200, 300]
+     * @param string                   $help       e.g. A histogram of the duration in seconds.
+     * @param HistogramLabelNames|null $labelNames e.g. ['controller', 'action']
+     * @param float[]                  $buckets    e.g. [100, 200, 300]
      *
      * @throws MetricsRegistrationException
      */
@@ -68,9 +68,9 @@ interface Registry
     public function getHistogram(MetricName $name) : Histogram;
 
     /**
-     * @param string                   $help    e.g. A histogram of the duration in seconds.
-     * @param HistogramLabelNames|null $labels  e.g. ['controller', 'action']
-     * @param float[]                  $buckets e.g. [100, 200, 300]
+     * @param string                   $help       e.g. A histogram of the duration in seconds.
+     * @param HistogramLabelNames|null $labelNames e.g. ['controller', 'action']
+     * @param float[]                  $buckets    e.g. [100, 200, 300]
      */
     public function getOrRegisterHistogram(MetricName $name, string $help, ?HistogramLabelNames $labelNames = null, ?array $buckets = null) : Histogram;
 }
