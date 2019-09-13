@@ -11,7 +11,6 @@ use Enalean\Prometheus\Value\HistogramLabelNames;
 use Enalean\Prometheus\Value\LabelNames;
 use Enalean\Prometheus\Value\MetricLabelNames;
 use Enalean\Prometheus\Value\MetricName;
-use RuntimeException;
 use const JSON_THROW_ON_ERROR;
 use function apcu_add;
 use function apcu_cas;
@@ -381,16 +380,9 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
 
     /**
      * @return string[]
-     *
-     * @throws RuntimeException
      */
     private function decodeLabelValues(string $values) : array
     {
-        $json = base64_decode($values, true);
-        if ($json === false) {
-            throw new RuntimeException('Cannot base64 decode label values');
-        }
-
-        return json_decode($json, true, JSON_THROW_ON_ERROR);
+        return json_decode((string) base64_decode($values, true), true, JSON_THROW_ON_ERROR);
     }
 }

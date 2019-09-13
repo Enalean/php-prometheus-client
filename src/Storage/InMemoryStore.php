@@ -10,7 +10,6 @@ use Enalean\Prometheus\Value\HistogramLabelNames;
 use Enalean\Prometheus\Value\LabelNames;
 use Enalean\Prometheus\Value\MetricLabelNames;
 use Enalean\Prometheus\Value\MetricName;
-use RuntimeException;
 use const JSON_THROW_ON_ERROR;
 use function array_key_exists;
 use function array_keys;
@@ -331,16 +330,9 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
 
     /**
      * @return string[]
-     *
-     * @throws RuntimeException
      */
     private function decodeLabelValues(string $values) : array
     {
-        $json = base64_decode($values, true);
-        if ($json === false) {
-            throw new RuntimeException('Cannot base64 decode label values');
-        }
-
-        return json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+        return json_decode((string) base64_decode($values, true), true, 512, JSON_THROW_ON_ERROR);
     }
 }
