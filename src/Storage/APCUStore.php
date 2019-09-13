@@ -12,6 +12,7 @@ use Enalean\Prometheus\Value\LabelNames;
 use Enalean\Prometheus\Value\MetricLabelNames;
 use Enalean\Prometheus\Value\MetricName;
 use RuntimeException;
+use const JSON_THROW_ON_ERROR;
 use function apcu_add;
 use function apcu_cas;
 use function apcu_clear_cache;
@@ -26,7 +27,6 @@ use function explode;
 use function implode;
 use function json_decode;
 use function json_encode;
-use function json_last_error_msg;
 use function pack;
 use function sort;
 use function strcmp;
@@ -371,15 +371,10 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
 
     /**
      * @param string[] $values
-     *
-     * @throws RuntimeException
      */
     private function encodeLabelValues(array $values) : string
     {
-        $json = json_encode($values);
-        if ($json === false) {
-            throw new RuntimeException(json_last_error_msg());
-        }
+        $json = json_encode($values, JSON_THROW_ON_ERROR);
 
         return base64_encode($json);
     }
@@ -395,11 +390,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
         if ($json === false) {
             throw new RuntimeException('Cannot base64 decode label values');
         }
-        $decodedValues = json_decode($json, true);
-        if ($decodedValues === false) {
-            throw new RuntimeException(json_last_error_msg());
-        }
 
-        return $decodedValues;
+        return json_decode($json, true, JSON_THROW_ON_ERROR);
     }
 }

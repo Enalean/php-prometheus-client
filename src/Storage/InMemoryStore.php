@@ -11,6 +11,7 @@ use Enalean\Prometheus\Value\LabelNames;
 use Enalean\Prometheus\Value\MetricLabelNames;
 use Enalean\Prometheus\Value\MetricName;
 use RuntimeException;
+use const JSON_THROW_ON_ERROR;
 use function array_key_exists;
 use function array_keys;
 use function array_merge;
@@ -20,7 +21,6 @@ use function explode;
 use function implode;
 use function json_decode;
 use function json_encode;
-use function json_last_error_msg;
 use function sort;
 use function strcmp;
 use function usort;
@@ -321,15 +321,10 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
 
     /**
      * @param string[] $values
-     *
-     * @throws RuntimeException
      */
     private function encodeLabelValues(array $values) : string
     {
-        $json = json_encode($values);
-        if ($json === false) {
-            throw new RuntimeException(json_last_error_msg());
-        }
+        $json = json_encode($values, JSON_THROW_ON_ERROR);
 
         return base64_encode($json);
     }
@@ -345,11 +340,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
         if ($json === false) {
             throw new RuntimeException('Cannot base64 decode label values');
         }
-        $decodedValues = json_decode($json, true);
-        if ($decodedValues === false) {
-            throw new RuntimeException(json_last_error_msg());
-        }
 
-        return $decodedValues;
+        return json_decode($json, true, 512, JSON_THROW_ON_ERROR);
     }
 }
