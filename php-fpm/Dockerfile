@@ -1,6 +1,6 @@
-FROM php:7.2-fpm
+FROM php:7.3-fpm
 
-RUN pecl install redis-4.3.0 && \
+RUN pecl install redis-5.0.2 && \
     pecl install apcu-5.1.17 && \
     docker-php-ext-enable redis apcu
 
