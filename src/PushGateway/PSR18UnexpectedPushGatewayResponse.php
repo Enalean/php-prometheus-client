@@ -43,11 +43,17 @@ final class PSR18UnexpectedPushGatewayResponse extends UnexpectedPushGatewayResp
         return new self($request, null, $clientException);
     }
 
+    /**
+     * @psalm-pure
+     */
     public function getRequest() : RequestInterface
     {
         return $this->request;
     }
 
+    /**
+     * @psalm-pure
+     */
     public function getResponse() : ?ResponseInterface
     {
         return $this->response;

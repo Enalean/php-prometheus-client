@@ -8,6 +8,9 @@ use InvalidArgumentException;
 use function preg_match;
 use function sprintf;
 
+/**
+ * @psalm-immutable
+ */
 final class MetricName
 {
     private const METRIC_NAME_REGEX = '/^[a-zA-Z_:][a-zA-Z0-9_:]*$/';

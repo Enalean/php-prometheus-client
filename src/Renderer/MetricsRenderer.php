@@ -10,6 +10,8 @@ interface MetricsRenderer
 {
     /**
      * @param MetricFamilySamples[] $metrics
+     *
+     * @psalm-pure
      */
     public function render(array $metrics) : string;
 

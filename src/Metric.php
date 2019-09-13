@@ -13,6 +13,7 @@ use function sprintf;
 
 /**
  * @template TLabelNames of LabelNames
+ * @psalm-immutable
  */
 abstract class Metric
 {
