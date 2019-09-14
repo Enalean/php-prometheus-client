@@ -14,8 +14,8 @@ use Enalean\PrometheusTest\Storage\CollectorRegistryBaseTest;
 
 /**
  * @requires extension redis
- * @covers Enalean\Prometheus\Registry\CollectorRegistry
- * @covers Enalean\Prometheus\Storage\RedisStore
+ * @covers \Enalean\Prometheus\Registry\CollectorRegistry
+ * @covers \Enalean\Prometheus\Storage\RedisStore
  */
 final class CollectorRegistryTest extends CollectorRegistryBaseTest
 {

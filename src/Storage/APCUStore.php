@@ -14,7 +14,7 @@ use Enalean\Prometheus\Value\MetricName;
 use const JSON_THROW_ON_ERROR;
 use function apcu_add;
 use function apcu_cas;
-use function apcu_clear_cache;
+use function apcu_delete;
 use function apcu_fetch;
 use function apcu_inc;
 use function apcu_store;
@@ -126,7 +126,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
 
     public function flush() : void
     {
-        apcu_clear_cache();
+        apcu_delete(new APCuIterator('/^' . self::PROMETHEUS_PREFIX . ':.*/'));
     }
 
     private function metaKey(MetricName $name, string $type) : string
