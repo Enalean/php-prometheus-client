@@ -3,6 +3,10 @@ php:
   - "7.3"
   - "7.4snapshot"
 
+env:
+  - DEPENDENCIES=""
+  - DEPENDENCIES="--prefer-lowest --prefer-stable"
+
 matrix:
   fast_finish: true
   allow_failures:
@@ -19,7 +23,8 @@ before_install:
   - phpenv rehash
 
 install:
-  - travis_retry composer update --prefer-dist
+  - rm composer.lock
+  - travis_retry composer update --prefer-dist $DEPENDENCIES
 
 jobs:
   include:
