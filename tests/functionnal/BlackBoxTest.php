@@ -71,7 +71,7 @@ final class BlackBoxTest extends TestCase
     {
         $promises = [];
         $sum      = 0;
-        for ($i = 0; $i < 1100; $i++) {
+        for ($i = 0; $i < 275; $i++) {
             $request    = $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/some_counter.php?c=' . $i . '&adapter=' . $this->adapter);
             $promises[] =  $this->client->sendAsyncRequest($request);
             $sum       += $i;
