@@ -13,7 +13,6 @@ use function sprintf;
 
 /**
  * @template TLabelNames of LabelNames
- * @psalm-immutable
  */
 abstract class Metric
 {
@@ -37,6 +36,9 @@ abstract class Metric
         $this->labelNames = $labelNames;
     }
 
+    /**
+     * @psalm-pure
+     */
     public function getName() : MetricName
     {
         return $this->name;
@@ -44,17 +46,24 @@ abstract class Metric
 
     /**
      * @psalm-return TLabelNames
+     * @psalm-pure
      */
     public function getLabelNames() : LabelNames
     {
         return $this->labelNames;
     }
 
+    /**
+     * @psalm-pure
+     */
     public function getHelp() : string
     {
         return $this->help;
     }
 
+    /**
+     * @psalm-pure
+     */
     final protected function assertLabelsAreDefinedCorrectly(string ...$labelValues) : void
     {
         if (count($labelValues) !== count($this->labelNames)) {
