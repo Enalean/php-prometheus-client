@@ -32,7 +32,7 @@ final class PSR18PusherTest extends TestCase
 
         $responseFactory = Psr17FactoryDiscovery::findResponseFactory();
 
-        $client->setDefaultResponse($responseFactory->createResponse(202));
+        $client->setDefaultResponse($responseFactory->createResponse());
 
         $pusher    = new PSR18Pusher(
             $givenAddress,
@@ -56,13 +56,19 @@ final class PSR18PusherTest extends TestCase
         }
     }
 
-    public function testDataIsPushedToTheGateway() : void
+    /**
+     * PushGateway before v0.10.0 was returning a 202 in case of success
+     *
+     * @testWith [200]
+     *           [202]
+     */
+    public function testDataIsPushedToTheGateway(int $response_status_code) : void
     {
         $client = new Client();
 
         $responseFactory = Psr17FactoryDiscovery::findResponseFactory();
 
-        $client->setDefaultResponse($responseFactory->createResponse(202));
+        $client->setDefaultResponse($responseFactory->createResponse($response_status_code));
 
         $pusher    = new PSR18Pusher(
             'https://example.com',
@@ -88,7 +94,7 @@ final class PSR18PusherTest extends TestCase
 
         $responseFactory = Psr17FactoryDiscovery::findResponseFactory();
 
-        $client->setDefaultResponse($responseFactory->createResponse(202));
+        $client->setDefaultResponse($responseFactory->createResponse());
 
         $pusher    = new PSR18Pusher(
             'https://example.com',
@@ -113,7 +119,6 @@ final class PSR18PusherTest extends TestCase
      * @testWith [400]
      *           [500]
      *           [301]
-     *           [200]
      */
     public function testExceptionIsThrownWhenPushGatewayResponseIsNotExpected(int $responseStatusCode) : void
     {

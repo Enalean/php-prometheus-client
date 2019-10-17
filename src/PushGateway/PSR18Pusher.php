@@ -93,7 +93,8 @@ final class PSR18Pusher implements Pusher
             throw PSR18UnexpectedPushGatewayResponse::requestFailure($request, $ex);
         }
 
-        if ($response->getStatusCode() !== 202) {
+        $response_status_code = $response->getStatusCode();
+        if ($response_status_code !== 200 && $response_status_code !== 202) {
             throw PSR18UnexpectedPushGatewayResponse::invalidResponse($request, $response);
         }
     }
