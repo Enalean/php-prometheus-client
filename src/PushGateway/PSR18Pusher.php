@@ -21,19 +21,20 @@ final class PSR18Pusher implements Pusher
     /** @var ClientInterface */
     private $client;
     /** @var RequestFactoryInterface */
-    private $request_factory;
+    private $requestFactory;
     /** @var StreamFactoryInterface */
-    private $stream_factory;
+    private $streamFactory;
 
-    public function __construct(string $address, ClientInterface $client, RequestFactoryInterface $request_factory, StreamFactoryInterface $stream_factory)
+    public function __construct(string $address, ClientInterface $client, RequestFactoryInterface $requestFactory, StreamFactoryInterface $streamFactory)
     {
         if (strpos($address, '://') === false) {
             $address = 'http://' . $address;
         }
-        $this->address         = $address . '/metrics/job/';
-        $this->client          = $client;
-        $this->request_factory = $request_factory;
-        $this->stream_factory  = $stream_factory;
+
+        $this->address        = $address . '/metrics/job/';
+        $this->client         = $client;
+        $this->requestFactory = $requestFactory;
+        $this->streamFactory  = $streamFactory;
     }
 
     /**
@@ -80,11 +81,11 @@ final class PSR18Pusher implements Pusher
         }
 
         $renderer = new RenderTextFormat();
-        $request  = $this->request_factory->createRequest($method, $uri)
+        $request  = $this->requestFactory->createRequest($method, $uri)
                         ->withHeader('Content-Type', $renderer->getMimeType());
 
         if ($request->getMethod() !== 'DELETE') {
-            $request = $request->withBody($this->stream_factory->createStream($renderer->render($metricFamilySamples)));
+            $request = $request->withBody($this->streamFactory->createStream($renderer->render($metricFamilySamples)));
         }
 
         try {
@@ -93,8 +94,8 @@ final class PSR18Pusher implements Pusher
             throw PSR18UnexpectedPushGatewayResponse::requestFailure($request, $ex);
         }
 
-        $response_status_code = $response->getStatusCode();
-        if ($response_status_code !== 200 && $response_status_code !== 202) {
+        $responseStatusCode = $response->getStatusCode();
+        if ($responseStatusCode !== 200 && $responseStatusCode !== 202) {
             throw PSR18UnexpectedPushGatewayResponse::invalidResponse($request, $response);
         }
     }

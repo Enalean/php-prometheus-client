@@ -11,7 +11,6 @@ use Enalean\Prometheus\Value\HistogramLabelNames;
 use Enalean\Prometheus\Value\LabelNames;
 use Enalean\Prometheus\Value\MetricLabelNames;
 use Enalean\Prometheus\Value\MetricName;
-use const JSON_THROW_ON_ERROR;
 use function apcu_add;
 use function apcu_cas;
 use function apcu_delete;
@@ -31,6 +30,7 @@ use function sort;
 use function strcmp;
 use function unpack;
 use function usort;
+use const JSON_THROW_ON_ERROR;
 
 final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramStorage, FlushableStorage
 {
@@ -100,6 +100,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
         if ($new) {
             apcu_store($this->metaKey($name, 'gauge'), json_encode($this->metaData($name, $help, $labelNames)));
         }
+
             // Taken from https://github.com/prometheus/client_golang/blob/66058aac3a83021948e5fb12f1f408ff556b9037/prometheus/value.go#L91
             $done = false;
         while (! $done) {
@@ -189,6 +190,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
             foreach ($metaData['labelNames'] as $labelName) {
                 $labelNames[] = (string) $labelName;
             }
+
             $data = [
                 'name' => (string) $metaData['name'],
                 'help' => (string) $metaData['help'],
@@ -206,11 +208,13 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
                     'value' => $this->fromInteger($value['value']),
                 ];
             }
+
             $this->sortSamples($data['samples']);
             $samples = [];
             foreach ($data['samples'] as $sampleData) {
                 $samples[] = new Sample($sampleData['name'], $sampleData['value'], $sampleData['labelNames'], $sampleData['labelValues']);
             }
+
             $counters[] = new MetricFamilySamples($data['name'], 'counter', $data['help'], $data['labelNames'], $samples);
         }
 
@@ -229,6 +233,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
             foreach ($metaData['labelNames'] as $labelName) {
                 $labelNames[] = (string) $labelName;
             }
+
             $data = [
                 'name' => (string) $metaData['name'],
                 'help' => (string) $metaData['help'],
@@ -251,6 +256,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
             foreach ($data['samples'] as $sampleData) {
                 $samples[] = new Sample($sampleData['name'], $sampleData['value'], $sampleData['labelNames'], $sampleData['labelValues']);
             }
+
             $gauges[] = new MetricFamilySamples($data['name'], 'gauge', $data['help'], $data['labelNames'], $samples);
         }
 
@@ -269,6 +275,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
             foreach ($metaData['labelNames'] as $labelName) {
                 $labelNames[] = (string) $labelName;
             }
+
             $data = [
                 'name' => (string) $metaData['name'],
                 'help' => (string) $metaData['help'],
@@ -331,11 +338,13 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
                     'value' => $this->fromInteger($histogramBuckets[$labelValues]['sum']),
                 ];
             }
+
             unset($data['buckets']);
             $samples = [];
             foreach ($data['samples'] as $sampleData) {
                 $samples[] = new Sample($sampleData['name'], $sampleData['value'], $sampleData['labelNames'], $sampleData['labelValues']);
             }
+
             $histograms[] = new MetricFamilySamples($data['name'], 'histogram', $data['help'], $data['labelNames'], $samples);
         }
 

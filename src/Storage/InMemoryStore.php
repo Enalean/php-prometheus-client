@@ -10,7 +10,6 @@ use Enalean\Prometheus\Value\HistogramLabelNames;
 use Enalean\Prometheus\Value\LabelNames;
 use Enalean\Prometheus\Value\MetricLabelNames;
 use Enalean\Prometheus\Value\MetricName;
-use const JSON_THROW_ON_ERROR;
 use function array_key_exists;
 use function array_keys;
 use function array_merge;
@@ -23,6 +22,7 @@ use function json_encode;
 use function sort;
 use function strcmp;
 use function usort;
+use const JSON_THROW_ON_ERROR;
 
 final class InMemoryStore implements Store, CounterStorage, GaugeStorage, HistogramStorage, FlushableStorage
 {
@@ -129,10 +129,12 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
                     'value' => $histogramBuckets[$labelValues]['sum'],
                 ];
             }
+
             $samples = [];
             foreach ($data['samples'] as $sampleData) {
                 $samples[] = new Sample($sampleData['name'], $sampleData['value'], $sampleData['labelNames'], $sampleData['labelValues']);
             }
+
             $histograms[] = new MetricFamilySamples($data['name'], $data['type'], $data['help'], $data['labelNames'], $samples);
         }
 
@@ -173,6 +175,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
                     'value' => $value,
                 ];
             }
+
             usort($data['samples'], static function (array $a, array $b) : int {
                 return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
             });
@@ -180,6 +183,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
             foreach ($data['samples'] as $sampleData) {
                 $samples[] = new Sample($sampleData['name'], $sampleData['value'], $sampleData['labelNames'], $sampleData['labelValues']);
             }
+
             $result[] = new MetricFamilySamples($data['name'], $type, $data['help'], $data['labelNames'], $samples);
         }
 
@@ -201,6 +205,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
                 'samples' => [],
             ];
         }
+
         $sumKey = $this->histogramBucketValueKey($name, $labelValues, 'sum');
         if (array_key_exists($sumKey, $this->histograms[$metaKey]['samples']) === false) {
             $this->histograms[$metaKey]['samples'][$sumKey] = 0;
@@ -220,6 +225,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
         if (array_key_exists($bucketKey, $this->histograms[$metaKey]['samples']) === false) {
             $this->histograms[$metaKey]['samples'][$bucketKey] = 0;
         }
+
         $this->histograms[$metaKey]['samples'][$bucketKey] += 1;
     }
 
@@ -255,9 +261,6 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
         return $metaKey;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
     {
         $metaKey  = $this->metaKey($name);
@@ -270,9 +273,11 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
                 'samples' => [],
             ];
         }
+
         if (array_key_exists($valueKey, $this->counters[$metaKey]['samples']) === false) {
             $this->counters[$metaKey]['samples'][$valueKey] = 0;
         }
+
         $this->counters[$metaKey]['samples'][$valueKey] += $value;
     }
 

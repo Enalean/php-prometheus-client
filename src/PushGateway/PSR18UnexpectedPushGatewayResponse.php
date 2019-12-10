@@ -26,10 +26,12 @@ final class PSR18UnexpectedPushGatewayResponse extends UnexpectedPushGatewayResp
         if ($response !== null) {
             $message = ' ' . $response->getStatusCode() . ' ' . $response->getReasonPhrase();
         }
+
         if ($clientException !== null) {
             $message       = ' ' . $clientException->getMessage();
             $exceptionCode = (int) $clientException->getCode();
         }
+
         parent::__construct($message, $exceptionCode, $clientException);
     }
 

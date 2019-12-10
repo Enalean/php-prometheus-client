@@ -31,10 +31,10 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
     /** @var Redis */
     private $redis;
 
-    public function __construct(Redis $redis_client, string $key_prefix = 'PROMETHEUS_')
+    public function __construct(Redis $redisClient, string $keyPrefix = 'PROMETHEUS_')
     {
-        $this->redis  = $redis_client;
-        $this->prefix = $key_prefix;
+        $this->redis  = $redisClient;
+        $this->prefix = $keyPrefix;
     }
 
     public function flush() : void
@@ -74,6 +74,7 @@ LUA
             foreach ($metric['samples'] as $sampleData) {
                 $samples[] = new Sample($sampleData['name'], (float) $sampleData['value'], $sampleData['labelNames'], $sampleData['labelValues']);
             }
+
             $familySamples[] = new MetricFamilySamples($metric['name'], $metric['type'], $metric['help'], $metric['labelNames'], $samples);
         }
 
@@ -92,6 +93,7 @@ LUA
                 break;
             }
         }
+
         $metaData = [
             'name' => $name->toString(),
             'help' => $help,
@@ -223,6 +225,7 @@ LUA
                 if ($d['b'] === 'sum') {
                     continue;
                 }
+
                 $allLabelValues[] = $d['labelValues'];
             }
 
@@ -272,6 +275,7 @@ LUA
                     'value' => $raw[json_encode(['b' => 'sum', 'labelValues' => $labelValues])],
                 ];
             }
+
             $histograms[] = $histogram;
         }
 
@@ -301,6 +305,7 @@ LUA
                     'value' => $value,
                 ];
             }
+
             usort($gauge['samples'], static function (array $a, array $b) : int {
                 return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
             });
@@ -333,6 +338,7 @@ LUA
                     'value' => $value,
                 ];
             }
+
             usort($counter['samples'], static function (array $a, array $b) : int {
                 return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
             });

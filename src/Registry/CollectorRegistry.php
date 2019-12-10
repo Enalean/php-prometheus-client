@@ -46,15 +46,13 @@ final class CollectorRegistry implements Registry, Collector
         return $this->storageAdapter->collect();
     }
 
-    /**
-     * @inheritdoc
-     */
     public function registerGauge(MetricName $name, string $help, ?MetricLabelNames $labelNames = null) : Gauge
     {
         $metricIdentifier = $name->toString();
         if (isset($this->gauges[$metricIdentifier])) {
             throw new MetricsRegistrationException('Metric already registered');
         }
+
         $this->gauges[$metricIdentifier] = new Gauge(
             $this->storageAdapter,
             $name,
@@ -65,9 +63,6 @@ final class CollectorRegistry implements Registry, Collector
         return $this->gauges[$metricIdentifier];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getGauge(MetricName $name) : Gauge
     {
         $metricIdentifier = $name->toString();
@@ -78,9 +73,6 @@ final class CollectorRegistry implements Registry, Collector
         return $this->gauges[$metricIdentifier];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getOrRegisterGauge(MetricName $name, string $help, ?MetricLabelNames $labelNames = null) : Gauge
     {
         try {
@@ -92,15 +84,13 @@ final class CollectorRegistry implements Registry, Collector
         return $gauge;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function registerCounter(MetricName $name, string $help, ?MetricLabelNames $labelNames = null) : Counter
     {
         $metricIdentifier = $name->toString();
         if (isset($this->counters[$metricIdentifier])) {
             throw new MetricsRegistrationException('Metric already registered');
         }
+
         $this->counters[$metricIdentifier] = new Counter(
             $this->storageAdapter,
             $name,
@@ -111,9 +101,6 @@ final class CollectorRegistry implements Registry, Collector
         return $this->counters[$metricIdentifier];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getCounter(MetricName $name) : Counter
     {
         $metricIdentifier = $name->toString();
@@ -124,9 +111,6 @@ final class CollectorRegistry implements Registry, Collector
         return $this->counters[$metricIdentifier];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getOrRegisterCounter(MetricName $name, string $help, ?MetricLabelNames $labelNames = null) : Counter
     {
         try {
@@ -147,6 +131,7 @@ final class CollectorRegistry implements Registry, Collector
         if (isset($this->histograms[$metricIdentifier])) {
             throw new MetricsRegistrationException('Metric already registered');
         }
+
         $this->histograms[$metricIdentifier] = new Histogram(
             $this->storageAdapter,
             $name,
@@ -158,9 +143,6 @@ final class CollectorRegistry implements Registry, Collector
         return $this->histograms[$metricIdentifier];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getHistogram(MetricName $name) : Histogram
     {
         $metricIdentifier = $name->toString();

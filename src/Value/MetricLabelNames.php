@@ -35,6 +35,7 @@ final class MetricLabelNames implements LabelNames
                     $name
                 ));
             }
+
             if (strpos($name, self::RESERVED_LABEL_PREFIX) === 0) {
                 throw new InvalidArgumentException(sprintf(
                     'Label starting with %s are reserved for internal use, %s is not acceptable.',

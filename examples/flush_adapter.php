@@ -9,10 +9,10 @@ $adapter = (string) ($_GET['adapter'] ?? '');
 $storage = null;
 
 if ($adapter === 'redis') {
-    $redis_client = new Redis();
-    $redis_client->connect((string) ($_SERVER['REDIS_HOST'] ?? '127.0.0.1'));
+    $redisClient = new Redis();
+    $redisClient->connect((string) ($_SERVER['REDIS_HOST'] ?? '127.0.0.1'));
 
-    $storage = new Enalean\Prometheus\Storage\RedisStore($redis_client);
+    $storage = new Enalean\Prometheus\Storage\RedisStore($redisClient);
 }
 
 if ($adapter === 'apcu') {

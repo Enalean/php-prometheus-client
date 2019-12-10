@@ -18,22 +18,22 @@ final class NullStoreTest extends TestCase
 {
     public function testNothingIsStored() : void
     {
-        $null_store = new NullStore();
+        $nullStore = new NullStore();
 
-        $counter = new Counter($null_store, MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing');
+        $counter = new Counter($nullStore, MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing');
         $counter->inc();
-        $gauge = new Gauge($null_store, MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing');
+        $gauge = new Gauge($nullStore, MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing');
         $gauge->set(12.1);
         $gauge->incBy(2);
         $histogram = new Histogram(
-            $null_store,
+            $nullStore,
             MetricName::fromNamespacedName('test', 'some_metric'),
             'this is for testing'
         );
         $histogram->observe(123);
 
-        $this->assertEmpty($null_store->collect());
-        $null_store->flush();
-        $this->assertEmpty($null_store->collect());
+        $this->assertEmpty($nullStore->collect());
+        $nullStore->flush();
+        $this->assertEmpty($nullStore->collect());
     }
 }
