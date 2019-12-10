@@ -65,6 +65,7 @@ final class Histogram extends Metric
                 );
             }
         }
+
         $this->buckets = $buckets;
     }
 

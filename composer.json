@@ -10,7 +10,7 @@
         "psr/http-message": "^1.0"
     },
     "require-dev": {
-        "doctrine/coding-standard": "^6.0",
+        "doctrine/coding-standard": "^7.0",
         "infection/infection": "^0.15.0",
         "php-http/curl-client": "^2.0",
         "php-http/mock-client": "^1.3",

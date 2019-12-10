@@ -47,6 +47,7 @@ final class BlackBoxTest extends TestCase
         foreach ($requests as $request) {
             $promises[] = $this->client->sendAsyncRequest($request);
         }
+
         foreach ($promises as $promise) {
             $promise->wait();
         }
@@ -109,6 +110,7 @@ final class BlackBoxTest extends TestCase
         foreach ($requests as $request) {
             $promises[] = $this->client->sendAsyncRequest($request);
         }
+
         foreach ($promises as $promise) {
             $promise->wait();
         }

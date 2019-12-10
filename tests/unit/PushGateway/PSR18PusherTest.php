@@ -62,13 +62,13 @@ final class PSR18PusherTest extends TestCase
      * @testWith [200]
      *           [202]
      */
-    public function testDataIsPushedToTheGateway(int $response_status_code) : void
+    public function testDataIsPushedToTheGateway(int $responseStatusCode) : void
     {
         $client = new Client();
 
         $responseFactory = Psr17FactoryDiscovery::findResponseFactory();
 
-        $client->setDefaultResponse($responseFactory->createResponse($response_status_code));
+        $client->setDefaultResponse($responseFactory->createResponse($responseStatusCode));
 
         $pusher    = new PSR18Pusher(
             'https://example.com',
