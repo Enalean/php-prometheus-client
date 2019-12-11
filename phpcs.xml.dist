@@ -11,7 +11,9 @@
     <file>tests</file>
     <file>examples</file>
 
-    <rule ref="Doctrine"/>
+    <rule ref="Doctrine">
+        <exclude name="SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint" />
+    </rule>
 
     <rule ref="SlevomatCodingStandard.Classes.SuperfluousExceptionNaming.SuperfluousSuffix">
         <exclude-pattern>src/Exception/MetricNotFoundException.php</exclude-pattern>
