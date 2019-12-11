@@ -1,6 +1,6 @@
 # A prometheus client library written in PHP
 
-[![Build Status](https://travis-ci.com/Enalean/php-prometheus-client.svg?branch=master)](https://travis-ci.com/Enalean/php-prometheus-client)
+[![Build Status](https://github.com/Enalean/php-prometheus-client/workflows/CI/badge.svg)](https://github.com/Enalean/php-prometheus-client/actions?query=workflow%3ACI)
 [![codecov](https://codecov.io/gh/Enalean/php-prometheus-client/branch/master/graph/badge.svg)](https://codecov.io/gh/Enalean/php-prometheus-client)
 [![Type Coverage](https://shepherd.dev/github/enalean/php-prometheus-client/coverage.svg)](https://shepherd.dev/github/enalean/php-prometheus-client)
 

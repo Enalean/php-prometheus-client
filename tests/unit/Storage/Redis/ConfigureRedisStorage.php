@@ -16,7 +16,10 @@ trait ConfigureRedisStorage
     private function getRedisClient() : Redis
     {
         $redisClient = new Redis();
-        $redisClient->connect(getenv('REDIS_HOST') ?: '');
+        $redisClient->connect(
+            getenv('REDIS_HOST') ?: '',
+            (int) getenv('REDIS_PORT')
+        );
 
         return $redisClient;
     }
