@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "24f18267760ec3304a028d385af3bc3f",
+    "content-hash": "7270c765f0ad0a88bc20bdcc9b3377d8",
     "packages": [
         {
             "name": "psr/http-client",
@@ -521,7 +521,7 @@
         },
         {
             "name": "doctrine/coding-standard",
-            "version": "7.0.0",
+            "version": "7.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/coding-standard.git",
@@ -3184,16 +3184,16 @@
         },
         {
             "name": "slevomat/coding-standard",
-            "version": "6.0.1",
+            "version": "6.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/slevomat/coding-standard.git",
-                "reference": "263d3a9d85604c0ad9cd1c4283dd3f279127027e"
+                "reference": "beea16e33a97884ddfcc5d310b78e0a394538505"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/slevomat/coding-standard/zipball/263d3a9d85604c0ad9cd1c4283dd3f279127027e",
-                "reference": "263d3a9d85604c0ad9cd1c4283dd3f279127027e",
+                "url": "https://api.github.com/repos/slevomat/coding-standard/zipball/beea16e33a97884ddfcc5d310b78e0a394538505",
+                "reference": "beea16e33a97884ddfcc5d310b78e0a394538505",
                 "shasum": ""
             },
             "require": {
@@ -3221,7 +3221,7 @@
                 "MIT"
             ],
             "description": "Slevomat Coding Standard for PHP_CodeSniffer complements Consistence Coding Standard by providing sniffs with additional checks.",
-            "time": "2019-12-09T14:09:58+00:00"
+            "time": "2019-12-09T17:24:48+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
