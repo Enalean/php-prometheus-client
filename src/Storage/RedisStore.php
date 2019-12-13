@@ -39,24 +39,22 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
 
     public function flush() : void
     {
-        $this->redis->eval(
-            <<<LUA
-for keyIndex,key in ipairs(KEYS) do
-    local members = redis.call('smembers', key)
-    for memberIndex,member in ipairs(members) do
-       redis.call('del', member)
-    end
-    redis.call('del', key)
-end
-LUA
-            ,
-            [
-                $this->prefix . 'counter' . self::PROMETHEUS_METRIC_KEYS_SUFFIX,
-                $this->prefix . 'gauge' . self::PROMETHEUS_METRIC_KEYS_SUFFIX,
-                $this->prefix . 'histogram' . self::PROMETHEUS_METRIC_KEYS_SUFFIX,
-            ],
-            3
-        );
+        $storageMainKeys = [
+            $this->prefix . 'counter' . self::PROMETHEUS_METRIC_KEYS_SUFFIX,
+            $this->prefix . 'gauge' . self::PROMETHEUS_METRIC_KEYS_SUFFIX,
+            $this->prefix . 'histogram' . self::PROMETHEUS_METRIC_KEYS_SUFFIX,
+        ];
+        $membersToRemove = [];
+        foreach ($storageMainKeys as $storageMainKey) {
+            $this->redis->watch($storageMainKey);
+            $membersToRemove[] = $this->redis->sMembers($storageMainKey);
+        }
+
+        $membersToRemove = array_merge([], ...$membersToRemove);
+        $this->redis->multi();
+        $this->redis->del($membersToRemove);
+        $this->redis->del($storageMainKeys);
+        $this->redis->exec();
     }
 
     /**
@@ -94,48 +92,35 @@ LUA
             }
         }
 
-        $metaData = [
+        $metaData  = [
             'name' => $name->toString(),
             'help' => $help,
             'labelNames' => $labelNames->toStrings(),
             'buckets' => $buckets,
         ];
-        $this->redis->eval(
-            <<<LUA
-local increment = redis.call('hIncrByFloat', KEYS[1], ARGV[1], ARGV[3])
-redis.call('hIncrBy', KEYS[1], ARGV[2], 1)
-if increment == ARGV[3] then
-    redis.call('hSet', KEYS[1], '__meta', ARGV[4])
-    redis.call('sAdd', KEYS[2], KEYS[1])
-end
-LUA
-            ,
-            [
-                $this->toMetricKey($name, 'histogram'),
-                $this->prefix . 'histogram' . self::PROMETHEUS_METRIC_KEYS_SUFFIX,
-                json_encode(['b' => 'sum', 'labelValues' => $labelValues]),
-                json_encode(['b' => $bucketToIncrease, 'labelValues' => $labelValues]),
-                $value,
-                json_encode($metaData),
-            ],
-            2
-        );
+        $metricKey = $this->toMetricKey($name, 'histogram');
+        $this->redis->multi();
+        $this->redis->hIncrByFloat($metricKey, json_encode(['b' => 'sum', 'labelValues' => $labelValues]), $value);
+        $this->redis->hIncrBy($metricKey, json_encode(['b' => $bucketToIncrease, 'labelValues' => $labelValues]), 1);
+        $this->redis->hSetNx($metricKey, '__meta', json_encode($metaData));
+        $this->redis->sAdd($this->prefix . 'histogram' . self::PROMETHEUS_METRIC_KEYS_SUFFIX, $metricKey);
+        $this->redis->exec();
     }
 
     public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
     {
-        $this->updateGauge($name, $value, $help, $labelNames, $labelValues, 'hSet');
+        $this->updateGauge($name, $value, $help, $labelNames, $labelValues, false);
     }
 
     public function addToGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
     {
-        $this->updateGauge($name, $value, $help, $labelNames, $labelValues, 'hIncrByFloat');
+        $this->updateGauge($name, $value, $help, $labelNames, $labelValues, true);
     }
 
     /**
      * @param string[] $labelValues
      */
-    private function updateGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues, string $command) : void
+    private function updateGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues, bool $isIncrement) : void
     {
         $metaData = [
             'name' => $name->toString(),
@@ -143,33 +128,17 @@ LUA
             'labelNames' => $labelNames->toStrings(),
         ];
 
-        $this->redis->eval(
-            <<<LUA
-local result = redis.call(ARGV[1], KEYS[1], ARGV[2], ARGV[3])
+        $metricKey = $this->toMetricKey($name, 'gauge');
+        $this->redis->multi();
+        if ($isIncrement) {
+            $this->redis->hIncrByFloat($metricKey, json_encode($labelValues), $value);
+        } else {
+            $this->redis->hSet($metricKey, json_encode($labelValues), (string) $value);
+        }
 
-if ARGV[1] == 'hSet' then
-    if result == 1 then
-        redis.call('hSet', KEYS[1], '__meta', ARGV[4])
-        redis.call('sAdd', KEYS[2], KEYS[1])
-    end
-else
-    if result == ARGV[3] then
-        redis.call('hSet', KEYS[1], '__meta', ARGV[4])
-        redis.call('sAdd', KEYS[2], KEYS[1])
-    end
-end
-LUA
-            ,
-            [
-                $this->toMetricKey($name, 'gauge'),
-                $this->prefix . 'gauge' . self::PROMETHEUS_METRIC_KEYS_SUFFIX,
-                $command,
-                json_encode($labelValues),
-                $value,
-                json_encode($metaData),
-            ],
-            2
-        );
+        $this->redis->hSetNx($metricKey, '__meta', json_encode($metaData));
+        $this->redis->sAdd($this->prefix . 'gauge' . self::PROMETHEUS_METRIC_KEYS_SUFFIX, $metricKey);
+        $this->redis->exec();
     }
 
     public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
@@ -180,24 +149,12 @@ LUA
             'labelNames' => $labelNames->toStrings(),
         ];
 
-        $this->redis->eval(
-            <<<LUA
-local result = redis.call('hIncrByFloat', KEYS[1], ARGV[1], ARGV[2])
-if result == ARGV[2] then
-    redis.call('hMSet', KEYS[1], '__meta', ARGV[3])
-    redis.call('sAdd', KEYS[2], KEYS[1])
-end
-LUA
-            ,
-            [
-                $this->toMetricKey($name, 'counter'),
-                $this->prefix . 'counter' . self::PROMETHEUS_METRIC_KEYS_SUFFIX,
-                json_encode($labelValues),
-                $value,
-                json_encode($metaData),
-            ],
-            2
-        );
+        $metricKey = $this->toMetricKey($name, 'counter');
+        $this->redis->multi();
+        $this->redis->hIncrByFloat($metricKey, json_encode($labelValues), $value);
+        $this->redis->hSetNx($metricKey, '__meta', json_encode($metaData));
+        $this->redis->sAdd($this->prefix . 'counter' . self::PROMETHEUS_METRIC_KEYS_SUFFIX, $metricKey);
+        $this->redis->exec();
     }
 
     /**
