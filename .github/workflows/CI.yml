@@ -61,10 +61,11 @@ jobs:
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
       - name: Run Infection
-        run: ./vendor/bin/infection --min-msi=90 --min-covered-msi=90
+        run: ./vendor/bin/infection --min-msi=88 --min-covered-msi=88
         env:
           REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
       - name: Archive report
+        if: always()
         uses: actions/upload-artifact@v1
         with:
           name: Infection report
