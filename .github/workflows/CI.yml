@@ -64,6 +64,11 @@ jobs:
         run: ./vendor/bin/infection --min-msi=90 --min-covered-msi=90
         env:
           REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
+      - name: Archive report
+        uses: actions/upload-artifact@v1
+        with:
+          name: Infection report
+          path: infection.log
   integration:
     name: Integration tests
     runs-on: ubuntu-18.04
