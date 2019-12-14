@@ -24,7 +24,7 @@ final class RenderTextFormatTest extends TestCase
                 'counter',
                 'test B',
                 ['label1', 'label2'],
-                [new Sample('test_some_metric_counter', 1, ['label3'], ['value1', 'value\\2', "value\n3"])]
+                [new Sample('test_some_metric_counter', 1, ['label3', 'label4'], ['value1', 'value\\2', "value\n3", 'value"4'])]
             ),
             new MetricFamilySamples(
                 'A',
@@ -52,7 +52,7 @@ test_some_metric_bucket{le="0.005"} 0
 test_some_metric_bucket{le="0.01"} 0
 # HELP B test B
 # TYPE B counter
-test_some_metric_counter{label1="value1",label2="value\\\\2",label3="value\n3"} 1
+test_some_metric_counter{label1="value1",label2="value\\\\2",label3="value\n3",label4="value\"4"} 1
 # HELP C test C
 # TYPE C gauge
 test_some_metric_gauge 0
