@@ -196,4 +196,21 @@ abstract class CounterBaseTest extends TestCase
 
         return $cases;
     }
+
+    public function testMultipleCountersCanBeStored() : void
+    {
+        $storage           = $this->getStorage();
+        $expectedCounterNb = 3;
+        for ($i = 0; $i < $expectedCounterNb; $i++) {
+            $counter = new Counter(
+                $storage,
+                MetricName::fromNamespacedName('test', 'some_metric_' . $i),
+                'Some test ' . $i
+            );
+            $counter->inc();
+        }
+
+        $samples = $storage->collect();
+        $this->assertCount($expectedCounterNb, $samples);
+    }
 }
