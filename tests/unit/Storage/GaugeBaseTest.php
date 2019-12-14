@@ -307,4 +307,21 @@ abstract class GaugeBaseTest extends TestCase
 
         return $cases;
     }
+
+    public function testMultipleGaugesCanBeStored() : void
+    {
+        $storage         = $this->getStorage();
+        $expectedGaugeNb = 3;
+        for ($i = 0; $i < $expectedGaugeNb; $i++) {
+            $gauge = new Gauge(
+                $storage,
+                MetricName::fromNamespacedName('test', 'some_metric_' . $i),
+                'Some test ' . $i
+            );
+            $gauge->inc();
+        }
+
+        $samples = $storage->collect();
+        $this->assertCount($expectedGaugeNb, $samples);
+    }
 }

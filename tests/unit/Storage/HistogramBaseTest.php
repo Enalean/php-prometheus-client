@@ -267,4 +267,21 @@ abstract class HistogramBaseTest extends TestCase
 
         return $cases;
     }
+
+    public function testMultipleGaugesCanBeStored() : void
+    {
+        $storage             = $this->getStorage();
+        $expectedHistogramNb = 3;
+        for ($i = 0; $i < $expectedHistogramNb; $i++) {
+            $histogram = new Histogram(
+                $storage,
+                MetricName::fromNamespacedName('test', 'some_metric_' . $i),
+                'Some test ' . $i,
+            );
+            $histogram->observe(1.0);
+        }
+
+        $samples = $storage->collect();
+        $this->assertCount($expectedHistogramNb, $samples);
+    }
 }
