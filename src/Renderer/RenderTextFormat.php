@@ -62,11 +62,7 @@ final class RenderTextFormat implements MetricsRenderer
 
     private function escapeLabelValue(string $v) : string
     {
-        $v = str_replace('\\', '\\\\', $v);
-        $v = str_replace("\n", "\\n", $v);
-        $v = str_replace('"', '\\"', $v);
-
-        return $v;
+        return str_replace(['\\', "\n", '"'], ['\\\\', "\\n", '\\"'], $v);
     }
 
     public function getMimeType() : string
