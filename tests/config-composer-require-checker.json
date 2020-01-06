@@ -1,0 +1,11 @@
+{
+  "symbol-whitelist" : [
+    "null", "true", "false",
+    "static", "self", "parent",
+    "array", "string", "int", "float", "bool", "iterable", "callable", "void", "object",
+    "JSON_THROW_ON_ERROR",
+    "Redis",
+    "APCuIterator", "apcu_add", "apcu_add", "apcu_cas", "apcu_delete", "apcu_fetch",
+    "apcu_inc", "apcu_store"
+  ]
+}

@@ -104,3 +104,17 @@ jobs:
         run: ./vendor/bin/phpcs
       - name: Psalm
         run: ./vendor/bin/psalm --shepherd
+  dependencies:
+    name: Dependencies state
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+      - name: Composer Require Checker
+        uses: docker://webfactory/composer-require-checker:2.0.0
+        with:
+          args: --config-file=tests/config-composer-require-checker.json
+      - name: Composer Unused
+        uses: docker://icanhazstring/composer-unused-ga
