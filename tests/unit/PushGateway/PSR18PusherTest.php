@@ -22,9 +22,7 @@ final class PSR18PusherTest extends TestCase
     /**
      * @testWith ["http://example.com", "example.com"]
      *           ["http://example.com", "http://example.com"]
-     *           ["http://example.com", "http://example.com/"]
      *           ["https://example.com", "https://example.com"]
-     *           ["https://example.com", "https://example.com/"]
      */
     public function testServerURIIsCorrectlyConstructed(string $expectedServerURIStart, string $givenAddress) : void
     {
