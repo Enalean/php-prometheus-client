@@ -21,8 +21,8 @@ jobs:
         dependencies: ['', '--prefer-lowest --prefer-stable']
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
-      - uses: shivammathur/setup-php@1.6.0
+        uses: actions/checkout@v2
+      - uses: shivammathur/setup-php@1.7.2
         with:
           php-version: '7.4'
           extensions: mbstring, redis
@@ -37,7 +37,7 @@ jobs:
         env:
           REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1.0.5
+        uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage.xml
@@ -51,8 +51,8 @@ jobs:
           - 6379/tcp
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
-      - uses: shivammathur/setup-php@1.6.0
+        uses: actions/checkout@v2
+      - uses: shivammathur/setup-php@1.7.2
         with:
           php-version: '7.4'
           extensions: mbstring, redis
@@ -75,7 +75,7 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
       - name: Start stack
@@ -92,8 +92,8 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
-      - uses: shivammathur/setup-php@1.6.0
+        uses: actions/checkout@v2
+      - uses: shivammathur/setup-php@1.7.2
         with:
           php-version: '7.4'
           extensions: mbstring, redis
@@ -109,7 +109,7 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
       - name: Composer Require Checker
