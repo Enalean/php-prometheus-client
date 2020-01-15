@@ -164,7 +164,6 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
     {
         $keys = $this->redis->sMembers($this->prefix . 'histogram' . self::PROMETHEUS_METRIC_KEYS_SUFFIX);
 
-        sort($keys);
         $histograms = [];
         foreach ($keys as $key) {
             $raw               = $this->redis->hGetAll($key);
@@ -246,7 +245,6 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
     {
         $keys = $this->redis->sMembers($this->prefix . 'gauge' . self::PROMETHEUS_METRIC_KEYS_SUFFIX);
 
-        sort($keys);
         $gauges = [];
         foreach ($keys as $key) {
             $raw           = $this->redis->hGetAll($key);
@@ -279,7 +277,6 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
     {
         $keys = $this->redis->sMembers($this->prefix . 'counter' . self::PROMETHEUS_METRIC_KEYS_SUFFIX);
 
-        sort($keys);
         $counters = [];
         foreach ($keys as $key) {
             $raw             = $this->redis->hGetAll($key);
