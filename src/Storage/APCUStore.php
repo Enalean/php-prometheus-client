@@ -209,7 +209,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
                 ];
             }
 
-            $this->sortSamples($data['samples']);
+            self::sortSamples($data['samples']);
             $samples = [];
             foreach ($data['samples'] as $sampleData) {
                 $samples[] = new Sample($sampleData['name'], $sampleData['value'], $sampleData['labelNames'], $sampleData['labelValues']);
@@ -251,7 +251,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
                 ];
             }
 
-            $this->sortSamples($data['samples']);
+            self::sortSamples($data['samples']);
             $samples = [];
             foreach ($data['samples'] as $sampleData) {
                 $samples[] = new Sample($sampleData['name'], $sampleData['value'], $sampleData['labelNames'], $sampleData['labelValues']);
