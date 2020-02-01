@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - uses: shivammathur/setup-php@1.7.2
+      - uses: shivammathur/setup-php@1.8.1
         with:
           php-version: '7.4'
           extensions: mbstring, redis
@@ -32,6 +32,8 @@ jobs:
         run: rm composer.lock
       - name: Install dependencies
         run: composer update --no-interaction --prefer-dist ${{ matrix.dependencies }}
+      - name: Configure PHPUnit matchers
+        run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
       - name: Run tests
         run: ./vendor/bin/phpunit --verbose --colors --coverage-clover=coverage.xml
         env:
@@ -52,7 +54,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - uses: shivammathur/setup-php@1.7.2
+      - uses: shivammathur/setup-php@1.8.1
         with:
           php-version: '7.4'
           extensions: mbstring, redis
@@ -93,7 +95,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - uses: shivammathur/setup-php@1.7.2
+      - uses: shivammathur/setup-php@1.8.1
         with:
           php-version: '7.4'
           extensions: mbstring, redis
