@@ -22,6 +22,7 @@
     </filter>
     <php>
         <ini name="error_reporting" value="-1" />
+        <ini name="assert.exception" value="1" />
         <env name="REDIS_HOST" value="127.0.0.1" />
         <env name="REDIS_PORT" value="6379" />
     </php>

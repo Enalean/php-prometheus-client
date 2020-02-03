@@ -26,7 +26,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: mbstring, redis
-          ini-values: apc.enable_cli=1
+          ini-values: apc.enable_cli=1, zend.assertions=1
           coverage: pcov
       - name: Remove Composer lockfile
         run: rm composer.lock
@@ -58,7 +58,7 @@ jobs:
         with:
           php-version: '7.4'
           extensions: mbstring, redis
-          ini-values: apc.enable_cli=1
+          ini-values: apc.enable_cli=1, zend.assertions=1
           coverage: pcov
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
@@ -106,6 +106,8 @@ jobs:
         run: ./vendor/bin/phpcs
       - name: Psalm
         run: ./vendor/bin/psalm --shepherd
+      - name: PHPStan
+        run: ./vendor/bin/phpstan analyse
   dependencies:
     name: Dependencies state
     runs-on: ubuntu-18.04

@@ -25,7 +25,7 @@ final class Counter extends Metric
     }
 
     /**
-     * @param string[] $labelValues e.g. ['status', 'opcode']
+     * @param string ...$labelValues e.g. ['status', 'opcode']
      */
     public function inc(string ...$labelValues) : void
     {
@@ -33,8 +33,8 @@ final class Counter extends Metric
     }
 
     /**
-     * @param float    $count       e.g. 2
-     * @param string[] $labelValues e.g. ['status', 'opcode']
+     * @param float  $count          e.g. 2
+     * @param string ...$labelValues e.g. ['status', 'opcode']
      */
     public function incBy(float $count, string ...$labelValues) : void
     {

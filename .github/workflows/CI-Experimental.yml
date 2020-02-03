@@ -22,7 +22,7 @@ jobs:
         with:
           php-version: '8.0'
           extensions: mbstring, redis
-          ini-values: apc.enable_cli=1
+          ini-values: apc.enable_cli=1, zend.assertions=1
           coverage: none
       - name: Remove Composer lockfile
         run: rm composer.lock

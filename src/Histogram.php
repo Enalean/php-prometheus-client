@@ -70,8 +70,8 @@ final class Histogram extends Metric
     }
 
     /**
-     * @param float    $value       e.g. 123
-     * @param string[] $labelValues e.g. ['status', 'opcode']
+     * @param float  $value          e.g. 123
+     * @param string ...$labelValues e.g. ['status', 'opcode']
      */
     public function observe(float $value, string ...$labelValues) : void
     {
