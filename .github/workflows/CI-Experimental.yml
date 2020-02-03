@@ -1,0 +1,37 @@
+name: CI Experimental
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  tests:
+    name: Tests on PHP 8 nightly
+    runs-on: ubuntu-18.04
+    services:
+      redis:
+        image: redis
+        ports:
+          - 6379/tcp
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: shivammathur/setup-php@1.8.2
+        with:
+          php-version: '8.0'
+          extensions: mbstring, redis
+          ini-values: apc.enable_cli=1
+          coverage: none
+      - name: Remove Composer lockfile
+        run: rm composer.lock
+      - name: Install dependencies
+        run: composer update --no-interaction --prefer-dist --ignore-platform-reqs
+      - name: Configure PHPUnit matchers
+        run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+      - name: Run tests
+        continue-on-error: true
+        run: ./vendor/bin/phpunit --verbose --colors
+        env:
+          REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
