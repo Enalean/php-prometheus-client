@@ -16,6 +16,8 @@
         "infection/infection": "^0.15.0",
         "php-http/curl-client": "^2.0",
         "php-http/mock-client": "^1.3",
+        "phpstan/phpstan": "^0.12.8",
+        "phpstan/phpstan-phpunit": "^0.12.6",
         "phpunit/phpunit": "^8.2",
         "psalm/plugin-phpunit": "^0.8.0",
         "vimeo/psalm": "^3.3"

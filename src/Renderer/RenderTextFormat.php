@@ -8,7 +8,9 @@ use Enalean\Prometheus\MetricFamilySamples;
 use Enalean\Prometheus\Sample;
 use function array_combine;
 use function array_merge;
+use function assert;
 use function implode;
+use function is_array;
 use function sprintf;
 use function str_replace;
 use function strcmp;
@@ -51,6 +53,7 @@ final class RenderTextFormat implements MetricsRenderer
         $labelNames = $metric->getLabelNames();
         if ($metric->hasLabelNames() || $sample->hasLabelNames()) {
             $labels = array_combine(array_merge($labelNames, $sample->getLabelNames()), $sample->getLabelValues());
+            assert(is_array($labels));
             foreach ($labels as $labelName => $labelValue) {
                 $escapedLabels[] = $labelName . '="' . $this->escapeLabelValue($labelValue) . '"';
             }

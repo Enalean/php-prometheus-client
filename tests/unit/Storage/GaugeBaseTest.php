@@ -15,6 +15,7 @@ use Enalean\Prometheus\Value\MetricName;
 use PHPUnit\Framework\TestCase;
 use function array_combine;
 use function array_merge;
+use function assert;
 use function chr;
 use function reset;
 
@@ -278,12 +279,13 @@ abstract class GaugeBaseTest extends TestCase
         self::assertCount(1, $metrics);
         self::assertContainsOnlyInstancesOf(MetricFamilySamples::class, $metrics);
 
-        $metric  = reset($metrics);
+        $metric = reset($metrics);
+        assert($metric !== false);
         $samples = $metric->getSamples();
         self::assertContainsOnlyInstancesOf(Sample::class, $samples);
 
         foreach ($samples as $sample) {
-            $labels = array_combine(
+            $labels = (array) array_combine(
                 array_merge($metric->getLabelNames(), $sample->getLabelNames()),
                 $sample->getLabelValues()
             );
