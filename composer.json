@@ -1,5 +1,5 @@
 {
-    "name": "enalean/prometheus-client",
+    "name": "tuleap/prometheus-client",
     "description": "Prometheus instrumentation library",
     "license": "Apache-2.0",
     "require": {
