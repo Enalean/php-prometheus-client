@@ -84,8 +84,8 @@ Using the Redis storage:
 ```php
 $redis = new \Redis();
 $redis->connect('127.0.0.1', 6379);
-$storage = new \Enalean\Prometheus\Storage\RedisStore();
-$registry = new CollectorRegistry($storage);
+$storage = new \Enalean\Prometheus\Storage\RedisStore($redis);
+$registry = new \Enalean\Prometheus\Registry\CollectorRegistry($storage);
 
 $counter = $registry->registerCounter(
     \Enalean\Prometheus\Value\MetricName::fromNamespacedName('test', 'some_counter'),
@@ -101,7 +101,7 @@ $result = $renderer->render($registry->getMetricFamilySamples());
 Using the APCu storage:
 ```php
 $storage = new \Enalean\Prometheus\Storage\APCUStore();
-$registry = new CollectorRegistry($storage);
+$registry = new \Enalean\Prometheus\Registry\CollectorRegistry($storage);
 
 $counter = $registry->registerCounter(
     \Enalean\Prometheus\Value\MetricName::fromNamespacedName('test', 'some_counter'),
@@ -120,7 +120,7 @@ Also look at the [examples](examples).
 
 ### Dependencies
 
-* PHP 7.2+
+* PHP 7.3+
 * PHP Redis extension
 * PHP APCu extension
 * [Composer](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx)
