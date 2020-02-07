@@ -122,3 +122,14 @@ jobs:
           args: --config-file=tests/config-composer-require-checker.json
       - name: Composer Unused
         uses: docker://icanhazstring/composer-unused-ga
+  backward_compatible_changes:
+    name: Backward Compatible Changes
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      - name: Roave BC Check
+        uses: docker://nyholm/roave-bc-check-ga
+        with:
+          args: roave-backwards-compatibility-check:assert-backwards-compatible --from=v1.0.0
