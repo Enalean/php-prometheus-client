@@ -28,7 +28,6 @@ final class RenderTextFormat implements MetricsRenderer
      */
     public function render(array $metrics) : string
     {
-        /** @psalm-suppress ImpureFunctionCall https://github.com/vimeo/psalm/issues/2631 */
         usort($metrics, static function (MetricFamilySamples $a, MetricFamilySamples $b) {
             return strcmp($a->getName(), $b->getName());
         });
