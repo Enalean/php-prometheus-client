@@ -250,7 +250,6 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
     {
         $metaKey = $this->metaKey($name);
         if (array_key_exists($metaKey, $this->gauges) === false) {
-            /** @psalm-suppress InvalidArgument */
             $meta                   = $this->metaData($name, $help, $labelNames);
             $this->gauges[$metaKey] = [
                 'meta' => $meta,
@@ -266,7 +265,6 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
         $metaKey  = $this->metaKey($name);
         $valueKey = $this->valueKey($name, $labelValues);
         if (array_key_exists($metaKey, $this->counters) === false) {
-            /** @psalm-suppress InvalidArgument */
             $meta                     = $this->metaData($name, $help, $labelNames);
             $this->counters[$metaKey] = [
                 'meta' => $meta,
