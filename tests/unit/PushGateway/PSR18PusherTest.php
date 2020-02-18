@@ -41,16 +41,16 @@ final class PSR18PusherTest extends TestCase
         $collector = $this->createMock(Collector::class);
 
         $pusher->push($collector, 'myjob');
-        $this->assertEquals('PUT', $client->getLastRequest()->getMethod());
+        self::assertEquals('PUT', $client->getLastRequest()->getMethod());
         $pusher->pushAdd($collector, 'myjob');
-        $this->assertEquals('POST', $client->getLastRequest()->getMethod());
+        self::assertEquals('POST', $client->getLastRequest()->getMethod());
         $pusher->delete('myjob');
-        $this->assertEquals('DELETE', $client->getLastRequest()->getMethod());
+        self::assertEquals('DELETE', $client->getLastRequest()->getMethod());
 
         $sentRequests = $client->getRequests();
-        $this->assertCount(3, $sentRequests);
+        self::assertCount(3, $sentRequests);
         foreach ($sentRequests as $request) {
-            $this->assertStringStartsWith($expectedServerURIStart . '/metrics/job/myjob', (string) $request->getUri());
+            self::assertStringStartsWith($expectedServerURIStart . '/metrics/job/myjob', (string) $request->getUri());
         }
     }
 
@@ -79,11 +79,11 @@ final class PSR18PusherTest extends TestCase
         $collector->method('getMetricFamilySamples')->willReturn([new MetricFamilySamples('name', 'type', 'help', [], [])]);
 
         $pusher->push($collector, 'myjob');
-        $this->assertNotEmpty($client->getLastRequest()->getBody()->getContents());
+        self::assertNotEmpty($client->getLastRequest()->getBody()->getContents());
         $pusher->pushAdd($collector, 'myjob');
-        $this->assertNotEmpty($client->getLastRequest()->getBody()->getContents());
+        self::assertNotEmpty($client->getLastRequest()->getBody()->getContents());
         $pusher->delete('myjob');
-        $this->assertEmpty($client->getLastRequest()->getBody()->getContents());
+        self::assertEmpty($client->getLastRequest()->getBody()->getContents());
     }
 
     public function testPushedInformationCanBeGrouped() : void
@@ -107,9 +107,9 @@ final class PSR18PusherTest extends TestCase
         $pusher->delete('myjob', ['job' => 'some_job', 'instance' => 'some_instance']);
 
         $sentRequests = $client->getRequests();
-        $this->assertCount(3, $sentRequests);
+        self::assertCount(3, $sentRequests);
         foreach ($sentRequests as $request) {
-            $this->assertStringEndsWith('/job/some_job/instance/some_instance', (string) $request->getUri());
+            self::assertStringEndsWith('/job/some_job/instance/some_instance', (string) $request->getUri());
         }
     }
 

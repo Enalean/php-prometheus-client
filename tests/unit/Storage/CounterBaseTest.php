@@ -57,9 +57,9 @@ abstract class CounterBaseTest extends TestCase
         $counter->inc('lalal', 'lululu');
         $counter->inc('lalal', 'lululu');
         $counter->inc('lalal', 'lululu');
-        $this->assertThat(
+        self::assertThat(
             $storage->collect(),
-            $this->equalTo(
+            self::equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
                     'counter',
@@ -80,9 +80,9 @@ abstract class CounterBaseTest extends TestCase
         $storage = $this->getStorage();
         $counter = new Counter($storage, MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing');
         $counter->inc();
-        $this->assertThat(
+        self::assertThat(
             $storage->collect(),
-            $this->equalTo(
+            self::equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
                     'counter',
@@ -109,9 +109,9 @@ abstract class CounterBaseTest extends TestCase
         );
         $counter->inc('lalal', 'lululu');
         $counter->incBy(123, 'lalal', 'lululu');
-        $this->assertThat(
+        self::assertThat(
             $storage->collect(),
-            $this->equalTo(
+            self::equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
                     'counter',
@@ -138,9 +138,9 @@ abstract class CounterBaseTest extends TestCase
         );
         $counter->inc('lalal', 'lululu');
         $counter->incBy(123.5, 'lalal', 'lululu');
-        $this->assertThat(
+        self::assertThat(
             $storage->collect(),
-            $this->equalTo(
+            self::equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
                     'counter',
@@ -213,6 +213,6 @@ abstract class CounterBaseTest extends TestCase
         }
 
         $samples = $storage->collect();
-        $this->assertCount($expectedCounterNb, $samples);
+        self::assertCount($expectedCounterNb, $samples);
     }
 }

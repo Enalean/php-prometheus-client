@@ -58,9 +58,9 @@ abstract class CollectorRegistryBaseTest extends TestCase
         $g->set(35, 'ccc');
 
         $registry = new CollectorRegistry($storage);
-        $this->assertThat(
+        self::assertThat(
             $this->renderer->render($registry->getMetricFamilySamples()),
-            $this->equalTo(<<<EOF
+            self::equalTo(<<<EOF
 # HELP test_some_metric this is for testing
 # TYPE test_some_metric gauge
 test_some_metric{foo="aaa"} 35
@@ -91,9 +91,9 @@ EOF
         $registry->getCounter($metricName)->inc('lalal', 'lvlvlv');
 
         $registry = new CollectorRegistry($storage);
-        $this->assertThat(
+        self::assertThat(
             $this->renderer->render($registry->getMetricFamilySamples()),
-            $this->equalTo(<<<EOF
+            self::equalTo(<<<EOF
 # HELP test_some_metric this is for testing
 # TYPE test_some_metric counter
 test_some_metric{foo="lalal",bar="lululu"} 3
@@ -125,9 +125,9 @@ EOF
         $registry->getHistogram($metricName)->observe(7.1, 'gnaaha', 'hihihi');
 
         $registry = new CollectorRegistry($storage);
-        $this->assertThat(
+        self::assertThat(
             $this->renderer->render($registry->getMetricFamilySamples()),
-            $this->equalTo(<<<EOF
+            self::equalTo(<<<EOF
 # HELP test_some_metric this is for testing
 # TYPE test_some_metric histogram
 test_some_metric_bucket{foo="gnaaha",bar="hihihi",le="0.1"} 0
@@ -171,9 +171,9 @@ EOF
         $registry->getHistogram($metricName)->observe(7.1);
 
         $registry = new CollectorRegistry($storage);
-        $this->assertThat(
+        self::assertThat(
             $this->renderer->render($registry->getMetricFamilySamples()),
-            $this->equalTo(<<<EOF
+            self::equalTo(<<<EOF
 # HELP test_some_metric this is for testing
 # TYPE test_some_metric histogram
 test_some_metric_bucket{le="0.005"} 0
@@ -209,9 +209,9 @@ EOF
             ->registerCounter(MetricName::fromName('some_quick_counter'), 'just a quick measurement')
             ->inc();
 
-        $this->assertThat(
+        self::assertThat(
             $this->renderer->render($registry->getMetricFamilySamples()),
-            $this->equalTo(<<<EOF
+            self::equalTo(<<<EOF
 # HELP some_quick_counter just a quick measurement
 # TYPE some_quick_counter counter
 some_quick_counter 1
@@ -313,7 +313,7 @@ EOF
         $counterA   = $registry->getOrRegisterCounter($metricName, 'Help text');
         $counterB   = $registry->getOrRegisterCounter($metricName, 'Help text');
 
-        $this->assertSame($counterA, $counterB);
+        self::assertSame($counterA, $counterB);
     }
 
     /**
@@ -326,7 +326,7 @@ EOF
         $gaugeA     = $registry->getOrRegisterGauge($metricName, 'Help text');
         $gaugeB     = $registry->getOrRegisterGauge($metricName, 'Help text');
 
-        $this->assertSame($gaugeA, $gaugeB);
+        self::assertSame($gaugeA, $gaugeB);
     }
 
     /**
@@ -339,6 +339,6 @@ EOF
         $histogramA = $registry->getOrRegisterHistogram($metricName, 'Help text');
         $histogramB = $registry->getOrRegisterHistogram($metricName, 'Help text');
 
-        $this->assertSame($histogramA, $histogramB);
+        self::assertSame($histogramA, $histogramB);
     }
 }

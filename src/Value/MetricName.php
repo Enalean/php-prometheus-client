@@ -29,12 +29,12 @@ final class MetricName
      */
     public static function fromNamespacedName(string $namespace, string $name) : self
     {
-        return self::fromName(($namespace ? $namespace . '_' : '') . $name);
+        return self::fromName(($namespace !== '' ? $namespace . '_' : '') . $name);
     }
 
     public static function fromName(string $name) : self
     {
-        if (! preg_match(self::METRIC_NAME_REGEX, $name)) {
+        if (preg_match(self::METRIC_NAME_REGEX, $name) !== 1) {
             throw new InvalidArgumentException(sprintf(
                 'The name %s does not match the expected pattern.',
                 $name

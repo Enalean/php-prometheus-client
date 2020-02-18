@@ -23,8 +23,8 @@ final class HistogramLabelNamesTest extends TestCase
     {
         $labelNames = HistogramLabelNames::fromNames($name);
 
-        $this->assertEquals([$name], $labelNames->toStrings());
-        $this->assertEquals(1, count($labelNames));
+        self::assertEquals([$name], $labelNames->toStrings());
+        self::assertCount(1, $labelNames);
     }
 
     /**
@@ -43,7 +43,7 @@ final class HistogramLabelNamesTest extends TestCase
         $labels     = ['label1', 'label2', 'label3'];
         $labelNames = HistogramLabelNames::fromNames(...$labels);
 
-        $this->assertEquals($labels, $labelNames->toStrings());
-        $this->assertEquals(count($labels), count($labelNames));
+        self::assertEquals($labels, $labelNames->toStrings());
+        self::assertEquals(count($labels), count($labelNames));
     }
 }

@@ -38,7 +38,7 @@ final class HistogramTest extends TestCase
         $histogram->observe(3);
         $histogram->observe(0);
 
-        $this->assertEquals([0, -4.2, 3, 0], $storage->observedValues);
+        self::assertEquals([0, -4.2, 3, 0], $storage->observedValues);
     }
 
     public function testHistogramMustHaveAtLeastOneBucket() : void
@@ -77,9 +77,9 @@ final class HistogramTest extends TestCase
 
         $histogram = new Histogram($this->getEmptyStorage(), $name, $help, $labelNames);
 
-        $this->assertSame($name, $histogram->getName());
-        $this->assertSame($help, $histogram->getHelp());
-        $this->assertSame($labelNames, $histogram->getLabelNames());
+        self::assertSame($name, $histogram->getName());
+        self::assertSame($help, $histogram->getHelp());
+        self::assertSame($labelNames, $histogram->getLabelNames());
     }
 
     private function getEmptyStorage() : HistogramStorage

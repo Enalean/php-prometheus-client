@@ -25,7 +25,7 @@ final class BlackBoxTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->adapter        = getenv('ADAPTER') ?: '';
+        $this->adapter        = (string) getenv('ADAPTER');
         $this->client         = HttpAsyncClientDiscovery::find();
         $this->requestFactory = Psr17FactoryDiscovery::findRequestFactory();
         $this->client->sendAsyncRequest(
@@ -55,12 +55,12 @@ final class BlackBoxTest extends TestCase
         $metricsResult = $this->client->sendAsyncRequest(
             $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/metrics.php?adapter=' . $this->adapter)
         )->wait();
-        $this->assertThat(
+        self::assertThat(
             $metricsResult->getBody()->getContents(),
-            $this->logicalOr(
-                $this->stringContains('test_some_gauge{type="blue"} 0'),
-                $this->stringContains('test_some_gauge{type="blue"} 1'),
-                $this->stringContains('test_some_gauge{type="blue"} 2')
+            self::logicalOr(
+                self::stringContains('test_some_gauge{type="blue"} 0'),
+                self::stringContains('test_some_gauge{type="blue"} 1'),
+                self::stringContains('test_some_gauge{type="blue"} 2')
             )
         );
     }
@@ -86,7 +86,7 @@ final class BlackBoxTest extends TestCase
             $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/metrics.php?adapter=' . $this->adapter)
         )->wait();
 
-        $this->assertThat($metricsResult->getBody()->getContents(), $this->stringContains('test_some_counter{type="blue"} ' . $sum));
+        self::assertThat($metricsResult->getBody()->getContents(), self::stringContains('test_some_counter{type="blue"} ' . $sum));
     }
 
     /**
@@ -119,7 +119,7 @@ final class BlackBoxTest extends TestCase
             $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/metrics.php?adapter=' . $this->adapter)
         )->wait();
 
-        $this->assertThat($metricsResult->getBody()->getContents(), $this->stringContains(<<<EOF
+        self::assertThat($metricsResult->getBody()->getContents(), self::stringContains(<<<EOF
 test_some_histogram_bucket{type="blue",le="0.1"} 1
 test_some_histogram_bucket{type="blue",le="1"} 2
 test_some_histogram_bucket{type="blue",le="2"} 3

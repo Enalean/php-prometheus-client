@@ -39,7 +39,7 @@ abstract class BlackBoxPushGatewayTest extends TestCase
         $requestFactory = Psr17FactoryDiscovery::findRequestFactory();
         $metricsRequest = $requestFactory->createRequest('GET', 'http://pushgateway:9091/metrics');
         $metrics        = $httpClient->sendRequest($metricsRequest)->getBody()->getContents();
-        $this->assertStringContainsString(
+        self::assertStringContainsString(
             '# HELP test_some_counter it increases
 # TYPE test_some_counter counter
 test_some_counter{instance="foo",job="my_job",type="blue"} 6',
@@ -49,7 +49,7 @@ test_some_counter{instance="foo",job="my_job",type="blue"} 6',
         $pusher->delete('my_job', ['instance' => 'foo']);
 
         $metrics = $httpClient->sendRequest($metricsRequest)->getBody()->getContents();
-        $this->assertStringNotContainsString(
+        self::assertStringNotContainsString(
             '# HELP test_some_counter it increases
 # TYPE test_some_counter counter
 test_some_counter{instance="foo",job="my_job",type="blue"} 6',
