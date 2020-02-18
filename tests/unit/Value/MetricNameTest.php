@@ -21,7 +21,7 @@ final class MetricNameTest extends TestCase
     {
         $name = MetricName::fromNamespacedName($namespace, $name);
 
-        $this->assertEquals($expectedName, $name->toString());
+        self::assertEquals($expectedName, $name->toString());
     }
 
     /**
@@ -32,7 +32,7 @@ final class MetricNameTest extends TestCase
     {
         $name = MetricName::fromName($name);
 
-        $this->assertEquals($expectedName, $name->toString());
+        self::assertEquals($expectedName, $name->toString());
     }
 
     /**

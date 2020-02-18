@@ -22,10 +22,10 @@ final class PSR18UnexpectedPushGatewayResponseTest extends TestCase
 
         $exception = PSR18UnexpectedPushGatewayResponse::invalidResponse($request, $response);
 
-        $this->assertSame($request, $exception->getRequest());
-        $this->assertSame($response, $exception->getResponse());
-        $this->assertNull($exception->getPrevious());
-        $this->assertEquals(0, $exception->getCode());
+        self::assertSame($request, $exception->getRequest());
+        self::assertSame($response, $exception->getResponse());
+        self::assertNull($exception->getPrevious());
+        self::assertEquals(0, $exception->getCode());
     }
 
     public function testRequestFailure() : void
@@ -36,9 +36,9 @@ final class PSR18UnexpectedPushGatewayResponseTest extends TestCase
 
         $exception = PSR18UnexpectedPushGatewayResponse::requestFailure($request, $clientException);
 
-        $this->assertSame($request, $exception->getRequest());
-        $this->assertNull($exception->getResponse());
-        $this->assertSame($clientException, $exception->getPrevious());
-        $this->assertEquals($clientException->getCode(), $exception->getCode());
+        self::assertSame($request, $exception->getRequest());
+        self::assertNull($exception->getResponse());
+        self::assertSame($clientException, $exception->getPrevious());
+        self::assertEquals($clientException->getCode(), $exception->getCode());
     }
 }

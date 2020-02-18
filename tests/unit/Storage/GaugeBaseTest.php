@@ -55,9 +55,9 @@ abstract class GaugeBaseTest extends TestCase
             MetricLabelNames::fromNames('foo', 'bar')
         );
         $gauge->set(123, 'lalal', 'lululu');
-        $this->assertThat(
+        self::assertThat(
             $storage->collect(),
-            $this->equalTo(
+            self::equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
                     'gauge',
@@ -68,7 +68,7 @@ abstract class GaugeBaseTest extends TestCase
                 ]
             )
         );
-        $this->assertThat($gauge->getHelp(), $this->equalTo('this is for testing'));
+        self::assertThat($gauge->getHelp(), self::equalTo('this is for testing'));
     }
 
     /**
@@ -79,9 +79,9 @@ abstract class GaugeBaseTest extends TestCase
         $storage = $this->getStorage();
         $gauge   = new Gauge($storage, MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing');
         $gauge->set(123);
-        $this->assertThat(
+        self::assertThat(
             $storage->collect(),
-            $this->equalTo(
+            self::equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
                     'gauge',
@@ -92,7 +92,7 @@ abstract class GaugeBaseTest extends TestCase
                 ]
             )
         );
-        $this->assertThat($gauge->getHelp(), $this->equalTo('this is for testing'));
+        self::assertThat($gauge->getHelp(), self::equalTo('this is for testing'));
     }
 
     /**
@@ -103,9 +103,9 @@ abstract class GaugeBaseTest extends TestCase
         $storage = $this->getStorage();
         $gauge   = new Gauge($storage, MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing');
         $gauge->set(123.5);
-        $this->assertThat(
+        self::assertThat(
             $storage->collect(),
-            $this->equalTo(
+            self::equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
                     'gauge',
@@ -116,7 +116,7 @@ abstract class GaugeBaseTest extends TestCase
                 ]
             )
         );
-        $this->assertThat($gauge->getHelp(), $this->equalTo('this is for testing'));
+        self::assertThat($gauge->getHelp(), self::equalTo('this is for testing'));
     }
 
     /**
@@ -133,9 +133,9 @@ abstract class GaugeBaseTest extends TestCase
         );
         $gauge->inc('lalal', 'lululu');
         $gauge->incBy(123, 'lalal', 'lululu');
-        $this->assertThat(
+        self::assertThat(
             $storage->collect(),
-            $this->equalTo(
+            self::equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
                     'gauge',
@@ -162,9 +162,9 @@ abstract class GaugeBaseTest extends TestCase
         );
         $gauge->inc('lalal', 'lululu');
         $gauge->incBy(123.5, 'lalal', 'lululu');
-        $this->assertThat(
+        self::assertThat(
             $storage->collect(),
-            $this->equalTo(
+            self::equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
                     'gauge',
@@ -191,9 +191,9 @@ abstract class GaugeBaseTest extends TestCase
         );
         $gauge->dec('lalal', 'lululu');
         $gauge->decBy(123, 'lalal', 'lululu');
-        $this->assertThat(
+        self::assertThat(
             $storage->collect(),
-            $this->equalTo(
+            self::equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
                     'gauge',
@@ -220,9 +220,9 @@ abstract class GaugeBaseTest extends TestCase
         );
         $gauge->dec('lalal', 'lululu');
         $gauge->decBy(122.5, 'lalal', 'lululu');
-        $this->assertThat(
+        self::assertThat(
             $storage->collect(),
-            $this->equalTo(
+            self::equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
                     'gauge',
@@ -249,9 +249,9 @@ abstract class GaugeBaseTest extends TestCase
         );
         $gauge->set(123, 'lalal', 'lululu');
         $gauge->set(321, 'lalal', 'lululu');
-        $this->assertThat(
+        self::assertThat(
             $storage->collect(),
-            $this->equalTo(
+            self::equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
                     'gauge',
@@ -324,6 +324,6 @@ abstract class GaugeBaseTest extends TestCase
         }
 
         $samples = $storage->collect();
-        $this->assertCount($expectedGaugeNb, $samples);
+        self::assertCount($expectedGaugeNb, $samples);
     }
 }

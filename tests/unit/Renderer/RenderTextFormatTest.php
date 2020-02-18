@@ -45,7 +45,7 @@ final class RenderTextFormatTest extends TestCase
             ),
         ];
 
-        $this->assertEquals(
+        self::assertEquals(
             '# HELP A test A
 # TYPE A histogram
 test_some_metric_bucket{le="0.005"} 0
@@ -67,6 +67,6 @@ test_some_metric_gauge 0
     public function testType() : void
     {
         $renderer = new RenderTextFormat();
-        $this->assertStringContainsString('text/plain', $renderer->getMimeType());
+        self::assertStringContainsString('text/plain', $renderer->getMimeType());
     }
 }

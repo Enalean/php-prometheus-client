@@ -27,7 +27,7 @@ final class CollectorRegistryTest extends CollectorRegistryBaseTest
      */
     public function flushRedis() : void
     {
-        $this->getRedisClient()->flushDb();
+        $this->getRedisClient()->flushDB();
     }
 
     /**
@@ -44,12 +44,12 @@ final class CollectorRegistryTest extends CollectorRegistryBaseTest
         $counter = $registry->registerCounter(MetricName::fromNamespacedName('test', 'some_counter'), 'it increases', MetricLabelNames::fromNames('type'));
         $counter->incBy(6, 'blue');
         $counterRedisKey = 'PROMETHEUS_counter' . RedisStore::PROMETHEUS_METRIC_KEYS_SUFFIX;
-        $this->assertEquals(['PROMETHEUS_:counter:test_some_counter'], $redis->sMembers($counterRedisKey));
+        self::assertEquals(['PROMETHEUS_:counter:test_some_counter'], $redis->sMembers($counterRedisKey));
 
         $gauge = $registry->registerGauge(MetricName::fromNamespacedName('test', 'some_gauge'), 'this is for testing', MetricLabelNames::fromNames('foo'));
         $gauge->set(35, 'bar');
         $gaugeRedisKey = 'PROMETHEUS_gauge' . RedisStore::PROMETHEUS_METRIC_KEYS_SUFFIX;
-        $this->assertEquals(['PROMETHEUS_:gauge:test_some_gauge'], $redis->sMembers($gaugeRedisKey));
+        self::assertEquals(['PROMETHEUS_:gauge:test_some_gauge'], $redis->sMembers($gaugeRedisKey));
 
         $histogram = $registry->registerHistogram(
             MetricName::fromNamespacedName('test', 'some_histogram'),
@@ -59,20 +59,20 @@ final class CollectorRegistryTest extends CollectorRegistryBaseTest
         );
         $histogram->observe(2, 'cat', 'meow');
         $histogramRedisKey = 'PROMETHEUS_histogram' . RedisStore::PROMETHEUS_METRIC_KEYS_SUFFIX;
-        $this->assertEquals(['PROMETHEUS_:histogram:test_some_histogram'], $redis->sMembers($histogramRedisKey));
+        self::assertEquals(['PROMETHEUS_:histogram:test_some_histogram'], $redis->sMembers($histogramRedisKey));
 
         $storage->flush();
 
-        $this->assertEquals('bar', $redis->get('foo'));
+        self::assertEquals('bar', $redis->get('foo'));
 
-        $this->assertEquals([], $redis->sMembers($counterRedisKey));
-        $this->assertFalse($redis->get('PROMETHEUS_:counter:test_some_counter'));
-        $this->assertEquals([], $redis->sMembers($gaugeRedisKey));
-        $this->assertFalse($redis->get('PROMETHEUS_:gauge:test_some_gauge'));
-        $this->assertEquals([], $redis->sMembers($histogramRedisKey));
-        $this->assertFalse($redis->get('PROMETHEUS_:histogram:test_some_histogram'));
+        self::assertEquals([], $redis->sMembers($counterRedisKey));
+        self::assertFalse($redis->get('PROMETHEUS_:counter:test_some_counter'));
+        self::assertEquals([], $redis->sMembers($gaugeRedisKey));
+        self::assertFalse($redis->get('PROMETHEUS_:gauge:test_some_gauge'));
+        self::assertEquals([], $redis->sMembers($histogramRedisKey));
+        self::assertFalse($redis->get('PROMETHEUS_:histogram:test_some_histogram'));
 
-        $this->assertEquals("\n", (new RenderTextFormat())->render($registry->getMetricFamilySamples()));
+        self::assertEquals("\n", (new RenderTextFormat())->render($registry->getMetricFamilySamples()));
 
         $redis->del('foo');
     }

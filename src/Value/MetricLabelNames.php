@@ -29,7 +29,7 @@ final class MetricLabelNames implements LabelNames
     public static function fromNames(string ...$names) : self
     {
         foreach ($names as $name) {
-            if (! preg_match(self::LABEL_NAME_REGEX, $name)) {
+            if (preg_match(self::LABEL_NAME_REGEX, $name) !== 1) {
                 throw new InvalidArgumentException(sprintf(
                     'The label name %s does not match the expected pattern.',
                     $name

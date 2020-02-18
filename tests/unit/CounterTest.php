@@ -31,13 +31,13 @@ final class CounterTest extends TestCase
 
         $counter = new Counter($storage, MetricName::fromName('name'), 'help');
         $counter->inc();
-        $this->assertEquals($storage->value, 1);
+        self::assertEquals($storage->value, 1);
         $counter->inc();
-        $this->assertEquals($storage->value, 2);
+        self::assertEquals($storage->value, 2);
         $counter->incBy(3);
-        $this->assertEquals($storage->value, 5);
+        self::assertEquals($storage->value, 5);
         $counter->incBy(0.123);
-        $this->assertEquals($storage->value, 5.123);
+        self::assertEquals($storage->value, 5.123);
     }
 
     /**
@@ -76,9 +76,9 @@ final class CounterTest extends TestCase
 
         $counter = new Counter($this->getEmptyStorage(), $name, $help, $labelNames);
 
-        $this->assertSame($name, $counter->getName());
-        $this->assertSame($help, $counter->getHelp());
-        $this->assertSame($labelNames, $counter->getLabelNames());
+        self::assertSame($name, $counter->getName());
+        self::assertSame($help, $counter->getHelp());
+        self::assertSame($labelNames, $counter->getLabelNames());
     }
 
     private function getEmptyStorage() : CounterStorage

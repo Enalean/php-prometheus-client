@@ -20,16 +20,16 @@ final class SampleTest extends TestCase
         $labelValues = ['valueA', 'valueB'];
 
         $sample = new Sample($name, $value, $labelNames, $labelValues);
-        $this->assertSame($name, $sample->getName());
-        $this->assertSame($value, $sample->getValue());
-        $this->assertSame($labelNames, $sample->getLabelNames());
-        $this->assertSame($labelValues, $sample->getLabelValues());
-        $this->assertTrue($sample->hasLabelNames());
+        self::assertSame($name, $sample->getName());
+        self::assertSame($value, $sample->getValue());
+        self::assertSame($labelNames, $sample->getLabelNames());
+        self::assertSame($labelValues, $sample->getLabelValues());
+        self::assertTrue($sample->hasLabelNames());
     }
 
     public function testSampleDetectWhenNoLabelNamesAreGiven() : void
     {
         $sample = new Sample('name', 0.1, [], []);
-        $this->assertFalse($sample->hasLabelNames());
+        self::assertFalse($sample->hasLabelNames());
     }
 }

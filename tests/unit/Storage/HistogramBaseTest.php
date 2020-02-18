@@ -60,9 +60,9 @@ abstract class HistogramBaseTest extends TestCase
         $histogram->observe(245, 'lalal', 'lululu');
         $histogram->observe(254, 'lalal', 'lululu');
 
-        $this->assertThat(
+        self::assertThat(
             $storage->collect(),
-            $this->equalTo(
+            self::equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
                     'histogram',
@@ -97,9 +97,9 @@ abstract class HistogramBaseTest extends TestCase
         );
         $histogram->observe(245);
         $histogram->observe(254);
-        $this->assertThat(
+        self::assertThat(
             $storage->collect(),
-            $this->equalTo(
+            self::equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
                     'histogram',
@@ -134,9 +134,9 @@ abstract class HistogramBaseTest extends TestCase
         );
         $histogram->observe(0.11);
         $histogram->observe(0.3);
-        $this->assertThat(
+        self::assertThat(
             $storage->collect(),
-            $this->equalTo(
+            self::equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
                     'histogram',
@@ -171,9 +171,9 @@ abstract class HistogramBaseTest extends TestCase
         );
         $histogram->observe(0.11);
         $histogram->observe(0.03);
-        $this->assertThat(
+        self::assertThat(
             $storage->collect(),
-            $this->equalTo(
+            self::equalTo(
                 [new MetricFamilySamples(
                     'test_some_metric',
                     'histogram',
@@ -284,6 +284,6 @@ abstract class HistogramBaseTest extends TestCase
         }
 
         $samples = $storage->collect();
-        $this->assertCount($expectedHistogramNb, $samples);
+        self::assertCount($expectedHistogramNb, $samples);
     }
 }

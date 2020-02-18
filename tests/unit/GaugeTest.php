@@ -36,15 +36,15 @@ final class GaugeTest extends TestCase
 
         $gauge = new Gauge($storage, MetricName::fromName('name'), 'help');
         $gauge->inc();
-        $this->assertEquals($storage->value, 1);
+        self::assertEquals($storage->value, 1);
         $gauge->incBy(2.2);
-        $this->assertEquals($storage->value, 3.2);
+        self::assertEquals($storage->value, 3.2);
         $gauge->dec();
-        $this->assertEquals($storage->value, 2.2);
+        self::assertEquals($storage->value, 2.2);
         $gauge->decBy(2.1);
-        $this->assertEquals($storage->value, 0.1);
+        self::assertEquals($storage->value, 0.1);
         $gauge->set(-10);
-        $this->assertEquals($storage->value, -10);
+        self::assertEquals($storage->value, -10);
     }
 
     public function testIncrementIsRejectedWhenLabelValuesAreNotDefinedCorrectly() : void
@@ -71,9 +71,9 @@ final class GaugeTest extends TestCase
 
         $gauge = new Gauge($this->getEmptyStorage(), $name, $help, $labelNames);
 
-        $this->assertSame($name, $gauge->getName());
-        $this->assertSame($help, $gauge->getHelp());
-        $this->assertSame($labelNames, $gauge->getLabelNames());
+        self::assertSame($name, $gauge->getName());
+        self::assertSame($help, $gauge->getHelp());
+        self::assertSame($labelNames, $gauge->getLabelNames());
     }
 
     private function getEmptyStorage() : GaugeStorage

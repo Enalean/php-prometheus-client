@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Enalean\Prometheus;
 
+use function count;
+
 /**
  * @psalm-immutable
  */
@@ -66,6 +68,6 @@ final class MetricFamilySamples
 
     public function hasLabelNames() : bool
     {
-        return ! empty($this->labelNames);
+        return count($this->labelNames) !== 0;
     }
 }

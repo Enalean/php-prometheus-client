@@ -4,3 +4,5 @@ parameters:
         - src/
         - tests/
         - examples/
+includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon

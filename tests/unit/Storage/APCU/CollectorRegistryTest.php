@@ -55,13 +55,13 @@ final class CollectorRegistryTest extends CollectorRegistryBaseTest
         );
         $histogram->observe(2, 'cat', 'meow');
 
-        $this->assertGreaterThan(1, (new APCuIterator('/.*/'))->getTotalCount());
+        self::assertGreaterThan(1, (new APCuIterator('/.*/'))->getTotalCount());
 
         $storage->flush();
 
-        $this->assertEquals(1, (new APCuIterator('/.*/'))->getTotalCount());
-        $this->assertEquals('bar', apcu_fetch('foo'));
-        $this->assertEquals("\n", (new RenderTextFormat())->render($registry->getMetricFamilySamples()));
+        self::assertEquals(1, (new APCuIterator('/.*/'))->getTotalCount());
+        self::assertEquals('bar', apcu_fetch('foo'));
+        self::assertEquals("\n", (new RenderTextFormat())->render($registry->getMetricFamilySamples()));
 
         apcu_delete('foo');
     }
