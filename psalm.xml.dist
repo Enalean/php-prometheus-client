@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <psalm
-    totallyTyped="false"
+    errorLevel="2"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
@@ -16,4 +16,9 @@
             <directory name="vendor"/>
         </ignoreFiles>
     </projectFiles>
+    <stubs>
+        <file name="tests/stubs/Http/Mock/Client.phpstub" />
+        <file name="tests/stubs/Http/Promise/Promise.phpstub" />
+        <file name="tests/stubs/Http/Client/HttpAsyncClient.phpstub" />
+    </stubs>
 </psalm>

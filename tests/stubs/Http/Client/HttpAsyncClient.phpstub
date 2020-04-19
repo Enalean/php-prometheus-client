@@ -1,0 +1,17 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Http\Client;
+
+use Http\Promise\Promise;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+
+interface HttpAsyncClient
+{
+    /**
+     * @psalm-return Promise<ResponseInterface>
+     */
+    public function sendAsyncRequest(RequestInterface $request) : Promise;
+}

@@ -1,0 +1,16 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Http\Mock;
+
+use Http\Client\HttpAsyncClient;
+use Http\Client\HttpClient;
+use Psr\Http\Message\RequestInterface;
+
+class Client implements HttpClient, HttpAsyncClient
+{
+    public function getLastRequest() : RequestInterface
+    {
+    }
+}
