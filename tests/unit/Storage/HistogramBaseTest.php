@@ -63,20 +63,21 @@ abstract class HistogramBaseTest extends TestCase
         self::assertThat(
             $storage->collect(),
             self::equalTo(
-                [new MetricFamilySamples(
-                    'test_some_metric',
-                    'histogram',
-                    'this is for testing',
-                    ['foo', 'bar'],
-                    [
-                        new Sample('test_some_metric_bucket', 0, ['le'], ['lalal', 'lululu', '100']),
-                        new Sample('test_some_metric_bucket', 1, ['le'], ['lalal', 'lululu', '200']),
-                        new Sample('test_some_metric_bucket', 3, ['le'], ['lalal', 'lululu', '300']),
-                        new Sample('test_some_metric_bucket', 3, ['le'], ['lalal', 'lululu', '+Inf']),
-                        new Sample('test_some_metric_count', 3, [], ['lalal', 'lululu']),
-                        new Sample('test_some_metric_sum', 622, [], ['lalal', 'lululu']),
-                    ]
-                ),
+                [
+                    new MetricFamilySamples(
+                        'test_some_metric',
+                        'histogram',
+                        'this is for testing',
+                        ['foo', 'bar'],
+                        [
+                            new Sample('test_some_metric_bucket', 0, ['le'], ['lalal', 'lululu', '100']),
+                            new Sample('test_some_metric_bucket', 1, ['le'], ['lalal', 'lululu', '200']),
+                            new Sample('test_some_metric_bucket', 3, ['le'], ['lalal', 'lululu', '300']),
+                            new Sample('test_some_metric_bucket', 3, ['le'], ['lalal', 'lululu', '+Inf']),
+                            new Sample('test_some_metric_count', 3, [], ['lalal', 'lululu']),
+                            new Sample('test_some_metric_sum', 622, [], ['lalal', 'lululu']),
+                        ]
+                    ),
                 ]
             )
         );
@@ -100,20 +101,21 @@ abstract class HistogramBaseTest extends TestCase
         self::assertThat(
             $storage->collect(),
             self::equalTo(
-                [new MetricFamilySamples(
-                    'test_some_metric',
-                    'histogram',
-                    'this is for testing',
-                    [],
-                    [
-                        new Sample('test_some_metric_bucket', 0, ['le'], ['100']),
-                        new Sample('test_some_metric_bucket', 0, ['le'], ['200']),
-                        new Sample('test_some_metric_bucket', 2, ['le'], ['300']),
-                        new Sample('test_some_metric_bucket', 2, ['le'], ['+Inf']),
-                        new Sample('test_some_metric_count', 2, [], []),
-                        new Sample('test_some_metric_sum', 499, [], []),
-                    ]
-                ),
+                [
+                    new MetricFamilySamples(
+                        'test_some_metric',
+                        'histogram',
+                        'this is for testing',
+                        [],
+                        [
+                            new Sample('test_some_metric_bucket', 0, ['le'], ['100']),
+                            new Sample('test_some_metric_bucket', 0, ['le'], ['200']),
+                            new Sample('test_some_metric_bucket', 2, ['le'], ['300']),
+                            new Sample('test_some_metric_bucket', 2, ['le'], ['+Inf']),
+                            new Sample('test_some_metric_count', 2, [], []),
+                            new Sample('test_some_metric_sum', 499, [], []),
+                        ]
+                    ),
                 ]
             )
         );
@@ -137,20 +139,21 @@ abstract class HistogramBaseTest extends TestCase
         self::assertThat(
             $storage->collect(),
             self::equalTo(
-                [new MetricFamilySamples(
-                    'test_some_metric',
-                    'histogram',
-                    'this is for testing',
-                    [],
-                    [
-                        new Sample('test_some_metric_bucket', 0, ['le'], ['0.1']),
-                        new Sample('test_some_metric_bucket', 1, ['le'], ['0.2']),
-                        new Sample('test_some_metric_bucket', 2, ['le'], ['0.3']),
-                        new Sample('test_some_metric_bucket', 2, ['le'], ['+Inf']),
-                        new Sample('test_some_metric_count', 2, [], []),
-                        new Sample('test_some_metric_sum', 0.41, [], []),
-                    ]
-                ),
+                [
+                    new MetricFamilySamples(
+                        'test_some_metric',
+                        'histogram',
+                        'this is for testing',
+                        [],
+                        [
+                            new Sample('test_some_metric_bucket', 0, ['le'], ['0.1']),
+                            new Sample('test_some_metric_bucket', 1, ['le'], ['0.2']),
+                            new Sample('test_some_metric_bucket', 2, ['le'], ['0.3']),
+                            new Sample('test_some_metric_bucket', 2, ['le'], ['+Inf']),
+                            new Sample('test_some_metric_count', 2, [], []),
+                            new Sample('test_some_metric_sum', 0.41, [], []),
+                        ]
+                    ),
                 ]
             )
         );
@@ -174,31 +177,32 @@ abstract class HistogramBaseTest extends TestCase
         self::assertThat(
             $storage->collect(),
             self::equalTo(
-                [new MetricFamilySamples(
-                    'test_some_metric',
-                    'histogram',
-                    'this is for testing',
-                    [],
-                    [
-                        new Sample('test_some_metric_bucket', 0, ['le'], ['0.005']),
-                        new Sample('test_some_metric_bucket', 0, ['le'], ['0.01']),
-                        new Sample('test_some_metric_bucket', 0, ['le'], ['0.025']),
-                        new Sample('test_some_metric_bucket', 1, ['le'], ['0.05']),
-                        new Sample('test_some_metric_bucket', 1, ['le'], ['0.075']),
-                        new Sample('test_some_metric_bucket', 1, ['le'], ['0.1']),
-                        new Sample('test_some_metric_bucket', 2, ['le'], ['0.25']),
-                        new Sample('test_some_metric_bucket', 2, ['le'], ['0.5']),
-                        new Sample('test_some_metric_bucket', 2, ['le'], ['0.75']),
-                        new Sample('test_some_metric_bucket', 2, ['le'], ['1']),
-                        new Sample('test_some_metric_bucket', 2, ['le'], ['2.5']),
-                        new Sample('test_some_metric_bucket', 2, ['le'], ['5']),
-                        new Sample('test_some_metric_bucket', 2, ['le'], ['7.5']),
-                        new Sample('test_some_metric_bucket', 2, ['le'], ['10']),
-                        new Sample('test_some_metric_bucket', 2, ['le'], ['+Inf']),
-                        new Sample('test_some_metric_count', 2, [], []),
-                        new Sample('test_some_metric_sum', 0.14, [], []),
-                    ]
-                ),
+                [
+                    new MetricFamilySamples(
+                        'test_some_metric',
+                        'histogram',
+                        'this is for testing',
+                        [],
+                        [
+                            new Sample('test_some_metric_bucket', 0, ['le'], ['0.005']),
+                            new Sample('test_some_metric_bucket', 0, ['le'], ['0.01']),
+                            new Sample('test_some_metric_bucket', 0, ['le'], ['0.025']),
+                            new Sample('test_some_metric_bucket', 1, ['le'], ['0.05']),
+                            new Sample('test_some_metric_bucket', 1, ['le'], ['0.075']),
+                            new Sample('test_some_metric_bucket', 1, ['le'], ['0.1']),
+                            new Sample('test_some_metric_bucket', 2, ['le'], ['0.25']),
+                            new Sample('test_some_metric_bucket', 2, ['le'], ['0.5']),
+                            new Sample('test_some_metric_bucket', 2, ['le'], ['0.75']),
+                            new Sample('test_some_metric_bucket', 2, ['le'], ['1']),
+                            new Sample('test_some_metric_bucket', 2, ['le'], ['2.5']),
+                            new Sample('test_some_metric_bucket', 2, ['le'], ['5']),
+                            new Sample('test_some_metric_bucket', 2, ['le'], ['7.5']),
+                            new Sample('test_some_metric_bucket', 2, ['le'], ['10']),
+                            new Sample('test_some_metric_bucket', 2, ['le'], ['+Inf']),
+                            new Sample('test_some_metric_count', 2, [], []),
+                            new Sample('test_some_metric_sum', 0.14, [], []),
+                        ]
+                    ),
                 ]
             )
         );
