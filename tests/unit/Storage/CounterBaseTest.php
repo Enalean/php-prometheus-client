@@ -60,13 +60,14 @@ abstract class CounterBaseTest extends TestCase
         self::assertThat(
             $storage->collect(),
             self::equalTo(
-                [new MetricFamilySamples(
-                    'test_some_metric',
-                    'counter',
-                    'this is for testing',
-                    ['foo', 'bar'],
-                    [new Sample('test_some_metric', 3, [], ['lalal', 'lululu'])]
-                ),
+                [
+                    new MetricFamilySamples(
+                        'test_some_metric',
+                        'counter',
+                        'this is for testing',
+                        ['foo', 'bar'],
+                        [new Sample('test_some_metric', 3, [], ['lalal', 'lululu'])]
+                    ),
                 ]
             )
         );
@@ -83,13 +84,14 @@ abstract class CounterBaseTest extends TestCase
         self::assertThat(
             $storage->collect(),
             self::equalTo(
-                [new MetricFamilySamples(
-                    'test_some_metric',
-                    'counter',
-                    'this is for testing',
-                    [],
-                    [new Sample('test_some_metric', 1, [], [])]
-                ),
+                [
+                    new MetricFamilySamples(
+                        'test_some_metric',
+                        'counter',
+                        'this is for testing',
+                        [],
+                        [new Sample('test_some_metric', 1, [], [])]
+                    ),
                 ]
             )
         );
@@ -112,13 +114,14 @@ abstract class CounterBaseTest extends TestCase
         self::assertThat(
             $storage->collect(),
             self::equalTo(
-                [new MetricFamilySamples(
-                    'test_some_metric',
-                    'counter',
-                    'this is for testing',
-                    ['foo', 'bar'],
-                    [new Sample('test_some_metric', 124, [], ['lalal', 'lululu'])]
-                ),
+                [
+                    new MetricFamilySamples(
+                        'test_some_metric',
+                        'counter',
+                        'this is for testing',
+                        ['foo', 'bar'],
+                        [new Sample('test_some_metric', 124, [], ['lalal', 'lululu'])]
+                    ),
                 ]
             )
         );
@@ -141,13 +144,14 @@ abstract class CounterBaseTest extends TestCase
         self::assertThat(
             $storage->collect(),
             self::equalTo(
-                [new MetricFamilySamples(
-                    'test_some_metric',
-                    'counter',
-                    'this is for testing',
-                    ['foo', 'bar'],
-                    [new Sample('test_some_metric', 124.5, [], ['lalal', 'lululu'])]
-                ),
+                [
+                    new MetricFamilySamples(
+                        'test_some_metric',
+                        'counter',
+                        'this is for testing',
+                        ['foo', 'bar'],
+                        [new Sample('test_some_metric', 124.5, [], ['lalal', 'lululu'])]
+                    ),
                 ]
             )
         );
