@@ -1,0 +1,18 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Http\Promise;
+
+/**
+ * @template T
+ */
+interface Promise
+{
+    /**
+     * @return mixed
+     *
+     * @psalm-return ($unwrap is true ? T : null)
+     */
+    public function wait(bool $unwrap = true);
+}
