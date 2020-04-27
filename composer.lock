@@ -892,24 +892,33 @@
         },
         {
             "name": "infection/extension-installer",
-            "version": "0.1.0",
+            "version": "0.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/infection/extension-installer.git",
-                "reference": "c8aebfcbef3015f3869c64fb1a0b02f6dbc51564"
+                "reference": "ff30c0adffcdbc747c96adf92382ccbe271d0afd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/infection/extension-installer/zipball/c8aebfcbef3015f3869c64fb1a0b02f6dbc51564",
-                "reference": "c8aebfcbef3015f3869c64fb1a0b02f6dbc51564",
+                "url": "https://api.github.com/repos/infection/extension-installer/zipball/ff30c0adffcdbc747c96adf92382ccbe271d0afd",
+                "reference": "ff30c0adffcdbc747c96adf92382ccbe271d0afd",
                 "shasum": ""
             },
             "require": {
-                "composer-plugin-api": "^1.1"
+                "composer-plugin-api": "^1.1 || ^2.0"
             },
             "require-dev": {
                 "composer/composer": "^1.9",
-                "phpunit/phpunit": "^8.5"
+                "friendsofphp/php-cs-fixer": "^2.16",
+                "infection/infection": "^0.15.2",
+                "php-coveralls/php-coveralls": "^2.2",
+                "phpstan/extension-installer": "^1.0",
+                "phpstan/phpstan": "^0.12.10",
+                "phpstan/phpstan-phpunit": "^0.12.6",
+                "phpstan/phpstan-strict-rules": "^0.12.2",
+                "phpstan/phpstan-webmozart-assert": "^0.12.2",
+                "phpunit/phpunit": "^8.5",
+                "vimeo/psalm": "^3.8"
             },
             "type": "composer-plugin",
             "extra": {
@@ -931,7 +940,7 @@
                 }
             ],
             "description": "Infection Extension Installer",
-            "time": "2020-01-24T07:44:13+00:00"
+            "time": "2020-04-25T22:40:05+00:00"
         },
         {
             "name": "infection/include-interceptor",
@@ -971,16 +980,16 @@
         },
         {
             "name": "infection/infection",
-            "version": "0.16.2",
+            "version": "0.16.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/infection/infection.git",
-                "reference": "9a3bca95fa873fba4a4a37a5fd35c6d572c0f23b"
+                "reference": "52d597af80429d52dd6218fcb9766fc7653ec88c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/infection/infection/zipball/9a3bca95fa873fba4a4a37a5fd35c6d572c0f23b",
-                "reference": "9a3bca95fa873fba4a4a37a5fd35c6d572c0f23b",
+                "url": "https://api.github.com/repos/infection/infection/zipball/52d597af80429d52dd6218fcb9766fc7653ec88c",
+                "reference": "52d597af80429d52dd6218fcb9766fc7653ec88c",
                 "shasum": ""
             },
             "require": {
@@ -1074,7 +1083,7 @@
                 "testing",
                 "unit testing"
             ],
-            "time": "2020-04-08T18:56:58+00:00"
+            "time": "2020-04-26T11:15:23+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
