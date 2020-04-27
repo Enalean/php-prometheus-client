@@ -51,6 +51,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
             $membersToRemove[] = $this->redis->sMembers($storageMainKey);
         }
 
+        /** @psalm-var string[] $membersToRemove */
         $membersToRemove = array_merge([], ...$membersToRemove);
         $redis           = $this->redis->multi();
         $redis->del($membersToRemove);
@@ -159,15 +160,20 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
     }
 
     /**
-     * @return array<int,mixed>
+     * @return array<int,array<string,mixed>>
+     *
+     * @psalm-return array<array{name:string, help:string, labelNames: string[], type:'histogram', samples: list<array{name:string, labelNames:list<string>, labelValues: string[], value: int}>}>
      */
     private function collectHistograms() : array
     {
+        /** @var string[] $keys */
         $keys = $this->redis->sMembers($this->prefix . 'histogram' . self::PROMETHEUS_METRIC_KEYS_SUFFIX);
 
         $histograms = [];
         foreach ($keys as $key) {
-            $raw               = $this->redis->hGetAll($key);
+            /** @psalm-var array{__meta:string, string:int} $raw */
+            $raw = $this->redis->hGetAll($key);
+            /** @psalm-var array{name:string, help:string, labelNames: string[], buckets:float[]} $histogram */
             $histogram         = json_decode($raw['__meta'], true);
             $histogram['type'] = 'histogram';
             unset($raw['__meta']);
@@ -178,6 +184,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
 
             $allLabelValues = [];
             foreach (array_keys($raw) as $k) {
+                /** @psalm-var array{b:string, labelValues:string[]} $d */
                 $d = json_decode($k, true);
                 if ($d['b'] === 'sum') {
                     continue;
@@ -188,6 +195,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
 
             // We need set semantics.
             // This is the equivalent of array_unique but for arrays of arrays.
+            /** @var array<string[]> $allLabelValues */
             $allLabelValues = array_map('unserialize', array_unique(array_map('serialize', $allLabelValues)));
             sort($allLabelValues);
 
@@ -240,31 +248,45 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
     }
 
     /**
-     * @return array<int,mixed>
+     * @return array<int,array<string,mixed>>
+     *
+     * @psalm-return array<array{name:string, help:string, labelNames: string[], type:'gauge', samples: list<array{name:string, labelNames:array<empty,empty>, labelValues: string[], value: float}>}>
      */
     private function collectGauges() : array
     {
+        /** @var string[] $keys */
         $keys = $this->redis->sMembers($this->prefix . 'gauge' . self::PROMETHEUS_METRIC_KEYS_SUFFIX);
 
         $gauges = [];
         foreach ($keys as $key) {
-            $raw           = $this->redis->hGetAll($key);
+            /** @psalm-var array{__meta:string,string:string} $raw */
+            $raw = $this->redis->hGetAll($key);
+            /** @psalm-var array{name:string, help:string, labelNames: string[]} $gauge */
             $gauge         = json_decode($raw['__meta'], true);
             $gauge['type'] = 'gauge';
             unset($raw['__meta']);
             $gauge['samples'] = [];
             foreach ($raw as $k => $value) {
+                /** @var string[] $labelValues */
+                $labelValues        = json_decode($k, true);
                 $gauge['samples'][] = [
                     'name' => $gauge['name'],
                     'labelNames' => [],
-                    'labelValues' => json_decode($k, true),
-                    'value' => $value,
+                    'labelValues' => $labelValues,
+                    'value' => (float) $value,
                 ];
             }
 
-            usort($gauge['samples'], static function (array $a, array $b) : int {
-                return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
-            });
+            usort(
+                $gauge['samples'],
+                /**
+                 * @psalm-param array{labelValues: string[]} $a
+                 * @psalm-param array{labelValues: string[]} $b
+                 */
+                static function (array $a, array $b) : int {
+                    return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
+                }
+            );
             $gauges[] = $gauge;
         }
 
@@ -272,31 +294,45 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
     }
 
     /**
-     * @return array<int,mixed>
+     * @return array<int,array<string,mixed>>
+     *
+     * @psalm-return array<array{name:string, help:string, labelNames: string[], type:'counter', samples: list<array{name:string, labelNames:array<empty,empty>, labelValues: string[], value: float}>}>
      */
     private function collectCounters() : array
     {
+        /** @var string[] $keys */
         $keys = $this->redis->sMembers($this->prefix . 'counter' . self::PROMETHEUS_METRIC_KEYS_SUFFIX);
 
         $counters = [];
         foreach ($keys as $key) {
-            $raw             = $this->redis->hGetAll($key);
+            /** @psalm-var array{__meta:string,string:string} $raw */
+            $raw = $this->redis->hGetAll($key);
+            /** @psalm-var array{name:string, help:string, labelNames: string[]} $counter */
             $counter         = json_decode($raw['__meta'], true);
             $counter['type'] = 'counter';
             unset($raw['__meta']);
             $counter['samples'] = [];
             foreach ($raw as $k => $value) {
+                /** @var string[] $labelValues */
+                $labelValues          = json_decode($k, true);
                 $counter['samples'][] = [
                     'name' => $counter['name'],
                     'labelNames' => [],
-                    'labelValues' => json_decode($k, true),
-                    'value' => $value,
+                    'labelValues' => $labelValues,
+                    'value' => (float) $value,
                 ];
             }
 
-            usort($counter['samples'], static function (array $a, array $b) : int {
-                return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
-            });
+            usort(
+                $counter['samples'],
+                /**
+                 * @psalm-param array{labelValues: string[]} $a
+                 * @psalm-param array{labelValues: string[]} $b
+                 */
+                static function (array $a, array $b) : int {
+                    return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
+                }
+            );
             $counters[] = $counter;
         }
 

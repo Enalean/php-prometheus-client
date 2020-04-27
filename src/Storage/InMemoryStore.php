@@ -26,9 +26,21 @@ use const JSON_THROW_ON_ERROR;
 
 final class InMemoryStore implements Store, CounterStorage, GaugeStorage, HistogramStorage, FlushableStorage
 {
-    /** @var array<string,mixed> */
+    /**
+     * @var array<string,string[][]>
+     * @psalm-var array<string, array{
+     *      meta: array{name:string, help:string, labelNames:string[]},
+     *      samples: array<string, float>
+     * }>
+     */
     private $counters = [];
-    /** @var array<string,mixed> */
+    /**
+     * @var array<string,string[][]>
+     * @psalm-var array<string, array{
+     *      meta: array{name:string, help:string, labelNames:string[]},
+     *      samples: array<string, float>
+     * }>
+     */
     private $gauges = [];
     /**
      * @var array<string,string[][]>
@@ -149,7 +161,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
      * @psalm-param array<
      *      string,
      *      array{
-     *          meta:array{name:string, help:string, type:string, labelNames:string[]},
+     *          meta:array{name:string, help:string, labelNames:string[]},
      *          samples:array<string, float>
      *      }
      *  > $metrics
@@ -176,9 +188,16 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
                 ];
             }
 
-            usort($data['samples'], static function (array $a, array $b) : int {
-                return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
-            });
+            usort(
+                $data['samples'],
+                /**
+                 * @psalm-param array{labelValues: string[]} $a
+                 * @psalm-param array{labelValues: string[]} $b
+                 */
+                static function (array $a, array $b) : int {
+                    return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
+                }
+            );
             $samples = [];
             foreach ($data['samples'] as $sampleData) {
                 $samples[] = new Sample($sampleData['name'], $sampleData['value'], $sampleData['labelNames'], $sampleData['labelValues']);
@@ -336,6 +355,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
      */
     private function decodeLabelValues(string $values) : array
     {
+        /** @psalm-var string[] */
         return json_decode((string) base64_decode($values, true), true, 512, JSON_THROW_ON_ERROR);
     }
 }
