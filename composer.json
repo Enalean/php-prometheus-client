@@ -5,6 +5,7 @@
     "require": {
         "php": ">=7.3",
         "ext-json": "*",
+        "phpstan/phpstan": "0.12.23",
         "psr/http-client": "^1.0",
         "psr/http-factory": "^1.0",
         "psr/http-message": "^1.0"
@@ -16,7 +17,6 @@
         "infection/infection": "^0.16.1",
         "php-http/curl-client": "^2.0",
         "php-http/mock-client": "^1.3",
-        "phpstan/phpstan": "^0.12.8",
         "phpstan/phpstan-phpunit": "^0.12.6",
         "phpstan/phpstan-strict-rules": "^0.12.2",
         "phpunit/phpunit": "^9.0",
