@@ -11,5 +11,5 @@ interface Collector
     /**
      * @return MetricFamilySamples[]
      */
-    public function getMetricFamilySamples() : array;
+    public function getMetricFamilySamples(): array;
 }

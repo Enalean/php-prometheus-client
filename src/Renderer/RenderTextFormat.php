@@ -6,6 +6,7 @@ namespace Enalean\Prometheus\Renderer;
 
 use Enalean\Prometheus\MetricFamilySamples;
 use Enalean\Prometheus\Sample;
+
 use function array_combine;
 use function array_merge;
 use function assert;
@@ -26,9 +27,9 @@ final class RenderTextFormat implements MetricsRenderer
     /**
      * @param MetricFamilySamples[] $metrics
      */
-    public function render(array $metrics) : string
+    public function render(array $metrics): string
     {
-        usort($metrics, static function (MetricFamilySamples $a, MetricFamilySamples $b) : int {
+        usort($metrics, static function (MetricFamilySamples $a, MetricFamilySamples $b): int {
             return strcmp($a->getName(), $b->getName());
         });
 
@@ -45,7 +46,7 @@ final class RenderTextFormat implements MetricsRenderer
         return implode("\n", $lines) . "\n";
     }
 
-    private function renderSample(MetricFamilySamples $metric, Sample $sample) : string
+    private function renderSample(MetricFamilySamples $metric, Sample $sample): string
     {
         $escapedLabels = [];
 
@@ -63,12 +64,12 @@ final class RenderTextFormat implements MetricsRenderer
         return $sample->getName() . ' ' . $sample->getValue();
     }
 
-    private function escapeLabelValue(string $v) : string
+    private function escapeLabelValue(string $v): string
     {
         return str_replace(['\\', "\n", '"'], ['\\\\', "\\n", '\\"'], $v);
     }
 
-    public function getMimeType() : string
+    public function getMimeType(): string
     {
         return self::MIME_TYPE;
     }

@@ -28,7 +28,7 @@ abstract class CollectorRegistryBaseTest extends TestCase
      */
     abstract protected function getStorage();
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->renderer = new RenderTextFormat();
         $storage        = $this->getStorage();
@@ -42,7 +42,7 @@ abstract class CollectorRegistryBaseTest extends TestCase
     /**
      * @test
      */
-    public function itShouldSaveGauges() : void
+    public function itShouldSaveGauges(): void
     {
         $storage  = $this->getStorage();
         $registry = new CollectorRegistry($storage);
@@ -76,7 +76,7 @@ EOF
     /**
      * @test
      */
-    public function itShouldSaveCounters() : void
+    public function itShouldSaveCounters(): void
     {
         $storage    = $this->getStorage();
         $registry   = new CollectorRegistry($storage);
@@ -107,7 +107,7 @@ EOF
     /**
      * @test
      */
-    public function itShouldSaveHistograms() : void
+    public function itShouldSaveHistograms(): void
     {
         $storage    = $this->getStorage();
         $registry   = new CollectorRegistry($storage);
@@ -160,7 +160,7 @@ EOF
     /**
      * @test
      */
-    public function itShouldSaveHistogramsWithoutLabels() : void
+    public function itShouldSaveHistogramsWithoutLabels(): void
     {
         $storage    = $this->getStorage();
         $registry   = new CollectorRegistry($storage);
@@ -202,7 +202,7 @@ EOF
     /**
      * @test
      */
-    public function itShouldIncreaseACounterWithoutNamespace() : void
+    public function itShouldIncreaseACounterWithoutNamespace(): void
     {
         $registry = new CollectorRegistry($this->getStorage());
         $registry
@@ -224,7 +224,7 @@ EOF
     /**
      * @test
      */
-    public function itShouldForbidRegisteringTheSameCounterTwice() : void
+    public function itShouldForbidRegisteringTheSameCounterTwice(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
         $metricName = MetricName::fromNamespacedName('foo', 'metric');
@@ -236,7 +236,7 @@ EOF
     /**
      * @test
      */
-    public function itShouldForbidRegisteringTheSameCounterWithDifferentLabels() : void
+    public function itShouldForbidRegisteringTheSameCounterWithDifferentLabels(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
         $metricName = MetricName::fromNamespacedName('foo', 'metric');
@@ -248,7 +248,7 @@ EOF
     /**
      * @test
      */
-    public function itShouldForbidRegisteringTheSameHistogramTwice() : void
+    public function itShouldForbidRegisteringTheSameHistogramTwice(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
         $metricName = MetricName::fromNamespacedName('foo', 'metric');
@@ -260,7 +260,7 @@ EOF
     /**
      * @test
      */
-    public function itShouldForbidRegisteringTheSameHistogramWithDifferentLabels() : void
+    public function itShouldForbidRegisteringTheSameHistogramWithDifferentLabels(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
         $metricName = MetricName::fromNamespacedName('foo', 'metric');
@@ -272,7 +272,7 @@ EOF
     /**
      * @test
      */
-    public function itShouldForbidRegisteringTheSameGaugeTwice() : void
+    public function itShouldForbidRegisteringTheSameGaugeTwice(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
         $metricName = MetricName::fromNamespacedName('foo', 'metric');
@@ -284,7 +284,7 @@ EOF
     /**
      * @test
      */
-    public function itShouldForbidRegisteringTheSameGaugeWithDifferentLabels() : void
+    public function itShouldForbidRegisteringTheSameGaugeWithDifferentLabels(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
         $metricName = MetricName::fromNamespacedName('foo', 'metric');
@@ -296,7 +296,7 @@ EOF
     /**
      * @test
      */
-    public function itShouldThrowAnExceptionWhenGettingANonExistentMetric() : void
+    public function itShouldThrowAnExceptionWhenGettingANonExistentMetric(): void
     {
         $registry = new CollectorRegistry($this->getStorage());
         $this->expectException(MetricNotFoundException::class);
@@ -306,7 +306,7 @@ EOF
     /**
      * @test
      */
-    public function itShouldNotRegisterACounterTwice() : void
+    public function itShouldNotRegisterACounterTwice(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
         $metricName = MetricName::fromNamespacedName('foo', 'bar');
@@ -319,7 +319,7 @@ EOF
     /**
      * @test
      */
-    public function itShouldNotRegisterAGaugeTwice() : void
+    public function itShouldNotRegisterAGaugeTwice(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
         $metricName = MetricName::fromNamespacedName('foo', 'bar');
@@ -332,7 +332,7 @@ EOF
     /**
      * @test
      */
-    public function itShouldNotRegisterAHistogramTwice() : void
+    public function itShouldNotRegisterAHistogramTwice(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
         $metricName = MetricName::fromNamespacedName('foo', 'bar');

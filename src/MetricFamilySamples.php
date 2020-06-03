@@ -35,17 +35,17 @@ final class MetricFamilySamples
         $this->samples    = $samples;
     }
 
-    public function getName() : string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function getType() : string
+    public function getType(): string
     {
         return $this->type;
     }
 
-    public function getHelp() : string
+    public function getHelp(): string
     {
         return $this->help;
     }
@@ -53,7 +53,7 @@ final class MetricFamilySamples
     /**
      * @return Sample[]
      */
-    public function getSamples() : array
+    public function getSamples(): array
     {
         return $this->samples;
     }
@@ -61,12 +61,12 @@ final class MetricFamilySamples
     /**
      * @return string[]
      */
-    public function getLabelNames() : array
+    public function getLabelNames(): array
     {
         return $this->labelNames;
     }
 
-    public function hasLabelNames() : bool
+    public function hasLabelNames(): bool
     {
         return count($this->labelNames) !== 0;
     }

@@ -32,7 +32,7 @@ final class Sample
         $this->value       = $value;
     }
 
-    public function getName() : string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -40,7 +40,7 @@ final class Sample
     /**
      * @return string[]
      */
-    public function getLabelNames() : array
+    public function getLabelNames(): array
     {
         return $this->labelNames;
     }
@@ -48,17 +48,17 @@ final class Sample
     /**
      * @return string[]
      */
-    public function getLabelValues() : array
+    public function getLabelValues(): array
     {
         return $this->labelValues;
     }
 
-    public function getValue() : float
+    public function getValue(): float
     {
         return $this->value;
     }
 
-    public function hasLabelNames() : bool
+    public function hasLabelNames(): bool
     {
         return count($this->labelNames) !== 0;
     }

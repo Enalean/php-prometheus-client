@@ -10,6 +10,7 @@ use Enalean\Prometheus\Value\HistogramLabelNames;
 use Enalean\Prometheus\Value\LabelNames;
 use Enalean\Prometheus\Value\MetricLabelNames;
 use Enalean\Prometheus\Value\MetricName;
+
 use function array_key_exists;
 use function array_keys;
 use function array_merge;
@@ -22,6 +23,7 @@ use function json_encode;
 use function sort;
 use function strcmp;
 use function usort;
+
 use const JSON_THROW_ON_ERROR;
 
 final class InMemoryStore implements Store, CounterStorage, GaugeStorage, HistogramStorage, FlushableStorage
@@ -54,7 +56,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
     /**
      * @inheritdoc
      */
-    public function collect() : array
+    public function collect(): array
     {
         $metrics = $this->internalCollect('counter', $this->counters);
         $metrics = array_merge($metrics, $this->internalCollect('gauge', $this->gauges));
@@ -63,7 +65,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
         return $metrics;
     }
 
-    public function flush() : void
+    public function flush(): void
     {
         $this->counters   = [];
         $this->gauges     = [];
@@ -73,7 +75,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
     /**
      * @return MetricFamilySamples[]
      */
-    private function collectHistograms() : array
+    private function collectHistograms(): array
     {
         $histograms = [];
         foreach ($this->histograms as $histogram) {
@@ -166,7 +168,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
      *      }
      *  > $metrics
      */
-    private function internalCollect(string $type, array $metrics) : array
+    private function internalCollect(string $type, array $metrics): array
     {
         $result = [];
         foreach ($metrics as $metric) {
@@ -194,7 +196,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
                  * @psalm-param array{labelValues: string[]} $a
                  * @psalm-param array{labelValues: string[]} $b
                  */
-                static function (array $a, array $b) : int {
+                static function (array $a, array $b): int {
                     return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
                 }
             );
@@ -212,7 +214,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
     /**
      * @inheritdoc
      */
-    public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, string ...$labelValues) : void
+    public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, string ...$labelValues): void
     {
         // Initialize the sum
         $metaKey = $this->metaKey($name);
@@ -248,7 +250,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
         $this->histograms[$metaKey]['samples'][$bucketKey] += 1;
     }
 
-    public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
+    public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues): void
     {
         $metaKey  = $this->initializeGaugeIfNecessary($name, $help, $labelNames);
         $valueKey = $this->valueKey($name, $labelValues);
@@ -256,7 +258,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
         $this->gauges[$metaKey]['samples'][$valueKey] = $value;
     }
 
-    public function addToGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
+    public function addToGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues): void
     {
         $metaKey  = $this->initializeGaugeIfNecessary($name, $help, $labelNames);
         $valueKey = $this->valueKey($name, $labelValues);
@@ -265,7 +267,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
         $this->gauges[$metaKey]['samples'][$valueKey] = $oldValue + $value;
     }
 
-    private function initializeGaugeIfNecessary(MetricName $name, string $help, LabelNames $labelNames) : string
+    private function initializeGaugeIfNecessary(MetricName $name, string $help, LabelNames $labelNames): string
     {
         $metaKey = $this->metaKey($name);
         if (array_key_exists($metaKey, $this->gauges) === false) {
@@ -279,7 +281,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
         return $metaKey;
     }
 
-    public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
+    public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues): void
     {
         $metaKey  = $this->metaKey($name);
         $valueKey = $this->valueKey($name, $labelValues);
@@ -301,7 +303,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
     /**
      * @param string[] $labelValues
      */
-    private function histogramBucketValueKey(MetricName $name, array $labelValues, string $bucket) : string
+    private function histogramBucketValueKey(MetricName $name, array $labelValues, string $bucket): string
     {
         return implode(':', [
             $name->toString(),
@@ -310,7 +312,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
         ]);
     }
 
-    private function metaKey(MetricName $name) : string
+    private function metaKey(MetricName $name): string
     {
         return $name->toString() . ':meta';
     }
@@ -318,7 +320,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
     /**
      * @param string[] $labelValues
      */
-    private function valueKey(MetricName $name, array $labelValues) : string
+    private function valueKey(MetricName $name, array $labelValues): string
     {
         return implode(
             ':',
@@ -331,7 +333,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
      *
      * @psalm-return array{name:string, help:string, labelNames:string[]}
      */
-    private function metaData(MetricName $name, string $help, LabelNames $labelNames) : array
+    private function metaData(MetricName $name, string $help, LabelNames $labelNames): array
     {
         return [
             'name' => $name->toString(),
@@ -343,7 +345,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
     /**
      * @param string[] $values
      */
-    private function encodeLabelValues(array $values) : string
+    private function encodeLabelValues(array $values): string
     {
         $json = json_encode($values, JSON_THROW_ON_ERROR);
 
@@ -353,7 +355,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
     /**
      * @return string[]
      */
-    private function decodeLabelValues(string $values) : array
+    private function decodeLabelValues(string $values): array
     {
         /** @psalm-var string[] */
         return json_decode((string) base64_decode($values, true), true, 512, JSON_THROW_ON_ERROR);

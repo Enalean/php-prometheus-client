@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Enalean\Prometheus\Value;
 
 use InvalidArgumentException;
+
 use function count;
 use function sprintf;
 
@@ -23,7 +24,7 @@ final class HistogramLabelNames implements LabelNames
         $this->names = $names;
     }
 
-    public static function fromNames(string ...$names) : self
+    public static function fromNames(string ...$names): self
     {
         foreach ($names as $name) {
             if ($name === self::RESERVED_LABEL_HISTOGRAM) {
@@ -39,12 +40,12 @@ final class HistogramLabelNames implements LabelNames
     /**
      * @inheritdoc
      */
-    public function toStrings() : array
+    public function toStrings(): array
     {
         return $this->names->toStrings();
     }
 
-    public function count() : int
+    public function count(): int
     {
         return count($this->names);
     }

@@ -7,6 +7,7 @@ namespace Enalean\Prometheus;
 use Enalean\Prometheus\Value\LabelNames;
 use Enalean\Prometheus\Value\MetricName;
 use InvalidArgumentException;
+
 use function count;
 use function print_r;
 use function sprintf;
@@ -39,7 +40,7 @@ abstract class Metric
     /**
      * @psalm-pure
      */
-    public function getName() : MetricName
+    public function getName(): MetricName
     {
         return $this->name;
     }
@@ -48,7 +49,7 @@ abstract class Metric
      * @psalm-return TLabelNames
      * @psalm-pure
      */
-    public function getLabelNames() : LabelNames
+    public function getLabelNames(): LabelNames
     {
         return $this->labelNames;
     }
@@ -56,7 +57,7 @@ abstract class Metric
     /**
      * @psalm-pure
      */
-    public function getHelp() : string
+    public function getHelp(): string
     {
         return $this->help;
     }
@@ -64,7 +65,7 @@ abstract class Metric
     /**
      * @psalm-pure
      */
-    final protected function assertLabelsAreDefinedCorrectly(string ...$labelValues) : void
+    final protected function assertLabelsAreDefinedCorrectly(string ...$labelValues): void
     {
         if (count($labelValues) !== count($this->labelNames)) {
             throw new InvalidArgumentException(sprintf('Labels are not defined correctly: %s', print_r($labelValues, true)));

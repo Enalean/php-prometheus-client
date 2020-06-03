@@ -17,7 +17,7 @@ final class MetricNameTest extends TestCase
      * @testWith ["foo", "bar", "foo_bar"]
      *           ["", "bar", "bar"]
      */
-    public function testValidNamespacedMetricName(string $namespace, string $name, string $expectedName) : void
+    public function testValidNamespacedMetricName(string $namespace, string $name, string $expectedName): void
     {
         $name = MetricName::fromNamespacedName($namespace, $name);
 
@@ -28,7 +28,7 @@ final class MetricNameTest extends TestCase
      * @testWith ["foo_bar", "foo_bar"]
      *           ["bar", "bar"]
      */
-    public function testValidMetricName(string $name, string $expectedName) : void
+    public function testValidMetricName(string $name, string $expectedName): void
     {
         $name = MetricName::fromName($name);
 
@@ -40,7 +40,7 @@ final class MetricNameTest extends TestCase
      *           ["foo", "invalid name"]
      *           ["invalid namespace", "invalid name"]
      */
-    public function testInvalidMetricName(string $namespace, string $name) : void
+    public function testInvalidMetricName(string $namespace, string $name): void
     {
         $this->expectException(InvalidArgumentException::class);
         MetricName::fromNamespacedName($namespace, $name);

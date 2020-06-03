@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Enalean\Prometheus\Value;
 
 use InvalidArgumentException;
+
 use function preg_match;
 use function sprintf;
 
@@ -27,12 +28,12 @@ final class MetricName
      * @param string $namespace e.g. cms
      * @param string $name      e.g. notifications_total
      */
-    public static function fromNamespacedName(string $namespace, string $name) : self
+    public static function fromNamespacedName(string $namespace, string $name): self
     {
         return self::fromName(($namespace !== '' ? $namespace . '_' : '') . $name);
     }
 
-    public static function fromName(string $name) : self
+    public static function fromName(string $name): self
     {
         if (preg_match(self::METRIC_NAME_REGEX, $name) !== 1) {
             throw new InvalidArgumentException(sprintf(
@@ -44,7 +45,7 @@ final class MetricName
         return new self($name);
     }
 
-    public function toString() : string
+    public function toString(): string
     {
         return $this->name;
     }

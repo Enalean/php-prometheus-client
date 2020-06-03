@@ -26,7 +26,7 @@ final class Gauge extends Metric
      * @param float  $value          e.g. 123
      * @param string ...$labelValues e.g. ['status', 'opcode']
      */
-    public function set(float $value, string ...$labelValues) : void
+    public function set(float $value, string ...$labelValues): void
     {
         $this->assertLabelsAreDefinedCorrectly(...$labelValues);
 
@@ -42,7 +42,7 @@ final class Gauge extends Metric
     /**
      * @param string ...$labelValues e.g. ['status', 'opcode']
      */
-    public function inc(string ...$labelValues) : void
+    public function inc(string ...$labelValues): void
     {
         $this->incBy(1, ...$labelValues);
     }
@@ -50,7 +50,7 @@ final class Gauge extends Metric
     /**
      * @param string ...$labelValues e.g. ['status', 'opcode']
      */
-    public function incBy(float $value, string ...$labelValues) : void
+    public function incBy(float $value, string ...$labelValues): void
     {
         $this->assertLabelsAreDefinedCorrectly(...$labelValues);
 
@@ -66,7 +66,7 @@ final class Gauge extends Metric
     /**
      * @param string ...$labelValues e.g. ['status', 'opcode']
      */
-    public function dec(string ...$labelValues) : void
+    public function dec(string ...$labelValues): void
     {
         $this->decBy(1, ...$labelValues);
     }
@@ -74,7 +74,7 @@ final class Gauge extends Metric
     /**
      * @param string ...$labelValues e.g. ['status', 'opcode']
      */
-    public function decBy(float $value, string ...$labelValues) : void
+    public function decBy(float $value, string ...$labelValues): void
     {
         $this->incBy(-$value, ...$labelValues);
     }

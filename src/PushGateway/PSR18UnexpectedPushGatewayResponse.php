@@ -35,12 +35,12 @@ final class PSR18UnexpectedPushGatewayResponse extends UnexpectedPushGatewayResp
         parent::__construct($message, $exceptionCode, $clientException);
     }
 
-    public static function invalidResponse(RequestInterface $request, ResponseInterface $response) : self
+    public static function invalidResponse(RequestInterface $request, ResponseInterface $response): self
     {
         return new self($request, $response, null);
     }
 
-    public static function requestFailure(RequestInterface $request, ClientExceptionInterface $clientException) : self
+    public static function requestFailure(RequestInterface $request, ClientExceptionInterface $clientException): self
     {
         return new self($request, null, $clientException);
     }
@@ -48,7 +48,7 @@ final class PSR18UnexpectedPushGatewayResponse extends UnexpectedPushGatewayResp
     /**
      * @psalm-pure
      */
-    public function getRequest() : RequestInterface
+    public function getRequest(): RequestInterface
     {
         return $this->request;
     }
@@ -56,7 +56,7 @@ final class PSR18UnexpectedPushGatewayResponse extends UnexpectedPushGatewayResp
     /**
      * @psalm-pure
      */
-    public function getResponse() : ?ResponseInterface
+    public function getResponse(): ?ResponseInterface
     {
         return $this->response;
     }

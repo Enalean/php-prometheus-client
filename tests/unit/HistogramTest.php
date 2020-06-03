@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class HistogramTest extends TestCase
 {
-    public function testStorageIsUpdatedWithObservedValues() : void
+    public function testStorageIsUpdatedWithObservedValues(): void
     {
         $storage = new class implements HistogramStorage {
             /** @var float[] */
@@ -26,7 +26,7 @@ final class HistogramTest extends TestCase
             /**
              * @inheritdoc
              */
-            public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, string ...$labelValues) : void
+            public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, string ...$labelValues): void
             {
                 $this->observedValues[] = $value;
             }
@@ -41,27 +41,27 @@ final class HistogramTest extends TestCase
         self::assertEquals([0, -4.2, 3, 0], $storage->observedValues);
     }
 
-    public function testHistogramMustHaveAtLeastOneBucket() : void
+    public function testHistogramMustHaveAtLeastOneBucket(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new Histogram($this->getEmptyStorage(), MetricName::fromName('name'), 'help', null, []);
     }
 
-    public function testHistogramNeedsToBeOrderedInIncreasingOrder() : void
+    public function testHistogramNeedsToBeOrderedInIncreasingOrder(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Histogram buckets must be in increasing order: 2 >= 1');
         new Histogram($this->getEmptyStorage(), MetricName::fromName('name'), 'help', null, [2, 1]);
     }
 
-    public function testHistogramCannotHaveIdenticalBuckets() : void
+    public function testHistogramCannotHaveIdenticalBuckets(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Histogram buckets must be in increasing order: 1 >= 1');
         new Histogram($this->getEmptyStorage(), MetricName::fromName('name'), 'help', null, [1, 1]);
     }
 
-    public function testObservationIsRejectedWhenLabelValuesAreNotDefinedCorrectly() : void
+    public function testObservationIsRejectedWhenLabelValuesAreNotDefinedCorrectly(): void
     {
         $counter = new Histogram($this->getEmptyStorage(), MetricName::fromName('name'), 'help', HistogramLabelNames::fromNames('labelA', 'labelB'));
 
@@ -69,7 +69,7 @@ final class HistogramTest extends TestCase
         $counter->observe(0, 'valueA');
     }
 
-    public function testMetricInformationCanBeRetrieved() : void
+    public function testMetricInformationCanBeRetrieved(): void
     {
         $name       = MetricName::fromName('name');
         $help       = 'help';
@@ -82,13 +82,13 @@ final class HistogramTest extends TestCase
         self::assertSame($labelNames, $histogram->getLabelNames());
     }
 
-    private function getEmptyStorage() : HistogramStorage
+    private function getEmptyStorage(): HistogramStorage
     {
         return new class implements HistogramStorage {
             /**
              * @inheritdoc
              */
-            public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, string ...$labelValues) : void
+            public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, string ...$labelValues): void
             {
             }
         };

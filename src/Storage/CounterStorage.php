@@ -9,5 +9,5 @@ use Enalean\Prometheus\Value\MetricName;
 
 interface CounterStorage
 {
-    public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void;
+    public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues): void;
 }

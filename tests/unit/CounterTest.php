@@ -17,13 +17,13 @@ use PHPUnit\Framework\TestCase;
  */
 final class CounterTest extends TestCase
 {
-    public function testStorageIsIncremented() : void
+    public function testStorageIsIncremented(): void
     {
         $storage = new class implements CounterStorage {
             /** @var float */
             public $value = 0;
 
-            public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
+            public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues): void
             {
                 $this->value += $value;
             }
@@ -44,7 +44,7 @@ final class CounterTest extends TestCase
      * @testWith [-1]
      *           [0]
      */
-    public function testCounterCanOnlyBeIncremented(int $value) : void
+    public function testCounterCanOnlyBeIncremented(int $value): void
     {
         $counter = new Counter($this->getEmptyStorage(), MetricName::fromName('name'), 'help');
 
@@ -52,7 +52,7 @@ final class CounterTest extends TestCase
         $counter->incBy($value);
     }
 
-    public function testIncrementIsRejectedWhenLabelValuesAreNotDefinedCorrectly() : void
+    public function testIncrementIsRejectedWhenLabelValuesAreNotDefinedCorrectly(): void
     {
         $counter = new Counter($this->getEmptyStorage(), MetricName::fromName('name'), 'help', MetricLabelNames::fromNames('labelA', 'labelB'));
 
@@ -60,7 +60,7 @@ final class CounterTest extends TestCase
         $counter->inc('valueA');
     }
 
-    public function testIncrementByACustomValueIsRejectedWhenLabelValuesAreNotDefinedCorrectly() : void
+    public function testIncrementByACustomValueIsRejectedWhenLabelValuesAreNotDefinedCorrectly(): void
     {
         $counter = new Counter($this->getEmptyStorage(), MetricName::fromName('name'), 'help', MetricLabelNames::fromNames('labelA', 'labelB'));
 
@@ -68,7 +68,7 @@ final class CounterTest extends TestCase
         $counter->inc('valueA');
     }
 
-    public function testMetricInformationCanBeRetrieved() : void
+    public function testMetricInformationCanBeRetrieved(): void
     {
         $name       = MetricName::fromName('name');
         $help       = 'help';
@@ -81,10 +81,10 @@ final class CounterTest extends TestCase
         self::assertSame($labelNames, $counter->getLabelNames());
     }
 
-    private function getEmptyStorage() : CounterStorage
+    private function getEmptyStorage(): CounterStorage
     {
         return new class implements CounterStorage {
-            public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
+            public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues): void
             {
             }
         };

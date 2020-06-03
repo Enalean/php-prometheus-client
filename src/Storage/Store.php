@@ -11,5 +11,5 @@ interface Store
     /**
      * @return MetricFamilySamples[]
      */
-    public function collect() : array;
+    public function collect(): array;
 }

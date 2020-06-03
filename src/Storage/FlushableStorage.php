@@ -6,5 +6,5 @@ namespace Enalean\Prometheus\Storage;
 
 interface FlushableStorage
 {
-    public function flush() : void;
+    public function flush(): void;
 }

@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class NullStoreTest extends TestCase
 {
-    public function testNothingIsStored() : void
+    public function testNothingIsStored(): void
     {
         $nullStore = new NullStore();
 

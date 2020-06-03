@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Enalean\Prometheus\Value;
 
 use InvalidArgumentException;
+
 use function count;
 use function preg_match;
 use function sprintf;
@@ -26,7 +27,7 @@ final class MetricLabelNames implements LabelNames
         $this->names = $names;
     }
 
-    public static function fromNames(string ...$names) : self
+    public static function fromNames(string ...$names): self
     {
         foreach ($names as $name) {
             if (preg_match(self::LABEL_NAME_REGEX, $name) !== 1) {
@@ -51,12 +52,12 @@ final class MetricLabelNames implements LabelNames
     /**
      * @inheritdoc
      */
-    public function toStrings() : array
+    public function toStrings(): array
     {
         return $this->names;
     }
 
-    public function count() : int
+    public function count(): int
     {
         return count($this->names);
     }

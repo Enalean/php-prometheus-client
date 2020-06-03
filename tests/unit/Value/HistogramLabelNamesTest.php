@@ -7,6 +7,7 @@ namespace Enalean\PrometheusTest\Value;
 use Enalean\Prometheus\Value\HistogramLabelNames;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+
 use function count;
 
 /**
@@ -19,7 +20,7 @@ final class HistogramLabelNamesTest extends TestCase
          *           ["label01"]
          *           ["label_1"]
          */
-    public function testValidLabelNames(string $name) : void
+    public function testValidLabelNames(string $name): void
     {
         $labelNames = HistogramLabelNames::fromNames($name);
 
@@ -32,13 +33,13 @@ final class HistogramLabelNamesTest extends TestCase
      *           ["label test"]
      *           ["le"]
      */
-    public function testInvalidLabelNames(string $name) : void
+    public function testInvalidLabelNames(string $name): void
     {
         $this->expectException(InvalidArgumentException::class);
         HistogramLabelNames::fromNames($name);
     }
 
-    public function testCollectionOfNames() : void
+    public function testCollectionOfNames(): void
     {
         $labels     = ['label1', 'label2', 'label3'];
         $labelNames = HistogramLabelNames::fromNames(...$labels);

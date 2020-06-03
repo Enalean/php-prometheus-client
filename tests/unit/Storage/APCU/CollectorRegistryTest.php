@@ -11,6 +11,7 @@ use Enalean\Prometheus\Value\HistogramLabelNames;
 use Enalean\Prometheus\Value\MetricLabelNames;
 use Enalean\Prometheus\Value\MetricName;
 use Enalean\PrometheusTest\Storage\CollectorRegistryBaseTest;
+
 use function apcu_clear_cache;
 use function apcu_delete;
 use function apcu_fetch;
@@ -29,12 +30,12 @@ final class CollectorRegistryTest extends CollectorRegistryBaseTest
      * @before
      * @after
      */
-    public function flushAPCu() : void
+    public function flushAPCu(): void
     {
         apcu_clear_cache();
     }
 
-    public function testShouldOnlyFlushMetricData() : void
+    public function testShouldOnlyFlushMetricData(): void
     {
         apcu_store('foo', 'bar');
 

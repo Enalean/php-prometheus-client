@@ -11,6 +11,7 @@ use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
+
 use function rawurlencode;
 use function strpos;
 
@@ -42,7 +43,7 @@ final class PSR18Pusher implements Pusher
      *
      * @inheritdoc
      */
-    public function push(Collector $collector, string $job, array $groupingKey = []) : void
+    public function push(Collector $collector, string $job, array $groupingKey = []): void
     {
         $this->send('PUT', $job, $groupingKey, $collector->getMetricFamilySamples());
     }
@@ -52,7 +53,7 @@ final class PSR18Pusher implements Pusher
      *
      * @inheritdoc
      */
-    public function pushAdd(Collector $collector, string $job, array $groupingKey = []) : void
+    public function pushAdd(Collector $collector, string $job, array $groupingKey = []): void
     {
         $this->send('POST', $job, $groupingKey, $collector->getMetricFamilySamples());
     }
@@ -62,7 +63,7 @@ final class PSR18Pusher implements Pusher
      *
      * @inheritdoc
      */
-    public function delete(string $job, array $groupingKey = []) : void
+    public function delete(string $job, array $groupingKey = []): void
     {
         $this->send('DELETE', $job, $groupingKey, []);
     }
@@ -73,7 +74,7 @@ final class PSR18Pusher implements Pusher
      *
      * @throws UnexpectedPushGatewayResponse
      */
-    private function send(string $method, string $job, array $groupingKey, array $metricFamilySamples) : void
+    private function send(string $method, string $job, array $groupingKey, array $metricFamilySamples): void
     {
         $uri = $this->address . rawurlencode($job);
         foreach ($groupingKey as $label => $value) {

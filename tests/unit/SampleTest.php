@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class SampleTest extends TestCase
 {
-    public function testSampleHoldValuesWithoutModification() : void
+    public function testSampleHoldValuesWithoutModification(): void
     {
         $name        = 'name';
         $value       = 0.1;
@@ -27,7 +27,7 @@ final class SampleTest extends TestCase
         self::assertTrue($sample->hasLabelNames());
     }
 
-    public function testSampleDetectWhenNoLabelNamesAreGiven() : void
+    public function testSampleDetectWhenNoLabelNamesAreGiven(): void
     {
         $sample = new Sample('name', 0.1, [], []);
         self::assertFalse($sample->hasLabelNames());

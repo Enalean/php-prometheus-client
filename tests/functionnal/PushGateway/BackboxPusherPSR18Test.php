@@ -11,7 +11,7 @@ use Http\Discovery\Psr18ClientDiscovery;
 
 final class BackboxPusherPSR18Test extends BlackBoxPushGatewayTest
 {
-    public function getPusher(string $address) : Pusher
+    public function getPusher(string $address): Pusher
     {
         return new PSR18Pusher(
             $address,

@@ -11,6 +11,7 @@ use Enalean\Prometheus\Value\HistogramLabelNames;
 use Enalean\Prometheus\Value\LabelNames;
 use Enalean\Prometheus\Value\MetricLabelNames;
 use Enalean\Prometheus\Value\MetricName;
+
 use function apcu_add;
 use function apcu_cas;
 use function apcu_delete;
@@ -30,6 +31,7 @@ use function sort;
 use function strcmp;
 use function unpack;
 use function usort;
+
 use const JSON_THROW_ON_ERROR;
 
 final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramStorage, FlushableStorage
@@ -39,7 +41,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function collect() : array
+    public function collect(): array
     {
         $metrics = $this->collectHistograms();
         $metrics = array_merge($metrics, $this->collectGauges());
@@ -51,7 +53,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @inheritdoc
      */
-    public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, string ...$labelValues) : void
+    public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, string ...$labelValues): void
     {
         // Initialize the sum
         $sumKey = $this->histogramBucketValueKey($name, $labelValues, 'sum');
@@ -86,14 +88,14 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
         apcu_inc($this->histogramBucketValueKey($name, $labelValues, (string) $bucketToIncrease));
     }
 
-    public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
+    public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues): void
     {
         $valueKey = $this->valueKey($name, 'gauge', $labelValues);
         apcu_store($valueKey, $this->toInteger($value));
         apcu_store($this->metaKey($name, 'gauge'), json_encode($this->metaData($name, $help, $labelNames)));
     }
 
-    public function addToGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
+    public function addToGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues): void
     {
         $valueKey = $this->valueKey($name, 'gauge', $labelValues);
         $new      = apcu_add($valueKey, $this->toInteger(0));
@@ -109,7 +111,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
         }
     }
 
-    public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
+    public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues): void
     {
         $valueKey = $this->valueKey($name, 'counter', $labelValues);
         $new      = apcu_add($valueKey, $this->toInteger(0));
@@ -125,12 +127,12 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
         }
     }
 
-    public function flush() : void
+    public function flush(): void
     {
         apcu_delete(new APCuIterator('/^' . self::PROMETHEUS_PREFIX . ':.*/'));
     }
 
-    private function metaKey(MetricName $name, string $type) : string
+    private function metaKey(MetricName $name, string $type): string
     {
         return implode(':', [self::PROMETHEUS_PREFIX, $type, $name->toString(), 'meta']);
     }
@@ -138,7 +140,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @param string[] $labelValues
      */
-    private function valueKey(MetricName $name, string $type, array $labelValues) : string
+    private function valueKey(MetricName $name, string $type, array $labelValues): string
     {
         return implode(':', [
             self::PROMETHEUS_PREFIX,
@@ -152,7 +154,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @param string[] $labelValues
      */
-    private function histogramBucketValueKey(MetricName $name, array $labelValues, string $bucket) : string
+    private function histogramBucketValueKey(MetricName $name, array $labelValues, string $bucket): string
     {
         return implode(':', [
             self::PROMETHEUS_PREFIX,
@@ -169,7 +171,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
      *
      * @psalm-return array{name:string, help:string, labelNames:string[]}
      */
-    private function metaData(MetricName $name, string $help, LabelNames $labelNames) : array
+    private function metaData(MetricName $name, string $help, LabelNames $labelNames): array
     {
         return [
             'name' => $name->toString(),
@@ -181,7 +183,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @return MetricFamilySamples[]
      */
-    private function collectCounters() : array
+    private function collectCounters(): array
     {
         $counters = [];
         /** @psalm-var array{value:string} $counter */
@@ -226,7 +228,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @return MetricFamilySamples[]
      */
-    private function collectGauges() : array
+    private function collectGauges(): array
     {
         $gauges = [];
         /** @psalm-var array{value:string} $gauge */
@@ -270,7 +272,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @return MetricFamilySamples[]
      */
-    private function collectHistograms() : array
+    private function collectHistograms(): array
     {
         $histograms = [];
         /** @psalm-var array{value:string} $histogram */
@@ -357,12 +359,12 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
         return $histograms;
     }
 
-    private function toInteger(float $val) : int
+    private function toInteger(float $val): int
     {
         return (int) unpack('Q', pack('d', $val))[1];
     }
 
-    private function fromInteger(int $val) : float
+    private function fromInteger(int $val): float
     {
         return (float) unpack('d', pack('Q', $val))[1];
     }
@@ -372,7 +374,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
      *
      * @psalm-param array<array{labelValues: string[]}> $samples
      */
-    private static function sortSamples(array &$samples) : void
+    private static function sortSamples(array &$samples): void
     {
         usort(
             $samples,
@@ -380,7 +382,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
              * @psalm-param array{labelValues: string[]} $a
              * @psalm-param array{labelValues: string[]} $b
              */
-            static function (array $a, array $b) : int {
+            static function (array $a, array $b): int {
                 return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
             }
         );
@@ -389,7 +391,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @param string[] $values
      */
-    private function encodeLabelValues(array $values) : string
+    private function encodeLabelValues(array $values): string
     {
         $json = json_encode($values, JSON_THROW_ON_ERROR);
 
@@ -399,7 +401,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     /**
      * @return string[]
      */
-    private function decodeLabelValues(string $values) : array
+    private function decodeLabelValues(string $values): array
     {
         /** @psalm-var string[] */
         return json_decode((string) base64_decode($values, true), true, JSON_THROW_ON_ERROR);

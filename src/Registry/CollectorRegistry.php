@@ -41,12 +41,12 @@ final class CollectorRegistry implements Registry, Collector
     /**
      * @inheritdoc
      */
-    public function getMetricFamilySamples() : array
+    public function getMetricFamilySamples(): array
     {
         return $this->storageAdapter->collect();
     }
 
-    public function registerGauge(MetricName $name, string $help, ?MetricLabelNames $labelNames = null) : Gauge
+    public function registerGauge(MetricName $name, string $help, ?MetricLabelNames $labelNames = null): Gauge
     {
         $metricIdentifier = $name->toString();
         if (isset($this->gauges[$metricIdentifier])) {
@@ -63,7 +63,7 @@ final class CollectorRegistry implements Registry, Collector
         return $this->gauges[$metricIdentifier];
     }
 
-    public function getGauge(MetricName $name) : Gauge
+    public function getGauge(MetricName $name): Gauge
     {
         $metricIdentifier = $name->toString();
         if (! isset($this->gauges[$metricIdentifier])) {
@@ -73,7 +73,7 @@ final class CollectorRegistry implements Registry, Collector
         return $this->gauges[$metricIdentifier];
     }
 
-    public function getOrRegisterGauge(MetricName $name, string $help, ?MetricLabelNames $labelNames = null) : Gauge
+    public function getOrRegisterGauge(MetricName $name, string $help, ?MetricLabelNames $labelNames = null): Gauge
     {
         try {
             $gauge = $this->getGauge($name);
@@ -84,7 +84,7 @@ final class CollectorRegistry implements Registry, Collector
         return $gauge;
     }
 
-    public function registerCounter(MetricName $name, string $help, ?MetricLabelNames $labelNames = null) : Counter
+    public function registerCounter(MetricName $name, string $help, ?MetricLabelNames $labelNames = null): Counter
     {
         $metricIdentifier = $name->toString();
         if (isset($this->counters[$metricIdentifier])) {
@@ -101,7 +101,7 @@ final class CollectorRegistry implements Registry, Collector
         return $this->counters[$metricIdentifier];
     }
 
-    public function getCounter(MetricName $name) : Counter
+    public function getCounter(MetricName $name): Counter
     {
         $metricIdentifier = $name->toString();
         if (! isset($this->counters[$metricIdentifier])) {
@@ -111,7 +111,7 @@ final class CollectorRegistry implements Registry, Collector
         return $this->counters[$metricIdentifier];
     }
 
-    public function getOrRegisterCounter(MetricName $name, string $help, ?MetricLabelNames $labelNames = null) : Counter
+    public function getOrRegisterCounter(MetricName $name, string $help, ?MetricLabelNames $labelNames = null): Counter
     {
         try {
             $counter = $this->getCounter($name);
@@ -125,7 +125,7 @@ final class CollectorRegistry implements Registry, Collector
     /**
      * @inheritdoc
      */
-    public function registerHistogram(MetricName $name, string $help, ?HistogramLabelNames $labelNames = null, ?array $buckets = null) : Histogram
+    public function registerHistogram(MetricName $name, string $help, ?HistogramLabelNames $labelNames = null, ?array $buckets = null): Histogram
     {
         $metricIdentifier = $name->toString();
         if (isset($this->histograms[$metricIdentifier])) {
@@ -143,7 +143,7 @@ final class CollectorRegistry implements Registry, Collector
         return $this->histograms[$metricIdentifier];
     }
 
-    public function getHistogram(MetricName $name) : Histogram
+    public function getHistogram(MetricName $name): Histogram
     {
         $metricIdentifier = $name->toString();
         if (! isset($this->histograms[$metricIdentifier])) {
@@ -156,7 +156,7 @@ final class CollectorRegistry implements Registry, Collector
     /**
      * @inheritdoc
      */
-    public function getOrRegisterHistogram(MetricName $name, string $help, ?HistogramLabelNames $labelNames = null, ?array $buckets = null) : Histogram
+    public function getOrRegisterHistogram(MetricName $name, string $help, ?HistogramLabelNames $labelNames = null, ?array $buckets = null): Histogram
     {
         try {
             $histogram = $this->getHistogram($name);
