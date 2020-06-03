@@ -17,18 +17,18 @@ use PHPUnit\Framework\TestCase;
  */
 final class GaugeTest extends TestCase
 {
-    public function testStorageIsUpdatedByGaugeModifications() : void
+    public function testStorageIsUpdatedByGaugeModifications(): void
     {
         $storage = new class implements GaugeStorage {
             /** @var float */
             public $value = 0;
 
-            public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
+            public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues): void
             {
                 $this->value = $value;
             }
 
-            public function addToGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
+            public function addToGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues): void
             {
                 $this->value += $value;
             }
@@ -47,7 +47,7 @@ final class GaugeTest extends TestCase
         self::assertEquals($storage->value, -10);
     }
 
-    public function testIncrementIsRejectedWhenLabelValuesAreNotDefinedCorrectly() : void
+    public function testIncrementIsRejectedWhenLabelValuesAreNotDefinedCorrectly(): void
     {
         $gauge = new Gauge($this->getEmptyStorage(), MetricName::fromName('name'), 'help', MetricLabelNames::fromNames('labelA', 'labelB'));
 
@@ -55,7 +55,7 @@ final class GaugeTest extends TestCase
         $gauge->inc('valueA');
     }
 
-    public function testSettingTheGaugeToAnArbitraryValueIsRejectedWhenLabelValuesAreNotDefinedCorrectly() : void
+    public function testSettingTheGaugeToAnArbitraryValueIsRejectedWhenLabelValuesAreNotDefinedCorrectly(): void
     {
         $gauge = new Gauge($this->getEmptyStorage(), MetricName::fromName('name'), 'help', MetricLabelNames::fromNames('labelA', 'labelB'));
 
@@ -63,7 +63,7 @@ final class GaugeTest extends TestCase
         $gauge->set(10, 'valueA');
     }
 
-    public function testMetricInformationCanBeRetrieved() : void
+    public function testMetricInformationCanBeRetrieved(): void
     {
         $name       = MetricName::fromName('name');
         $help       = 'help';
@@ -76,14 +76,14 @@ final class GaugeTest extends TestCase
         self::assertSame($labelNames, $gauge->getLabelNames());
     }
 
-    private function getEmptyStorage() : GaugeStorage
+    private function getEmptyStorage(): GaugeStorage
     {
         return new class implements GaugeStorage {
-            public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
+            public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues): void
             {
             }
 
-            public function addToGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
+            public function addToGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues): void
             {
             }
         };

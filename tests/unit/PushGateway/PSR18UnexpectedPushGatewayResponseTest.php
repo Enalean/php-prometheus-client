@@ -15,7 +15,7 @@ use Psr\Http\Client\ClientExceptionInterface;
  */
 final class PSR18UnexpectedPushGatewayResponseTest extends TestCase
 {
-    public function testInvalidResponse() : void
+    public function testInvalidResponse(): void
     {
         $request  = Psr17FactoryDiscovery::findRequestFactory()->createRequest('PUT', '/');
         $response = Psr17FactoryDiscovery::findResponseFactory()->createResponse(500);
@@ -28,7 +28,7 @@ final class PSR18UnexpectedPushGatewayResponseTest extends TestCase
         self::assertEquals(0, $exception->getCode());
     }
 
-    public function testRequestFailure() : void
+    public function testRequestFailure(): void
     {
         $request         = Psr17FactoryDiscovery::findRequestFactory()->createRequest('PUT', '/');
         $clientException = new class extends Exception implements ClientExceptionInterface {

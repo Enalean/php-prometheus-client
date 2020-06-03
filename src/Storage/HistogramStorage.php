@@ -12,5 +12,5 @@ interface HistogramStorage
     /**
      * @param float[] $buckets
      */
-    public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, string ...$labelValues) : void;
+    public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, string ...$labelValues): void;
 }

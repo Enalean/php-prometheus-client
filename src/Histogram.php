@@ -8,6 +8,7 @@ use Enalean\Prometheus\Storage\HistogramStorage;
 use Enalean\Prometheus\Value\HistogramLabelNames;
 use Enalean\Prometheus\Value\MetricName;
 use InvalidArgumentException;
+
 use function count;
 
 /**
@@ -73,7 +74,7 @@ final class Histogram extends Metric
      * @param float  $value          e.g. 123
      * @param string ...$labelValues e.g. ['status', 'opcode']
      */
-    public function observe(float $value, string ...$labelValues) : void
+    public function observe(float $value, string ...$labelValues): void
     {
         $this->assertLabelsAreDefinedCorrectly(...$labelValues);
 

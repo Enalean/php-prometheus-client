@@ -25,7 +25,7 @@ final class CollectorRegistryTest extends CollectorRegistryBaseTest
      * @before
      * @after
      */
-    public function flushRedis() : void
+    public function flushRedis(): void
     {
         $this->getRedisClient()->flushDB();
     }
@@ -33,7 +33,7 @@ final class CollectorRegistryTest extends CollectorRegistryBaseTest
     /**
      * @test
      */
-    public function itShouldOnlyFlushMetricData() : void
+    public function itShouldOnlyFlushMetricData(): void
     {
         $redis = $this->getRedisClient();
         $redis->set('foo', 'bar');

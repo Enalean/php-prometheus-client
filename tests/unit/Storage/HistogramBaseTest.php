@@ -14,6 +14,7 @@ use Enalean\Prometheus\Value\HistogramLabelNames;
 use Enalean\Prometheus\Value\MetricName;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+
 use function array_combine;
 use function array_merge;
 use function assert;
@@ -33,7 +34,7 @@ abstract class HistogramBaseTest extends TestCase
     /**
      * @before
      */
-    protected function flushStorage() : void
+    protected function flushStorage(): void
     {
         $storage = $this->getStorage();
         if (! ($storage instanceof FlushableStorage)) {
@@ -46,7 +47,7 @@ abstract class HistogramBaseTest extends TestCase
     /**
      * @test
      */
-    public function itShouldObserveWithLabels() : void
+    public function itShouldObserveWithLabels(): void
     {
         $storage   = $this->getStorage();
         $histogram = new Histogram(
@@ -86,7 +87,7 @@ abstract class HistogramBaseTest extends TestCase
     /**
      * @test
      */
-    public function itShouldObserveWithoutLabelWhenNoLabelsAreDefined() : void
+    public function itShouldObserveWithoutLabelWhenNoLabelsAreDefined(): void
     {
         $storage   = $this->getStorage();
         $histogram = new Histogram(
@@ -124,7 +125,7 @@ abstract class HistogramBaseTest extends TestCase
     /**
      * @test
      */
-    public function itShouldObserveValuesOfTypeFloat() : void
+    public function itShouldObserveValuesOfTypeFloat(): void
     {
         $storage   = $this->getStorage();
         $histogram = new Histogram(
@@ -162,7 +163,7 @@ abstract class HistogramBaseTest extends TestCase
     /**
      * @test
      */
-    public function itShouldProvideDefaultBuckets() : void
+    public function itShouldProvideDefaultBuckets(): void
     {
         $storage = $this->getStorage();
         // .005, .01, .025, .05, .075, .1, .25, .5, .75, 1.0, 2.5, 5.0, 7.5, 10.0
@@ -211,7 +212,7 @@ abstract class HistogramBaseTest extends TestCase
     /**
      * @test
      */
-    public function itShouldThrowAnExceptionWhenTheBucketSizesAreNotIncreasing() : void
+    public function itShouldThrowAnExceptionWhenTheBucketSizesAreNotIncreasing(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Histogram buckets must be in increasing order');
@@ -221,7 +222,7 @@ abstract class HistogramBaseTest extends TestCase
     /**
      * @test
      */
-    public function itShouldThrowAnExceptionWhenThereIsLessThanOneBucket() : void
+    public function itShouldThrowAnExceptionWhenThereIsLessThanOneBucket(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Histogram must have at least one bucket');
@@ -232,7 +233,7 @@ abstract class HistogramBaseTest extends TestCase
      * @test
      * @dataProvider labelValuesDataProvider
      */
-    public function isShouldAcceptAnySequenceOfBasicLatinCharactersForLabelValues(string $value) : void
+    public function isShouldAcceptAnySequenceOfBasicLatinCharactersForLabelValues(string $value): void
     {
         $storage   = $this->getStorage();
         $label     = 'foo';
@@ -262,7 +263,7 @@ abstract class HistogramBaseTest extends TestCase
      *
      * @return array<string,string[]>
      */
-    public function labelValuesDataProvider() : array
+    public function labelValuesDataProvider(): array
     {
         $cases = [];
         // Basic Latin
@@ -274,7 +275,7 @@ abstract class HistogramBaseTest extends TestCase
         return $cases;
     }
 
-    public function testMultipleGaugesCanBeStored() : void
+    public function testMultipleGaugesCanBeStored(): void
     {
         $storage             = $this->getStorage();
         $expectedHistogramNb = 3;

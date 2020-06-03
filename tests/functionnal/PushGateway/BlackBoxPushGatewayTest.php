@@ -15,12 +15,12 @@ use PHPUnit\Framework\TestCase;
 
 abstract class BlackBoxPushGatewayTest extends TestCase
 {
-    abstract public function getPusher(string $address) : Pusher;
+    abstract public function getPusher(string $address): Pusher;
 
     /**
      * @test
      */
-    public function pushGatewayShouldWork() : void
+    public function pushGatewayShouldWork(): void
     {
         $adapter  = new APCUStore();
         $registry = new CollectorRegistry($adapter);

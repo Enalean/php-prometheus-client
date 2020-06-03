@@ -10,7 +10,7 @@ use Psr\Http\Message\RequestInterface;
 
 class Client implements HttpClient, HttpAsyncClient
 {
-    public function getLastRequest() : RequestInterface
+    public function getLastRequest(): RequestInterface
     {
     }
 }

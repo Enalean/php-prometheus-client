@@ -13,6 +13,7 @@ use Enalean\Prometheus\Storage\Store;
 use Enalean\Prometheus\Value\MetricLabelNames;
 use Enalean\Prometheus\Value\MetricName;
 use PHPUnit\Framework\TestCase;
+
 use function array_combine;
 use function array_merge;
 use function assert;
@@ -32,7 +33,7 @@ abstract class GaugeBaseTest extends TestCase
     /**
      * @before
      */
-    protected function flushStorage() : void
+    protected function flushStorage(): void
     {
         $storage = $this->getStorage();
         if (! ($storage instanceof FlushableStorage)) {
@@ -45,7 +46,7 @@ abstract class GaugeBaseTest extends TestCase
     /**
      * @test
      */
-    public function itShouldAllowSetWithLabels() : void
+    public function itShouldAllowSetWithLabels(): void
     {
         $storage = $this->getStorage();
         $gauge   = new Gauge(
@@ -75,7 +76,7 @@ abstract class GaugeBaseTest extends TestCase
     /**
      * @test
      */
-    public function itShouldAllowSetWithoutLabelWhenNoLabelsAreDefined() : void
+    public function itShouldAllowSetWithoutLabelWhenNoLabelsAreDefined(): void
     {
         $storage = $this->getStorage();
         $gauge   = new Gauge($storage, MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing');
@@ -100,7 +101,7 @@ abstract class GaugeBaseTest extends TestCase
     /**
      * @test
      */
-    public function itShouldAllowSetWithAFloatValue() : void
+    public function itShouldAllowSetWithAFloatValue(): void
     {
         $storage = $this->getStorage();
         $gauge   = new Gauge($storage, MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing');
@@ -125,7 +126,7 @@ abstract class GaugeBaseTest extends TestCase
     /**
      * @test
      */
-    public function itShouldIncrementAValue() : void
+    public function itShouldIncrementAValue(): void
     {
         $storage = $this->getStorage();
         $gauge   = new Gauge(
@@ -155,7 +156,7 @@ abstract class GaugeBaseTest extends TestCase
     /**
      * @test
      */
-    public function itShouldIncrementWithFloatValue() : void
+    public function itShouldIncrementWithFloatValue(): void
     {
         $storage = $this->getStorage();
         $gauge   = new Gauge(
@@ -185,7 +186,7 @@ abstract class GaugeBaseTest extends TestCase
     /**
      * @test
      */
-    public function itShouldDecrementAValue() : void
+    public function itShouldDecrementAValue(): void
     {
         $storage = $this->getStorage();
         $gauge   = new Gauge(
@@ -215,7 +216,7 @@ abstract class GaugeBaseTest extends TestCase
     /**
      * @test
      */
-    public function itShouldDecrementWithFloatValue() : void
+    public function itShouldDecrementWithFloatValue(): void
     {
         $storage = $this->getStorage();
         $gauge   = new Gauge(
@@ -245,7 +246,7 @@ abstract class GaugeBaseTest extends TestCase
     /**
      * @test
      */
-    public function itShouldOverwriteWhenSettingTwice() : void
+    public function itShouldOverwriteWhenSettingTwice(): void
     {
         $storage = $this->getStorage();
         $gauge   = new Gauge(
@@ -276,7 +277,7 @@ abstract class GaugeBaseTest extends TestCase
      * @test
      * @dataProvider labelValuesDataProvider
      */
-    public function isShouldAcceptAnySequenceOfBasicLatinCharactersForLabelValues(string $value) : void
+    public function isShouldAcceptAnySequenceOfBasicLatinCharactersForLabelValues(string $value): void
     {
         $storage   = $this->getStorage();
         $label     = 'foo';
@@ -306,7 +307,7 @@ abstract class GaugeBaseTest extends TestCase
      *
      * @return array<string,string[]>
      */
-    public function labelValuesDataProvider() : array
+    public function labelValuesDataProvider(): array
     {
         $cases = [];
         // Basic Latin
@@ -318,7 +319,7 @@ abstract class GaugeBaseTest extends TestCase
         return $cases;
     }
 
-    public function testMultipleGaugesCanBeStored() : void
+    public function testMultipleGaugesCanBeStored(): void
     {
         $storage         = $this->getStorage();
         $expectedGaugeNb = 3;

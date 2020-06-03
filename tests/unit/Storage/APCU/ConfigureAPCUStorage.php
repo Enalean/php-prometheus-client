@@ -8,7 +8,7 @@ use Enalean\Prometheus\Storage\APCUStore;
 
 trait ConfigureAPCUStorage
 {
-    protected function getStorage() : APCUStore
+    protected function getStorage(): APCUStore
     {
         return new APCUStore();
     }

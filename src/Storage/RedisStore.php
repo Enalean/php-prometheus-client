@@ -10,6 +10,7 @@ use Enalean\Prometheus\Value\HistogramLabelNames;
 use Enalean\Prometheus\Value\MetricLabelNames;
 use Enalean\Prometheus\Value\MetricName;
 use Redis;
+
 use function array_keys;
 use function array_map;
 use function array_merge;
@@ -20,6 +21,7 @@ use function json_encode;
 use function sort;
 use function strcmp;
 use function usort;
+
 use const JSON_THROW_ON_ERROR;
 
 final class RedisStore implements Store, CounterStorage, GaugeStorage, HistogramStorage, FlushableStorage
@@ -38,7 +40,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
         $this->prefix = $keyPrefix;
     }
 
-    public function flush() : void
+    public function flush(): void
     {
         $storageMainKeys = [
             $this->prefix . 'counter' . self::PROMETHEUS_METRIC_KEYS_SUFFIX,
@@ -62,7 +64,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
     /**
      * @inheritdoc
      */
-    public function collect() : array
+    public function collect(): array
     {
         $metrics = $this->collectHistograms();
         $metrics = array_merge($metrics, $this->collectGauges());
@@ -84,7 +86,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
     /**
      * @inheritdoc
      */
-    public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, string ...$labelValues) : void
+    public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, string ...$labelValues): void
     {
         $bucketToIncrease = '+Inf';
         foreach ($buckets as $bucket) {
@@ -109,12 +111,12 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
         $redis->exec();
     }
 
-    public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
+    public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues): void
     {
         $this->updateGauge($name, $value, $help, $labelNames, $labelValues, false);
     }
 
-    public function addToGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
+    public function addToGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues): void
     {
         $this->updateGauge($name, $value, $help, $labelNames, $labelValues, true);
     }
@@ -122,7 +124,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
     /**
      * @param string[] $labelValues
      */
-    private function updateGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues, bool $isIncrement) : void
+    private function updateGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues, bool $isIncrement): void
     {
         $metaData = [
             'name' => $name->toString(),
@@ -143,7 +145,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
         $redis->exec();
     }
 
-    public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues) : void
+    public function incrementCounter(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues): void
     {
         $metaData = [
             'name' => $name->toString(),
@@ -164,7 +166,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
      *
      * @psalm-return array<array{name:string, help:string, labelNames: string[], type:'histogram', samples: list<array{name:string, labelNames:list<string>, labelValues: string[], value: int}>}>
      */
-    private function collectHistograms() : array
+    private function collectHistograms(): array
     {
         /** @var string[] $keys */
         $keys = $this->redis->sMembers($this->prefix . 'histogram' . self::PROMETHEUS_METRIC_KEYS_SUFFIX);
@@ -253,7 +255,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
      * @phpstan-return array<array{name:string, help:string, labelNames: string[], type:'gauge', samples: list<array{name:string, labelNames:string[], labelValues:string[], value: float}>}>
      * @psalm-return array<array{name:string, help:string, labelNames: string[], type:'gauge', samples: list<array{name:string, labelNames:array<empty,empty>, labelValues: string[], value: float}>}>
      */
-    private function collectGauges() : array
+    private function collectGauges(): array
     {
         /** @var string[] $keys */
         $keys = $this->redis->sMembers($this->prefix . 'gauge' . self::PROMETHEUS_METRIC_KEYS_SUFFIX);
@@ -284,7 +286,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
                  * @psalm-param array{labelValues: string[]} $a
                  * @psalm-param array{labelValues: string[]} $b
                  */
-                static function (array $a, array $b) : int {
+                static function (array $a, array $b): int {
                     return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
                 }
             );
@@ -300,7 +302,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
      * @phpstan-return array<array{name:string, help:string, labelNames: string[], type:'counter', samples: list<array{name:string, labelNames:string[], labelValues: string[], value: float}>}>
      * @psalm-return array<array{name:string, help:string, labelNames: string[], type:'counter', samples: list<array{name:string, labelNames:array<empty,empty>, labelValues: string[], value: float}>}>
      */
-    private function collectCounters() : array
+    private function collectCounters(): array
     {
         /** @var string[] $keys */
         $keys = $this->redis->sMembers($this->prefix . 'counter' . self::PROMETHEUS_METRIC_KEYS_SUFFIX);
@@ -331,7 +333,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
                  * @psalm-param array{labelValues: string[]} $a
                  * @psalm-param array{labelValues: string[]} $b
                  */
-                static function (array $a, array $b) : int {
+                static function (array $a, array $b): int {
                     return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
                 }
             );
@@ -341,7 +343,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
         return $counters;
     }
 
-    private function toMetricKey(MetricName $name, string $type) : string
+    private function toMetricKey(MetricName $name, string $type): string
     {
         return implode(':', [$this->prefix, $type, $name->toString()]);
     }

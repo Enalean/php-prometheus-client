@@ -16,7 +16,7 @@ interface Pusher
      *
      * @throws UnexpectedPushGatewayResponse
      */
-    public function push(Collector $collector, string $job, array $groupingKey = []) : void;
+    public function push(Collector $collector, string $job, array $groupingKey = []): void;
 
     /**
      * Pushes all metrics in a Collector, replacing only previously pushed metrics of the same name and job.
@@ -26,7 +26,7 @@ interface Pusher
      *
      * @throws UnexpectedPushGatewayResponse
      */
-    public function pushAdd(Collector $collector, string $job, array $groupingKey = []) : void;
+    public function pushAdd(Collector $collector, string $job, array $groupingKey = []): void;
 
     /**
      * Deletes metrics from the Pushgateway.
@@ -36,5 +36,5 @@ interface Pusher
      *
      * @throws UnexpectedPushGatewayResponse
      */
-    public function delete(string $job, array $groupingKey = []) : void;
+    public function delete(string $job, array $groupingKey = []): void;
 }

@@ -11,5 +11,5 @@ interface LabelNames extends Countable
     /**
      * @return string[]
      */
-    public function toStrings() : array;
+    public function toStrings(): array;
 }

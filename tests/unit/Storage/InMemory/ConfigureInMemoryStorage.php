@@ -8,7 +8,7 @@ use Enalean\Prometheus\Storage\InMemoryStore;
 
 trait ConfigureInMemoryStorage
 {
-    protected function getStorage() : InMemoryStore
+    protected function getStorage(): InMemoryStore
     {
         return new InMemoryStore();
     }

@@ -9,6 +9,7 @@ use Http\Discovery\HttpAsyncClientDiscovery;
 use Http\Discovery\Psr17FactoryDiscovery;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestFactoryInterface;
+
 use function getenv;
 
 final class BlackBoxTest extends TestCase
@@ -23,7 +24,7 @@ final class BlackBoxTest extends TestCase
     /** @var string */
     private $adapter;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->adapter        = (string) getenv('ADAPTER');
         $this->client         = HttpAsyncClientDiscovery::find();
@@ -36,7 +37,7 @@ final class BlackBoxTest extends TestCase
     /**
      * @test
      */
-    public function gaugesShouldBeOverwritten() : void
+    public function gaugesShouldBeOverwritten(): void
     {
         $requests = [
             $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/some_gauge.php?c=0&adapter=' . $this->adapter),
@@ -68,7 +69,7 @@ final class BlackBoxTest extends TestCase
     /**
      * @test
      */
-    public function countersShouldIncrementAtomically() : void
+    public function countersShouldIncrementAtomically(): void
     {
         $promises = [];
         $sum      = 0;
@@ -92,7 +93,7 @@ final class BlackBoxTest extends TestCase
     /**
      * @test
      */
-    public function histogramsShouldIncrementAtomically() : void
+    public function histogramsShouldIncrementAtomically(): void
     {
         $requests = [
             $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/some_histogram.php?c=0&adapter=' . $this->adapter),

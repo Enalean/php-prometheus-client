@@ -13,7 +13,7 @@ interface MetricsRenderer
      *
      * @psalm-pure
      */
-    public function render(array $metrics) : string;
+    public function render(array $metrics): string;
 
-    public function getMimeType() : string;
+    public function getMimeType(): string;
 }

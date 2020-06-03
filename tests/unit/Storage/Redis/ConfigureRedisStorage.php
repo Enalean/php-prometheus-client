@@ -6,6 +6,7 @@ namespace Enalean\PrometheusTest\Storage\Redis;
 
 use Enalean\Prometheus\Storage\RedisStore;
 use Redis;
+
 use function getenv;
 
 trait ConfigureRedisStorage
@@ -13,7 +14,7 @@ trait ConfigureRedisStorage
     /** @var RedisStore */
     public $adapter;
 
-    private function getRedisClient() : Redis
+    private function getRedisClient(): Redis
     {
         $redisClient = new Redis();
         $redisClient->connect(
@@ -24,13 +25,13 @@ trait ConfigureRedisStorage
         return $redisClient;
     }
 
-    public function configureAdapter() : void
+    public function configureAdapter(): void
     {
         $this->adapter = new RedisStore($this->getRedisClient());
         $this->adapter->flush();
     }
 
-    protected function getStorage() : RedisStore
+    protected function getStorage(): RedisStore
     {
         return new RedisStore($this->getRedisClient());
     }

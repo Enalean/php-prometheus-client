@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class MetricFamilySamplesTest extends TestCase
 {
-    public function testMetricFamilySamplesHoldValuesWithoutModification() : void
+    public function testMetricFamilySamplesHoldValuesWithoutModification(): void
     {
         $name       = 'name';
         $type       = 'type';
@@ -30,7 +30,7 @@ final class MetricFamilySamplesTest extends TestCase
         self::assertTrue($metricFamilySamples->hasLabelNames());
     }
 
-    public function testMetricFamilySamplesDetectWhenNoLabelNamesAreGiven() : void
+    public function testMetricFamilySamplesDetectWhenNoLabelNamesAreGiven(): void
     {
         $metricFamilySamples = new MetricFamilySamples('name', 'type', 'help', [], []);
         self::assertFalse($metricFamilySamples->hasLabelNames());

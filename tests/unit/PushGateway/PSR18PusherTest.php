@@ -24,7 +24,7 @@ final class PSR18PusherTest extends TestCase
      *           ["http://example.com", "http://example.com"]
      *           ["https://example.com", "https://example.com"]
      */
-    public function testServerURIIsCorrectlyConstructed(string $expectedServerURIStart, string $givenAddress) : void
+    public function testServerURIIsCorrectlyConstructed(string $expectedServerURIStart, string $givenAddress): void
     {
         $client = new Client();
 
@@ -60,7 +60,7 @@ final class PSR18PusherTest extends TestCase
      * @testWith [200]
      *           [202]
      */
-    public function testDataIsPushedToTheGateway(int $responseStatusCode) : void
+    public function testDataIsPushedToTheGateway(int $responseStatusCode): void
     {
         $client = new Client();
 
@@ -86,7 +86,7 @@ final class PSR18PusherTest extends TestCase
         self::assertEmpty($client->getLastRequest()->getBody()->getContents());
     }
 
-    public function testPushedInformationCanBeGrouped() : void
+    public function testPushedInformationCanBeGrouped(): void
     {
         $client = new Client();
 
@@ -118,7 +118,7 @@ final class PSR18PusherTest extends TestCase
      *           [500]
      *           [301]
      */
-    public function testExceptionIsThrownWhenPushGatewayResponseIsNotExpected(int $responseStatusCode) : void
+    public function testExceptionIsThrownWhenPushGatewayResponseIsNotExpected(int $responseStatusCode): void
     {
         $client = new Client();
 
@@ -137,7 +137,7 @@ final class PSR18PusherTest extends TestCase
         $pusher->delete('myjob');
     }
 
-    public function testExceptionIsThrownWhenRequestToPushGatewayCanNotBeSent() : void
+    public function testExceptionIsThrownWhenRequestToPushGatewayCanNotBeSent(): void
     {
         $client = new Client();
 

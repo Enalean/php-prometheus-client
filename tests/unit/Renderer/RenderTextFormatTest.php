@@ -14,7 +14,7 @@ final class RenderTextFormatTest extends TestCase
     /**
      * @covers Enalean\Prometheus\Renderer\RenderTextFormat
      */
-    public function testRendering() : void
+    public function testRendering(): void
     {
         $renderer = new RenderTextFormat();
 
@@ -64,7 +64,7 @@ test_some_metric_gauge 0
     /**
      * @covers Enalean\Prometheus\Renderer\RenderTextFormat::getMimeType
      */
-    public function testType() : void
+    public function testType(): void
     {
         $renderer = new RenderTextFormat();
         self::assertStringContainsString('text/plain', $renderer->getMimeType());
