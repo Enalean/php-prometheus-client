@@ -26,6 +26,8 @@ jobs:
           coverage: none
       - name: Remove Composer lockfile
         run: rm composer.lock
+      - name: Use PHPUnit 9.3 # Needed for PHP 8 compat
+        run: composer require --no-update phpunit/phpunit:"^9.3"
       - name: Install dependencies
         run: composer update --no-interaction --prefer-dist --ignore-platform-reqs
       - name: Configure PHPUnit matchers
