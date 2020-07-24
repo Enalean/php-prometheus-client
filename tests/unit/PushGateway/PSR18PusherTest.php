@@ -75,8 +75,8 @@ final class PSR18PusherTest extends TestCase
             Psr17FactoryDiscovery::findStreamFactory()
         );
         $collector = $this->createMock(Collector::class);
-        /** @psalm-suppress InternalMethod */
-        $collector->method('getMetricFamilySamples')->willReturn([new MetricFamilySamples('name', 'type', 'help', [], [])]);
+        $collector->expects(self::atLeastOnce())->method('getMetricFamilySamples')
+            ->willReturn([new MetricFamilySamples('name', 'type', 'help', [], [])]);
 
         $pusher->push($collector, 'myjob');
         self::assertNotEmpty($client->getLastRequest()->getBody()->getContents());
