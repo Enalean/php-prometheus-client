@@ -10,6 +10,7 @@ use Enalean\Prometheus\Sample;
 use function array_combine;
 use function array_merge;
 use function assert;
+use function count;
 use function implode;
 use function is_array;
 use function sprintf;
@@ -26,6 +27,10 @@ final class RenderTextFormat implements MetricsRenderer
 
     /**
      * @param MetricFamilySamples[] $metrics
+     *
+     * @throws IncoherentMetricLabelNamesAndValues
+     *
+     * @psalm-pure
      */
     public function render(array $metrics): string
     {
@@ -46,13 +51,22 @@ final class RenderTextFormat implements MetricsRenderer
         return implode("\n", $lines) . "\n";
     }
 
+    /**
+     * @throws IncoherentMetricLabelNamesAndValues
+     */
     private function renderSample(MetricFamilySamples $metric, Sample $sample): string
     {
         $escapedLabels = [];
 
         $labelNames = $metric->getLabelNames();
         if ($metric->hasLabelNames() || $sample->hasLabelNames()) {
-            $labels = array_combine(array_merge($labelNames, $sample->getLabelNames()), $sample->getLabelValues());
+            $allLabelNames = array_merge($labelNames, $sample->getLabelNames());
+            $labelValues   = $sample->getLabelValues();
+            if (count($allLabelNames) !== count($labelValues)) {
+                throw new IncoherentMetricLabelNamesAndValues($metric, count($allLabelNames), count($labelValues));
+            }
+
+            $labels = array_combine($allLabelNames, $labelValues);
             assert(is_array($labels));
             foreach ($labels as $labelName => $labelValue) {
                 $escapedLabels[] = $labelName . '="' . $this->escapeLabelValue($labelValue) . '"';
