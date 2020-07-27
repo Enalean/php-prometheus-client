@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Enalean\PrometheusTest\Renderer;
 
 use Enalean\Prometheus\MetricFamilySamples;
+use Enalean\Prometheus\Renderer\IncoherentMetricLabelNamesAndValues;
 use Enalean\Prometheus\Renderer\RenderTextFormat;
 use Enalean\Prometheus\Sample;
 use PHPUnit\Framework\TestCase;
@@ -59,6 +60,30 @@ test_some_metric_gauge 0
 ',
             $renderer->render($metrics)
         );
+    }
+
+    /**
+     * @covers Enalean\Prometheus\Renderer\RenderTextFormat
+     */
+    public function testRenderingDoesNotSucceedWhenAllSamplesDoesNotHaveAllTheDefinedLabels(): void
+    {
+        $renderer = new RenderTextFormat();
+
+        $metrics = [
+            new MetricFamilySamples(
+                'B',
+                'counter',
+                'test B',
+                ['label1', 'label2'],
+                [
+                    new Sample('test_some_metric_counter', 1, [], ['value1', 'value2']),
+                    new Sample('test_some_metric_counter', 1, [], ['value1']),
+                ]
+            ),
+        ];
+
+        $this->expectException(IncoherentMetricLabelNamesAndValues::class);
+        $renderer->render($metrics);
     }
 
     /**
