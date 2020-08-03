@@ -24,6 +24,7 @@ jobs:
           extensions: mbstring, redis
           ini-values: apc.enable_cli=1, zend.assertions=1
           coverage: none
+          tools: composer:v2
       - name: Remove Composer lockfile
         run: rm composer.lock
       - name: Install dependencies
