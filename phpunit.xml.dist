@@ -15,11 +15,11 @@
             <directory>./tests/functionnal/</directory>
         </testsuite>
     </testsuites>
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
+    <coverage processUncoveredFiles="true">
+        <include>
             <directory suffix=".php">src/</directory>
-        </whitelist>
-    </filter>
+        </include>
+    </coverage>
     <php>
         <ini name="error_reporting" value="-1" />
         <ini name="assert.exception" value="1" />
