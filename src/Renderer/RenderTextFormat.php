@@ -44,7 +44,7 @@ final class RenderTextFormat implements MetricsRenderer
             $lines[] = sprintf('# HELP %s %s', $metric->getName(), $metric->getHelp());
             $lines[] = sprintf('# TYPE %s %s', $metric->getName(), $metric->getType());
             foreach ($metric->getSamples() as $sample) {
-                $lines[] = $this->renderSample($metric, $sample);
+                $lines[] = self::renderSample($metric, $sample);
             }
         }
 
@@ -53,8 +53,10 @@ final class RenderTextFormat implements MetricsRenderer
 
     /**
      * @throws IncoherentMetricLabelNamesAndValues
+     *
+     * @psalm-pure
      */
-    private function renderSample(MetricFamilySamples $metric, Sample $sample): string
+    private static function renderSample(MetricFamilySamples $metric, Sample $sample): string
     {
         $escapedLabels = [];
 
@@ -69,7 +71,7 @@ final class RenderTextFormat implements MetricsRenderer
             $labels = array_combine($allLabelNames, $labelValues);
             assert(is_array($labels));
             foreach ($labels as $labelName => $labelValue) {
-                $escapedLabels[] = $labelName . '="' . $this->escapeLabelValue($labelValue) . '"';
+                $escapedLabels[] = $labelName . '="' . self::escapeLabelValue($labelValue) . '"';
             }
 
             return $sample->getName() . '{' . implode(',', $escapedLabels) . '} ' . $sample->getValue();
@@ -78,7 +80,10 @@ final class RenderTextFormat implements MetricsRenderer
         return $sample->getName() . ' ' . $sample->getValue();
     }
 
-    private function escapeLabelValue(string $v): string
+    /**
+     * @psalm-pure
+     */
+    private static function escapeLabelValue(string $v): string
     {
         return str_replace(['\\', "\n", '"'], ['\\\\', "\\n", '\\"'], $v);
     }

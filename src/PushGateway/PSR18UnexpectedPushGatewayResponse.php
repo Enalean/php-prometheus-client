@@ -46,7 +46,7 @@ final class PSR18UnexpectedPushGatewayResponse extends UnexpectedPushGatewayResp
     }
 
     /**
-     * @psalm-pure
+     * @psalm-mutation-free
      */
     public function getRequest(): RequestInterface
     {
@@ -54,7 +54,7 @@ final class PSR18UnexpectedPushGatewayResponse extends UnexpectedPushGatewayResp
     }
 
     /**
-     * @psalm-pure
+     * @psalm-mutation-free
      */
     public function getResponse(): ?ResponseInterface
     {
