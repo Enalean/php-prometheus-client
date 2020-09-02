@@ -38,7 +38,7 @@ abstract class Metric
     }
 
     /**
-     * @psalm-pure
+     * @psalm-mutation-free
      */
     public function getName(): MetricName
     {
@@ -47,7 +47,7 @@ abstract class Metric
 
     /**
      * @psalm-return TLabelNames
-     * @psalm-pure
+     * @psalm-mutation-free
      */
     public function getLabelNames(): LabelNames
     {
@@ -55,7 +55,7 @@ abstract class Metric
     }
 
     /**
-     * @psalm-pure
+     * @psalm-mutation-free
      */
     public function getHelp(): string
     {
@@ -63,7 +63,7 @@ abstract class Metric
     }
 
     /**
-     * @psalm-pure
+     * @psalm-mutation-free
      */
     final protected function assertLabelsAreDefinedCorrectly(string ...$labelValues): void
     {
