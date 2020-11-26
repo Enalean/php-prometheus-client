@@ -20,8 +20,8 @@
         "phpstan/phpstan-phpunit": "^0.12.6",
         "phpstan/phpstan-strict-rules": "^0.12.2",
         "phpunit/phpunit": "^9.0",
-        "psalm/plugin-phpunit": "^0.12.1",
-        "vimeo/psalm": "^3.3"
+        "psalm/plugin-phpunit": "^0.13.0",
+        "vimeo/psalm": "^4.2"
     },
     "suggest": {
         "ext-redis": "Required if using the Redis storage.",
