@@ -72,8 +72,11 @@ jobs:
           name: Infection report
           path: infection.log
   integration:
-    name: Integration tests
+    name: Integration tests on PHP ${{ matrix.php }}
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        php: [ '7.3', '7.4', '8.0.0RC5' ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.4
@@ -84,10 +87,16 @@ jobs:
           docker-compose up -d
           sleep 10
           docker ps -a
+        env:
+          PHP_VERSION: ${{ matrix.php }}
       - name: Tests with Redis
         run: docker-compose exec -T phpunit env ADAPTER=redis vendor/bin/phpunit --testsuite=functionnal
+        env:
+          PHP_VERSION: ${{ matrix.php }}
       - name: Tests with APCU
         run: docker-compose exec -T phpunit env ADAPTER=apcu vendor/bin/phpunit --testsuite=functionnal
+        env:
+          PHP_VERSION: ${{ matrix.php }}
   code_quality:
     name: Code quality
     runs-on: ubuntu-20.04
