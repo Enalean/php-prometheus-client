@@ -361,11 +361,13 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
 
     private function toInteger(float $val): int
     {
+        /** @phpstan-ignore-next-line */
         return (int) unpack('Q', pack('d', $val))[1];
     }
 
     private function fromInteger(int $val): float
     {
+        /** @phpstan-ignore-next-line */
         return (float) unpack('d', pack('Q', $val))[1];
     }
 
