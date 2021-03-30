@@ -43,6 +43,7 @@ final class Counter extends Metric
             throw new InvalidArgumentException(sprintf('Counter can only be incremented, %d is not positive', $count));
         }
 
+        /** @psalm-suppress UnusedMethodCall */
         $this->assertLabelsAreDefinedCorrectly(...$labelValues);
 
         $this->storage->incrementCounter(

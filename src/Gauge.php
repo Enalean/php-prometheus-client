@@ -28,6 +28,7 @@ final class Gauge extends Metric
      */
     public function set(float $value, string ...$labelValues): void
     {
+        /** @psalm-suppress UnusedMethodCall */
         $this->assertLabelsAreDefinedCorrectly(...$labelValues);
 
         $this->storage->setGaugeTo(
@@ -52,6 +53,7 @@ final class Gauge extends Metric
      */
     public function incBy(float $value, string ...$labelValues): void
     {
+        /** @psalm-suppress UnusedMethodCall */
         $this->assertLabelsAreDefinedCorrectly(...$labelValues);
 
         $this->storage->addToGauge(

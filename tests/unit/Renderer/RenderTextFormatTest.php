@@ -83,7 +83,7 @@ test_some_metric_gauge 0
         ];
 
         $this->expectException(IncoherentMetricLabelNamesAndValues::class);
-        $renderer->render($metrics);
+        self::assertEmpty($renderer->render($metrics));
     }
 
     /**
