@@ -141,8 +141,6 @@ final class PSR18PusherTest extends TestCase
     {
         $client = new Client();
 
-        $responseFactory = Psr17FactoryDiscovery::findResponseFactory();
-
         $client->addException(new class extends Exception implements ClientExceptionInterface {
         });
 

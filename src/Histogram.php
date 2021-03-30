@@ -76,6 +76,7 @@ final class Histogram extends Metric
      */
     public function observe(float $value, string ...$labelValues): void
     {
+        /** @psalm-suppress UnusedMethodCall */
         $this->assertLabelsAreDefinedCorrectly(...$labelValues);
 
         $this->storage->updateHistogram(
