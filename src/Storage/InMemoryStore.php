@@ -157,9 +157,6 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
 
     /**
      * @param array<string,mixed> $metrics
-     *
-     * @return MetricFamilySamples[]
-     *
      * @psalm-param array<
      *      string,
      *      array{
@@ -167,6 +164,8 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
      *          samples:array<string, float>
      *      }
      *  > $metrics
+     *
+     * @return MetricFamilySamples[]
      */
     private function internalCollect(string $type, array $metrics): array
     {
@@ -330,7 +329,6 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
 
     /**
      * @return array<string,string|array>
-     *
      * @psalm-return array{name:string, help:string, labelNames:string[]}
      */
     private function metaData(MetricName $name, string $help, LabelNames $labelNames): array

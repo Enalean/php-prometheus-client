@@ -163,7 +163,6 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
 
     /**
      * @return array<int,array<string,mixed>>
-     *
      * @psalm-return array<array{name:string, help:string, labelNames: string[], type:'histogram', samples: list<array{name:string, labelNames:list<string>, labelValues: string[], value: int}>}>
      */
     private function collectHistograms(): array
@@ -251,9 +250,8 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
 
     /**
      * @return array<int,array<string,mixed>>
-     *
-     * @phpstan-return array<array{name:string, help:string, labelNames: string[], type:'gauge', samples: list<array{name:string, labelNames:string[], labelValues:string[], value: float}>}>
      * @psalm-return array<array{name:string, help:string, labelNames: string[], type:'gauge', samples: list<array{name:string, labelNames:array<empty,empty>, labelValues: string[], value: float}>}>
+     * @phpstan-return array<array{name:string, help:string, labelNames: string[], type:'gauge', samples: list<array{name:string, labelNames:string[], labelValues:string[], value: float}>}>
      */
     private function collectGauges(): array
     {
@@ -298,9 +296,8 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
 
     /**
      * @return array<int,array<string,mixed>>
-     *
-     * @phpstan-return array<array{name:string, help:string, labelNames: string[], type:'counter', samples: list<array{name:string, labelNames:string[], labelValues: string[], value: float}>}>
      * @psalm-return array<array{name:string, help:string, labelNames: string[], type:'counter', samples: list<array{name:string, labelNames:array<empty,empty>, labelValues: string[], value: float}>}>
+     * @phpstan-return array<array{name:string, help:string, labelNames: string[], type:'counter', samples: list<array{name:string, labelNames:string[], labelValues: string[], value: float}>}>
      */
     private function collectCounters(): array
     {
