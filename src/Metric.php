@@ -47,6 +47,7 @@ abstract class Metric
 
     /**
      * @psalm-return TLabelNames
+     *
      * @psalm-mutation-free
      */
     public function getLabelNames(): LabelNames

@@ -30,7 +30,6 @@ final class CollectorRegistry implements Registry, Collector
 
     /**
      * @param CounterStorage|GaugeStorage|HistogramStorage|Store $storage
-     *
      * @psalm-param CounterStorage&GaugeStorage&HistogramStorage&Store $storage
      */
     public function __construct(Store $storage)
@@ -122,9 +121,6 @@ final class CollectorRegistry implements Registry, Collector
         return $counter;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function registerHistogram(MetricName $name, string $help, ?HistogramLabelNames $labelNames = null, ?array $buckets = null): Histogram
     {
         $metricIdentifier = $name->toString();
@@ -153,9 +149,6 @@ final class CollectorRegistry implements Registry, Collector
         return $this->histograms[$metricIdentifier];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getOrRegisterHistogram(MetricName $name, string $help, ?HistogramLabelNames $labelNames = null, ?array $buckets = null): Histogram
     {
         try {

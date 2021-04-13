@@ -168,7 +168,6 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
 
     /**
      * @return array<string,string|string[]>
-     *
      * @psalm-return array{name:string, help:string, labelNames:string[]}
      */
     private function metaData(MetricName $name, string $help, LabelNames $labelNames): array
@@ -373,7 +372,6 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
 
     /**
      * @param string[][]|float[][]|string[][][] $samples
-     *
      * @psalm-param array<array{labelValues: string[]}> $samples
      */
     private static function sortSamples(array &$samples): void
