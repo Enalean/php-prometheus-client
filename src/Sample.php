@@ -11,14 +11,12 @@ use function count;
  */
 final class Sample
 {
-    /** @var string */
-    private $name;
+    private string $name;
     /** @var string[] */
-    private $labelNames;
+    private array $labelNames;
     /** @var string[] */
-    private $labelValues;
-    /** @var float */
-    private $value;
+    private array $labelValues;
+    private float $value;
 
     /**
      * @param string[] $labelNames

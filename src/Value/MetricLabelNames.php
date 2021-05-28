@@ -20,7 +20,7 @@ final class MetricLabelNames implements LabelNames
     private const RESERVED_LABEL_PREFIX = '__';
 
     /** @var string[] */
-    private $names;
+    private array $names;
 
     private function __construct(string ...$names)
     {

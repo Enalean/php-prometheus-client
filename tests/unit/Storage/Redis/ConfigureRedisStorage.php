@@ -11,8 +11,7 @@ use function getenv;
 
 trait ConfigureRedisStorage
 {
-    /** @var RedisStore */
-    public $adapter;
+    public RedisStore $adapter;
 
     private function getRedisClient(): Redis
     {

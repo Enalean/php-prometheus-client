@@ -12,8 +12,7 @@ use function sprintf;
 
 final class IncoherentMetricLabelNamesAndValues extends RuntimeException
 {
-    /** @var MetricFamilySamples */
-    private $metric;
+    private MetricFamilySamples $metric;
 
     public function __construct(MetricFamilySamples $metric, int $nbLabelNames, int $nbLabelValues)
     {

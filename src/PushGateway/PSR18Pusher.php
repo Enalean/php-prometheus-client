@@ -17,14 +17,10 @@ use function strpos;
 
 final class PSR18Pusher implements Pusher
 {
-    /** @var string */
-    private $address;
-    /** @var ClientInterface */
-    private $client;
-    /** @var RequestFactoryInterface */
-    private $requestFactory;
-    /** @var StreamFactoryInterface */
-    private $streamFactory;
+    private string $address;
+    private ClientInterface $client;
+    private RequestFactoryInterface $requestFactory;
+    private StreamFactoryInterface $streamFactory;
 
     public function __construct(string $address, ClientInterface $client, RequestFactoryInterface $requestFactory, StreamFactoryInterface $streamFactory)
     {
