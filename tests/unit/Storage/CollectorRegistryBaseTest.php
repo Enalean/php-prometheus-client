@@ -20,8 +20,7 @@ use PHPUnit\Framework\TestCase;
 
 abstract class CollectorRegistryBaseTest extends TestCase
 {
-    /** @var RenderTextFormat */
-    private $renderer;
+    private RenderTextFormat $renderer;
 
     /**
      * @return CounterStorage&GaugeStorage&HistogramStorage&Store

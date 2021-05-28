@@ -36,11 +36,10 @@ final class Histogram extends Metric
         10.0,
     ];
 
-    /** @var HistogramStorage */
-    private $storage;
+    private HistogramStorage $storage;
 
     /** @var float[] */
-    private $buckets;
+    private array $buckets;
 
     /**
      * @param float[] $buckets

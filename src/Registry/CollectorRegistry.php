@@ -22,11 +22,11 @@ final class CollectorRegistry implements Registry, Collector
     /** @var CounterStorage&GaugeStorage&HistogramStorage&Store */
     private $storageAdapter;
     /** @var Gauge[] */
-    private $gauges = [];
+    private array $gauges = [];
     /** @var Counter[] */
-    private $counters = [];
+    private array $counters = [];
     /** @var Histogram[] */
-    private $histograms = [];
+    private array $histograms = [];
 
     /**
      * @param CounterStorage|GaugeStorage|HistogramStorage|Store $storage

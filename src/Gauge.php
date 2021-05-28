@@ -13,8 +13,7 @@ use Enalean\Prometheus\Value\MetricName;
  */
 final class Gauge extends Metric
 {
-    /** @var GaugeStorage */
-    private $storage;
+    private GaugeStorage $storage;
 
     public function __construct(GaugeStorage $storage, MetricName $name, string $help, ?MetricLabelNames $labelNames = null)
     {

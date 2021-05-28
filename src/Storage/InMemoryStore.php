@@ -35,7 +35,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
      *      samples: array<string, float>
      * }>
      */
-    private $counters = [];
+    private array $counters = [];
     /**
      * @var array<string,string[][]>
      * @psalm-var array<string, array{
@@ -43,7 +43,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
      *      samples: array<string, float>
      * }>
      */
-    private $gauges = [];
+    private array $gauges = [];
     /**
      * @var array<string,string[][]>
      * @psalm-var array<string, array{
@@ -51,7 +51,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
      *      samples: array<string, float>
      * }>
      */
-    private $histograms = [];
+    private array $histograms = [];
 
     /**
      * @inheritdoc

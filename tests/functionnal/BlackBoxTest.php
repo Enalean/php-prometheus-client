@@ -16,13 +16,10 @@ final class BlackBoxTest extends TestCase
 {
     private const BASE_URI = 'http://nginx:80/';
 
-    /** @var HttpAsyncClient */
-    private $client;
-    /** @var RequestFactoryInterface */
-    private $requestFactory;
+    private HttpAsyncClient $client;
+    private RequestFactoryInterface $requestFactory;
 
-    /** @var string */
-    private $adapter;
+    private string $adapter;
 
     protected function setUp(): void
     {

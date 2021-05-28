@@ -10,10 +10,8 @@ use Psr\Http\Message\ResponseInterface;
 
 final class PSR18UnexpectedPushGatewayResponse extends UnexpectedPushGatewayResponse
 {
-    /** @var RequestInterface */
-    private $request;
-    /** @var ResponseInterface|null */
-    private $response;
+    private RequestInterface $request;
+    private ?ResponseInterface $response;
 
     private function __construct(RequestInterface $request, ?ResponseInterface $response, ?ClientExceptionInterface $clientException)
     {

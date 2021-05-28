@@ -11,16 +11,13 @@ use function count;
  */
 final class MetricFamilySamples
 {
-    /** @var string */
-    private $name;
-    /** @var string */
-    private $type;
-    /** @var string */
-    private $help;
+    private string $name;
+    private string $type;
+    private string $help;
     /** @var string[] */
-    private $labelNames;
+    private array $labelNames;
     /** @var Sample[] */
-    private $samples;
+    private array $samples;
 
     /**
      * @param string[] $labelNames

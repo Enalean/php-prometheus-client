@@ -28,11 +28,9 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
 {
     public const PROMETHEUS_METRIC_KEYS_SUFFIX = '_METRIC_KEYS';
 
-    /** @var string */
-    private $prefix;
+    private string $prefix;
 
-    /** @var Redis */
-    private $redis;
+    private Redis $redis;
 
     public function __construct(Redis $redisClient, string $keyPrefix = 'PROMETHEUS_')
     {
