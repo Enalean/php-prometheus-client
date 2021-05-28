@@ -12,3 +12,4 @@
 /psalm.xml.dist export-ignore
 /phpstan.neon.dist export-ignore
 /composer.lock export-ignore
+/shell.nix export-ignore
