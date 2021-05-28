@@ -19,7 +19,7 @@ jobs:
           - 6379/tcp
     strategy:
       matrix:
-        php: ['7.3', '7.4', '8.0']
+        php: ['7.4', '8.0']
         dependencies: ['', '--prefer-lowest --prefer-stable']
     steps:
       - name: Checkout
@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        php: [ '7.3', '7.4', '8.0' ]
+        php: [ '7.4', '8.0' ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.4
