@@ -69,7 +69,7 @@ jobs:
           REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
       - name: Archive report
         if: always()
-        uses: actions/upload-artifact@v2.2.3
+        uses: actions/upload-artifact@v2.2.4
         with:
           name: Infection report
           path: infection.log
