@@ -41,7 +41,7 @@ jobs:
         env:
           REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2.0.3
+        uses: codecov/codecov-action@v2.1.0
         with:
           file: ./coverage.xml
   mutation_testing:
