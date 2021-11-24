@@ -18,20 +18,14 @@ use function strpos;
 final class PSR18Pusher implements Pusher
 {
     private string $address;
-    private ClientInterface $client;
-    private RequestFactoryInterface $requestFactory;
-    private StreamFactoryInterface $streamFactory;
 
-    public function __construct(string $address, ClientInterface $client, RequestFactoryInterface $requestFactory, StreamFactoryInterface $streamFactory)
+    public function __construct(string $address, private ClientInterface $client, private RequestFactoryInterface $requestFactory, private StreamFactoryInterface $streamFactory)
     {
         if (strpos($address, '://') === false) {
             $address = 'http://' . $address;
         }
 
-        $this->address        = $address . '/metrics/job/';
-        $this->client         = $client;
-        $this->requestFactory = $requestFactory;
-        $this->streamFactory  = $streamFactory;
+        $this->address = $address . '/metrics/job/';
     }
 
     /**

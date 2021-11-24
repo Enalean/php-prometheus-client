@@ -36,18 +36,15 @@ final class Histogram extends Metric
         10.0,
     ];
 
-    private HistogramStorage $storage;
-
     /** @var float[] */
     private array $buckets;
 
     /**
      * @param float[] $buckets
      */
-    public function __construct(HistogramStorage $storage, MetricName $name, string $help, ?HistogramLabelNames $labelNames = null, ?array $buckets = null)
+    public function __construct(private HistogramStorage $storage, MetricName $name, string $help, ?HistogramLabelNames $labelNames = null, ?array $buckets = null)
     {
         parent::__construct($name, $help, $labelNames ?? HistogramLabelNames::fromNames());
-        $this->storage = $storage;
 
         if ($buckets === null) {
             $buckets = self::DEFAULT_BUCKETS;

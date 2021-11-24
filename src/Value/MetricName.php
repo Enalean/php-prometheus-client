@@ -16,9 +16,7 @@ final class MetricName
 {
     private const METRIC_NAME_REGEX = '/^[a-zA-Z_:][a-zA-Z0-9_:]*$/';
 
-    private string $name;
-
-    private function __construct(string $name)
+    private function __construct(private string $name)
     {
         $this->name = $name;
     }

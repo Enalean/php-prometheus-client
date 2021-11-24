@@ -16,11 +16,8 @@ final class HistogramLabelNames implements LabelNames
 {
     private const RESERVED_LABEL_HISTOGRAM = 'le';
 
-    private MetricLabelNames $names;
-
-    private function __construct(MetricLabelNames $names)
+    private function __construct(private MetricLabelNames $names)
     {
-        $this->names = $names;
     }
 
     public static function fromNames(string ...$names): self

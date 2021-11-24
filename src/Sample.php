@@ -11,23 +11,12 @@ use function count;
  */
 final class Sample
 {
-    private string $name;
-    /** @var string[] */
-    private array $labelNames;
-    /** @var string[] */
-    private array $labelValues;
-    private float $value;
-
     /**
      * @param string[] $labelNames
      * @param string[] $labelValues
      */
-    public function __construct(string $name, float $value, array $labelNames, array $labelValues)
+    public function __construct(private string $name, private float $value, private array $labelNames, private array $labelValues)
     {
-        $this->name        = $name;
-        $this->labelNames  = $labelNames;
-        $this->labelValues = $labelValues;
-        $this->value       = $value;
     }
 
     public function getName(): string

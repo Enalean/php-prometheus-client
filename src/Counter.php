@@ -16,12 +16,9 @@ use function sprintf;
  */
 final class Counter extends Metric
 {
-    private CounterStorage $storage;
-
-    public function __construct(CounterStorage $storage, MetricName $name, string $help, ?MetricLabelNames $labelNames = null)
+    public function __construct(private CounterStorage $storage, MetricName $name, string $help, ?MetricLabelNames $labelNames = null)
     {
         parent::__construct($name, $help, $labelNames ?? MetricLabelNames::fromNames());
-        $this->storage = $storage;
     }
 
     /**
