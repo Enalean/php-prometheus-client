@@ -9,10 +9,8 @@ use Enalean\Prometheus\Sample;
 
 use function array_combine;
 use function array_merge;
-use function assert;
 use function count;
 use function implode;
-use function is_array;
 use function sprintf;
 use function str_replace;
 use function strcmp;
@@ -69,7 +67,6 @@ final class RenderTextFormat implements MetricsRenderer
             }
 
             $labels = array_combine($allLabelNames, $labelValues);
-            assert(is_array($labels));
             foreach ($labels as $labelName => $labelValue) {
                 $escapedLabels[] = $labelName . '="' . self::escapeLabelValue($labelValue) . '"';
             }

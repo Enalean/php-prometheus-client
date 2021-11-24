@@ -19,7 +19,7 @@ jobs:
           - 6379/tcp
     strategy:
       matrix:
-        php: ['7.4', '8.0']
+        php: ['8.0']
         dependencies: ['', '--prefer-lowest --prefer-stable']
     steps:
       - name: Checkout
@@ -57,7 +57,7 @@ jobs:
         uses: actions/checkout@v2.4.0
       - uses: shivammathur/setup-php@2.15.0
         with:
-          php-version: '7.4'
+          php-version: '8.0'
           extensions: mbstring, redis, apcu
           ini-values: apc.enable_cli=1, zend.assertions=1
           coverage: pcov
@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        php: [ '7.4', '8.0' ]
+        php: [ '8.0' ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2.4.0
@@ -107,7 +107,7 @@ jobs:
         uses: actions/checkout@v2.4.0
       - uses: shivammathur/setup-php@2.15.0
         with:
-          php-version: '7.4'
+          php-version: '8.0'
           extensions: mbstring, redis, apcu
           coverage: none
       - name: Install dependencies
