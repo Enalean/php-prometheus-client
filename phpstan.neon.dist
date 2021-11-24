@@ -4,5 +4,10 @@ parameters:
         - src/
         - tests/
         - examples/
+    stubFiles:
+        - tests/stubs/Http/Promise/Promise.phpstub
+    checkExplicitMixed: false
+    ignoreErrors:
+        - '#Class APCUIterator referenced with incorrect case: APCuIterator#'
 includes:
     - vendor/phpstan/phpstan-strict-rules/rules.neon
