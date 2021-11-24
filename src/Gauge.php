@@ -13,12 +13,9 @@ use Enalean\Prometheus\Value\MetricName;
  */
 final class Gauge extends Metric
 {
-    private GaugeStorage $storage;
-
-    public function __construct(GaugeStorage $storage, MetricName $name, string $help, ?MetricLabelNames $labelNames = null)
+    public function __construct(private GaugeStorage $storage, MetricName $name, string $help, ?MetricLabelNames $labelNames = null)
     {
         parent::__construct($name, $help, $labelNames ?? MetricLabelNames::fromNames());
-        $this->storage = $storage;
     }
 
     /**

@@ -11,25 +11,12 @@ use function count;
  */
 final class MetricFamilySamples
 {
-    private string $name;
-    private string $type;
-    private string $help;
-    /** @var string[] */
-    private array $labelNames;
-    /** @var Sample[] */
-    private array $samples;
-
     /**
      * @param string[] $labelNames
      * @param Sample[] $samples
      */
-    public function __construct(string $name, string $type, string $help, array $labelNames, array $samples)
+    public function __construct(private string $name, private string $type, private string $help, private array $labelNames, private array $samples)
     {
-        $this->name       = $name;
-        $this->type       = $type;
-        $this->help       = $help;
-        $this->labelNames = $labelNames;
-        $this->samples    = $samples;
     }
 
     public function getName(): string

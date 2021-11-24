@@ -10,14 +10,8 @@ use Psr\Http\Message\ResponseInterface;
 
 final class PSR18UnexpectedPushGatewayResponse extends UnexpectedPushGatewayResponse
 {
-    private RequestInterface $request;
-    private ?ResponseInterface $response;
-
-    private function __construct(RequestInterface $request, ?ResponseInterface $response, ?ClientExceptionInterface $clientException)
+    private function __construct(private RequestInterface $request, private ?ResponseInterface $response, ?ClientExceptionInterface $clientException)
     {
-        $this->request  = $request;
-        $this->response = $response;
-
         $exceptionCode = 0;
 
         $message = 'Cannot connect PushGateway server to ' . $request->getUri()->__toString() . ':';

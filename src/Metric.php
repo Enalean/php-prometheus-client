@@ -17,24 +17,11 @@ use function sprintf;
  */
 abstract class Metric
 {
-    /** @var MetricName */
-    private $name;
-    /** @var string */
-    private $help;
-    /**
-     * @var LabelNames
-     * @psalm-var TLabelNames
-     * */
-    private $labelNames;
-
     /**
      * @psalm-param TLabelNames $labelNames
      */
-    public function __construct(MetricName $name, string $help, LabelNames $labelNames)
+    public function __construct(private MetricName $name, private string $help, private LabelNames $labelNames)
     {
-        $this->name       = $name;
-        $this->help       = $help;
-        $this->labelNames = $labelNames;
     }
 
     /**

@@ -12,9 +12,7 @@ use function sprintf;
 
 final class IncoherentMetricLabelNamesAndValues extends RuntimeException
 {
-    private MetricFamilySamples $metric;
-
-    public function __construct(MetricFamilySamples $metric, int $nbLabelNames, int $nbLabelValues)
+    public function __construct(private MetricFamilySamples $metric, int $nbLabelNames, int $nbLabelValues)
     {
         if ($nbLabelNames === $nbLabelValues) {
             throw new LogicException(
