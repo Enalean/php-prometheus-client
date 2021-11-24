@@ -3,7 +3,7 @@
     "description": "Prometheus instrumentation library",
     "license": "Apache-2.0",
     "require": {
-        "php": "~8.0.0",
+        "php": "~8.0.0|~8.1.0",
         "ext-json": "*",
         "psr/http-client": "^1.0",
         "psr/http-factory": "^1.0",
@@ -19,7 +19,7 @@
         "phpstan/phpstan": "^1.2",
         "phpstan/phpstan-phpunit": "^1.0",
         "phpstan/phpstan-strict-rules": "^1.1",
-        "phpunit/phpunit": "^9.0",
+        "phpunit/phpunit": "^9.5.10",
         "psalm/plugin-phpunit": "^0.16.0",
         "vimeo/psalm": "^4.2"
     },
