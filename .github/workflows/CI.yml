@@ -127,7 +127,7 @@ jobs:
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
       - name: Composer Require Checker
-        uses: docker://webfactory/composer-require-checker:2.0.0
+        uses: docker://webfactory/composer-require-checker:3.2.0
         with:
           args: --config-file=tests/config-composer-require-checker.json
       - name: Composer Unused
