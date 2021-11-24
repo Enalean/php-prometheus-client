@@ -10,8 +10,7 @@ namespace Http\Promise;
 interface Promise
 {
     /**
-     * @return mixed
      * @psalm-return ($unwrap is true ? T : null)
      */
-    public function wait(bool $unwrap = true);
+    public function wait(bool $unwrap = true): mixed;
 }
