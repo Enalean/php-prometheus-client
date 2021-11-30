@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        php: ['8.0', '8.1-rc']
+        php: ['8.0', '8.1']
     steps:
       - name: Checkout
         uses: actions/checkout@v2.4.0
