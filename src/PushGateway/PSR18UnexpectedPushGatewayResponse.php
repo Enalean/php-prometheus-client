@@ -20,8 +20,7 @@ final class PSR18UnexpectedPushGatewayResponse extends UnexpectedPushGatewayResp
         }
 
         if ($clientException !== null) {
-            $message = ' ' . $clientException->getMessage();
-            /** @psalm-var int $exceptionCode */
+            $message       = ' ' . $clientException->getMessage();
             $exceptionCode = $clientException->getCode();
         }
 
