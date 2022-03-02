@@ -23,7 +23,7 @@ jobs:
         dependencies: ['', '--prefer-lowest --prefer-stable']
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - uses: shivammathur/setup-php@2.17.0
         with:
           php-version: ${{ matrix.php }}
@@ -54,7 +54,7 @@ jobs:
           - 6379/tcp
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - uses: shivammathur/setup-php@2.17.0
         with:
           php-version: '8.0'
@@ -81,7 +81,7 @@ jobs:
         php: ['8.0', '8.1']
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
       - name: Start stack
@@ -104,7 +104,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - uses: shivammathur/setup-php@2.17.0
         with:
           php-version: '8.0'
@@ -123,7 +123,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
       - name: Composer Require Checker
@@ -137,7 +137,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
       - name: Roave BC Check
         uses: docker://nyholm/roave-bc-check-ga
@@ -148,7 +148,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - name: Install nix
         uses: cachix/install-nix-action@v16
         with:
