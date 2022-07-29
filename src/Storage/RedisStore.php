@@ -15,6 +15,7 @@ use function array_keys;
 use function array_map;
 use function array_merge;
 use function array_unique;
+use function assert;
 use function implode;
 use function json_decode;
 use function json_encode;
@@ -53,7 +54,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
 
         /** @psalm-var string[] $membersToRemove */
         $membersToRemove = array_merge([], ...$membersToRemove);
-        $redis           = $this->redis->multi();
+        $redis           = $this->redisMulti();
         $redis->del($membersToRemove);
         $redis->del($storageMainKeys);
         $redis->exec();
@@ -101,7 +102,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
             'buckets' => $buckets,
         ];
         $metricKey = $this->toMetricKey($name, 'histogram');
-        $redis     = $this->redis->multi();
+        $redis     = $this->redisMulti();
         $redis->hIncrByFloat($metricKey, json_encode(['b' => 'sum', 'labelValues' => $labelValues], JSON_THROW_ON_ERROR), $value);
         $redis->hIncrBy($metricKey, json_encode(['b' => $bucketToIncrease, 'labelValues' => $labelValues], JSON_THROW_ON_ERROR), 1);
         $redis->hSetNx($metricKey, '__meta', json_encode($metaData, JSON_THROW_ON_ERROR));
@@ -131,7 +132,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
         ];
 
         $metricKey = $this->toMetricKey($name, 'gauge');
-        $redis     = $this->redis->multi();
+        $redis     = $this->redisMulti();
         if ($isIncrement) {
             $redis->hIncrByFloat($metricKey, json_encode($labelValues, JSON_THROW_ON_ERROR), $value);
         } else {
@@ -152,7 +153,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
         ];
 
         $metricKey = $this->toMetricKey($name, 'counter');
-        $redis     = $this->redis->multi();
+        $redis     = $this->redisMulti();
         $redis->hIncrByFloat($metricKey, json_encode($labelValues, JSON_THROW_ON_ERROR), $value);
         $redis->hSetNx($metricKey, '__meta', json_encode($metaData, JSON_THROW_ON_ERROR));
         $redis->sAdd($this->prefix . 'counter' . self::PROMETHEUS_METRIC_KEYS_SUFFIX, $metricKey);
@@ -341,5 +342,14 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
     private function toMetricKey(MetricName $name, string $type): string
     {
         return implode(':', [$this->prefix, $type, $name->toString()]);
+    }
+
+    private function redisMulti(): Redis
+    {
+        $redis = $this->redis->multi();
+        /** @phpstan-ignore-next-line */
+        assert($redis instanceof Redis);
+
+        return $redis;
     }
 }
