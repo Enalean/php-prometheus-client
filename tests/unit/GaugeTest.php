@@ -36,15 +36,15 @@ final class GaugeTest extends TestCase
 
         $gauge = new Gauge($storage, MetricName::fromName('name'), 'help');
         $gauge->inc();
-        self::assertEquals($storage->value, 1);
+        self::assertEquals(1, $storage->value);
         $gauge->incBy(2.2);
-        self::assertEquals($storage->value, 3.2);
+        self::assertEqualsWithDelta(3.2, $storage->value, 0.00001);
         $gauge->dec();
-        self::assertEquals($storage->value, 2.2);
+        self::assertEqualsWithDelta(2.2, $storage->value, 0.00001);
         $gauge->decBy(2.1);
-        self::assertEquals($storage->value, 0.1);
+        self::assertEqualsWithDelta(0.1, $storage->value, 0.00001);
         $gauge->set(-10);
-        self::assertEquals($storage->value, -10);
+        self::assertEqualsWithDelta(-10, $storage->value, 0.00001);
     }
 
     public function testIncrementIsRejectedWhenLabelValuesAreNotDefinedCorrectly(): void
