@@ -12,11 +12,11 @@ use Enalean\Prometheus\Value\MetricName;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Discovery\Psr18ClientDiscovery;
 
-$adapter = (string) ($_GET['adapter'] ?? '');
+$adapter = $_GET['adapter'] ?? '';
 
 if ($adapter === 'redis') {
     $redisClient = new Redis();
-    $redisClient->connect((string) ($_SERVER['REDIS_HOST'] ?? '127.0.0.1'));
+    $redisClient->connect($_SERVER['REDIS_HOST'] ?? '127.0.0.1');
     $adapter = new RedisStore($redisClient);
 } elseif ($adapter === 'apcu') {
     $adapter = new Enalean\Prometheus\Storage\APCUStore();

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Enalean\PrometheusTest\Storage\APCU;
 
-use APCuIterator;
+use APCUIterator;
 use Enalean\Prometheus\Registry\CollectorRegistry;
 use Enalean\Prometheus\Renderer\RenderTextFormat;
 use Enalean\Prometheus\Value\HistogramLabelNames;
@@ -56,11 +56,11 @@ final class CollectorRegistryTest extends CollectorRegistryBaseTest
         );
         $histogram->observe(2, 'cat', 'meow');
 
-        self::assertGreaterThan(1, (new APCuIterator('/.*/'))->getTotalCount());
+        self::assertGreaterThan(1, (new APCUIterator('/.*/'))->getTotalCount());
 
         $storage->flush();
 
-        self::assertEquals(1, (new APCuIterator('/.*/'))->getTotalCount());
+        self::assertEquals(1, (new APCUIterator('/.*/'))->getTotalCount());
         self::assertEquals('bar', apcu_fetch('foo'));
         self::assertEquals("\n", (new RenderTextFormat())->render($registry->getMetricFamilySamples()));
 
