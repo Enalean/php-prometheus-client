@@ -10,9 +10,7 @@ use Http\Discovery\Psr17FactoryDiscovery;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientExceptionInterface;
 
-/**
- * @covers Enalean\Prometheus\PushGateway\PSR18UnexpectedPushGatewayResponse
- */
+/** @covers Enalean\Prometheus\PushGateway\PSR18UnexpectedPushGatewayResponse */
 final class PSR18UnexpectedPushGatewayResponseTest extends TestCase
 {
     public function testInvalidResponse(): void

@@ -8,8 +8,6 @@ use Enalean\Prometheus\MetricFamilySamples;
 
 interface Store
 {
-    /**
-     * @return MetricFamilySamples[]
-     */
+    /** @return MetricFamilySamples[] */
     public function collect(): array;
 }

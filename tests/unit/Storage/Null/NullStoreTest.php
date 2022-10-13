@@ -11,9 +11,7 @@ use Enalean\Prometheus\Storage\NullStore;
 use Enalean\Prometheus\Value\MetricName;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers Enalean\Prometheus\Storage\NullStore
- */
+/** @covers Enalean\Prometheus\Storage\NullStore */
 final class NullStoreTest extends TestCase
 {
     public function testNothingIsStored(): void
@@ -28,7 +26,7 @@ final class NullStoreTest extends TestCase
         $histogram = new Histogram(
             $nullStore,
             MetricName::fromNamespacedName('test', 'some_metric'),
-            'this is for testing'
+            'this is for testing',
         );
         $histogram->observe(123);
 

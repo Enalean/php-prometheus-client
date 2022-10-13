@@ -17,9 +17,7 @@ abstract class BlackBoxPushGatewayTest extends TestCase
 {
     abstract public function getPusher(string $address): Pusher;
 
-    /**
-     * @test
-     */
+    /** @test */
     public function pushGatewayShouldWork(): void
     {
         $adapter  = new APCUStore();
@@ -28,7 +26,7 @@ abstract class BlackBoxPushGatewayTest extends TestCase
         $counter = $registry->registerCounter(
             MetricName::fromNamespacedName('test', 'some_counter'),
             'it increases',
-            MetricLabelNames::fromNames('type')
+            MetricLabelNames::fromNames('type'),
         );
         $counter->incBy(6, 'blue');
 
@@ -43,7 +41,7 @@ abstract class BlackBoxPushGatewayTest extends TestCase
             '# HELP test_some_counter it increases
 # TYPE test_some_counter counter
 test_some_counter{instance="foo",job="my_job",type="blue"} 6',
-            $metrics
+            $metrics,
         );
 
         $pusher->delete('my_job', ['instance' => 'foo']);
@@ -53,7 +51,7 @@ test_some_counter{instance="foo",job="my_job",type="blue"} 6',
             '# HELP test_some_counter it increases
 # TYPE test_some_counter counter
 test_some_counter{instance="foo",job="my_job",type="blue"} 6',
-            $metrics
+            $metrics,
         );
     }
 }

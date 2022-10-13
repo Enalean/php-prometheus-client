@@ -22,9 +22,7 @@ abstract class CollectorRegistryBaseTest extends TestCase
 {
     private RenderTextFormat $renderer;
 
-    /**
-     * @return CounterStorage&GaugeStorage&HistogramStorage&Store
-     */
+    /** @return CounterStorage&GaugeStorage&HistogramStorage&Store */
     abstract protected function getStorage();
 
     protected function setUp(): void
@@ -38,9 +36,7 @@ abstract class CollectorRegistryBaseTest extends TestCase
         $storage->flush();
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldSaveGauges(): void
     {
         $storage  = $this->getStorage();
@@ -49,7 +45,7 @@ abstract class CollectorRegistryBaseTest extends TestCase
         $g = $registry->registerGauge(
             MetricName::fromNamespacedName('test', 'some_metric'),
             'this is for testing',
-            MetricLabelNames::fromNames('foo')
+            MetricLabelNames::fromNames('foo'),
         );
         $g->set(35, 'bbb');
         $g->set(35, 'ddd');
@@ -59,7 +55,7 @@ abstract class CollectorRegistryBaseTest extends TestCase
         $registry = new CollectorRegistry($storage);
         self::assertThat(
             $this->renderer->render($registry->getMetricFamilySamples()),
-            self::equalTo(<<<EOF
+            self::equalTo(<<<'EOF'
 # HELP test_some_metric this is for testing
 # TYPE test_some_metric gauge
 test_some_metric{foo="aaa"} 35
@@ -67,14 +63,11 @@ test_some_metric{foo="bbb"} 35
 test_some_metric{foo="ccc"} 35
 test_some_metric{foo="ddd"} 35
 
-EOF
-            )
+EOF),
         );
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldSaveCounters(): void
     {
         $storage    = $this->getStorage();
@@ -83,7 +76,7 @@ EOF
         $metric     = $registry->registerCounter(
             $metricName,
             'this is for testing',
-            MetricLabelNames::fromNames('foo', 'bar')
+            MetricLabelNames::fromNames('foo', 'bar'),
         );
         $metric->incBy(2, 'lalal', 'lululu');
         $registry->getCounter($metricName)->inc('lalal', 'lululu');
@@ -92,20 +85,17 @@ EOF
         $registry = new CollectorRegistry($storage);
         self::assertThat(
             $this->renderer->render($registry->getMetricFamilySamples()),
-            self::equalTo(<<<EOF
+            self::equalTo(<<<'EOF'
 # HELP test_some_metric this is for testing
 # TYPE test_some_metric counter
 test_some_metric{foo="lalal",bar="lululu"} 3
 test_some_metric{foo="lalal",bar="lvlvlv"} 1
 
-EOF
-            )
+EOF),
         );
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldSaveHistograms(): void
     {
         $storage    = $this->getStorage();
@@ -115,7 +105,7 @@ EOF
             $metricName,
             'this is for testing',
             HistogramLabelNames::fromNames('foo', 'bar'),
-            [0.1, 1, 5, 10]
+            [0.1, 1, 5, 10],
         );
         $metric->observe(2, 'lalal', 'lululu');
         $registry->getHistogram($metricName)->observe(7.1, 'lalal', 'lvlvlv');
@@ -126,7 +116,7 @@ EOF
         $registry = new CollectorRegistry($storage);
         self::assertThat(
             $this->renderer->render($registry->getMetricFamilySamples()),
-            self::equalTo(<<<EOF
+            self::equalTo(<<<'EOF'
 # HELP test_some_metric this is for testing
 # TYPE test_some_metric histogram
 test_some_metric_bucket{foo="gnaaha",bar="hihihi",le="0.1"} 0
@@ -151,14 +141,11 @@ test_some_metric_bucket{foo="lalal",bar="lvlvlv",le="+Inf"} 1
 test_some_metric_count{foo="lalal",bar="lvlvlv"} 1
 test_some_metric_sum{foo="lalal",bar="lvlvlv"} 7.1
 
-EOF
-            )
+EOF),
         );
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldSaveHistogramsWithoutLabels(): void
     {
         $storage    = $this->getStorage();
@@ -172,7 +159,7 @@ EOF
         $registry = new CollectorRegistry($storage);
         self::assertThat(
             $this->renderer->render($registry->getMetricFamilySamples()),
-            self::equalTo(<<<EOF
+            self::equalTo(<<<'EOF'
 # HELP test_some_metric this is for testing
 # TYPE test_some_metric histogram
 test_some_metric_bucket{le="0.005"} 0
@@ -193,14 +180,11 @@ test_some_metric_bucket{le="+Inf"} 3
 test_some_metric_count 3
 test_some_metric_sum 22.1
 
-EOF
-            )
+EOF),
         );
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldIncreaseACounterWithoutNamespace(): void
     {
         $registry = new CollectorRegistry($this->getStorage());
@@ -210,19 +194,16 @@ EOF
 
         self::assertThat(
             $this->renderer->render($registry->getMetricFamilySamples()),
-            self::equalTo(<<<EOF
+            self::equalTo(<<<'EOF'
 # HELP some_quick_counter just a quick measurement
 # TYPE some_quick_counter counter
 some_quick_counter 1
 
-EOF
-            )
+EOF),
         );
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldForbidRegisteringTheSameCounterTwice(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
@@ -232,9 +213,7 @@ EOF
         $registry->registerCounter($metricName, 'help');
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldForbidRegisteringTheSameCounterWithDifferentLabels(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
@@ -244,9 +223,7 @@ EOF
         $registry->registerCounter($metricName, 'help', MetricLabelNames::fromNames('spam', 'eggs'));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldForbidRegisteringTheSameHistogramTwice(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
@@ -256,9 +233,7 @@ EOF
         $registry->registerHistogram($metricName, 'help');
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldForbidRegisteringTheSameHistogramWithDifferentLabels(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
@@ -268,9 +243,7 @@ EOF
         $registry->registerHistogram($metricName, 'help', HistogramLabelNames::fromNames('spam', 'eggs'));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldForbidRegisteringTheSameGaugeTwice(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
@@ -280,9 +253,7 @@ EOF
         $registry->registerGauge($metricName, 'help');
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldForbidRegisteringTheSameGaugeWithDifferentLabels(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
@@ -292,9 +263,7 @@ EOF
         $registry->registerGauge($metricName, 'help', MetricLabelNames::fromNames('spam', 'eggs'));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldThrowAnExceptionWhenGettingANonExistentMetric(): void
     {
         $registry = new CollectorRegistry($this->getStorage());
@@ -302,9 +271,7 @@ EOF
         $registry->getGauge(MetricName::fromNamespacedName('not_here', 'go_away'));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldNotRegisterACounterTwice(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
@@ -315,9 +282,7 @@ EOF
         self::assertSame($counterA, $counterB);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldNotRegisterAGaugeTwice(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
@@ -328,9 +293,7 @@ EOF
         self::assertSame($gaugeA, $gaugeB);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldNotRegisterAHistogramTwice(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());

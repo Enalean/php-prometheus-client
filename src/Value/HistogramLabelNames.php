@@ -9,9 +9,7 @@ use InvalidArgumentException;
 use function count;
 use function sprintf;
 
-/**
- * @psalm-immutable
- */
+/** @psalm-immutable */
 final class HistogramLabelNames implements LabelNames
 {
     private const RESERVED_LABEL_HISTOGRAM = 'le';
@@ -25,7 +23,7 @@ final class HistogramLabelNames implements LabelNames
         foreach ($names as $name) {
             if ($name === self::RESERVED_LABEL_HISTOGRAM) {
                 throw new InvalidArgumentException(
-                    sprintf('Histogram label name cannot be "%s".', self::RESERVED_LABEL_HISTOGRAM)
+                    sprintf('Histogram label name cannot be "%s".', self::RESERVED_LABEL_HISTOGRAM),
                 );
             }
         }
@@ -33,9 +31,7 @@ final class HistogramLabelNames implements LabelNames
         return new self(MetricLabelNames::fromNames(...$names));
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     public function toStrings(): array
     {
         return $this->names->toStrings();

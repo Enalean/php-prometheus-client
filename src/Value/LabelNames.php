@@ -8,8 +8,6 @@ use Countable;
 
 interface LabelNames extends Countable
 {
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function toStrings(): array;
 }

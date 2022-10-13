@@ -11,9 +11,7 @@ use function preg_match;
 use function sprintf;
 use function strpos;
 
-/**
- * @psalm-immutable
- */
+/** @psalm-immutable */
 final class MetricLabelNames implements LabelNames
 {
     private const LABEL_NAME_REGEX      = '/^[a-zA-Z_][a-zA-Z0-9_]*$/';
@@ -33,7 +31,7 @@ final class MetricLabelNames implements LabelNames
             if (preg_match(self::LABEL_NAME_REGEX, $name) !== 1) {
                 throw new InvalidArgumentException(sprintf(
                     'The label name %s does not match the expected pattern.',
-                    $name
+                    $name,
                 ));
             }
 
@@ -41,7 +39,7 @@ final class MetricLabelNames implements LabelNames
                 throw new InvalidArgumentException(sprintf(
                     'Label starting with %s are reserved for internal use, %s is not acceptable.',
                     self::RESERVED_LABEL_PREFIX,
-                    $name
+                    $name,
                 ));
             }
         }
@@ -49,9 +47,7 @@ final class MetricLabelNames implements LabelNames
         return new self(...$names);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     public function toStrings(): array
     {
         return $this->names;

@@ -8,12 +8,10 @@ use Enalean\Prometheus\Storage\GaugeStorage;
 use Enalean\Prometheus\Value\MetricLabelNames;
 use Enalean\Prometheus\Value\MetricName;
 
-/**
- * @extends Metric<MetricLabelNames>
- */
+/** @extends Metric<MetricLabelNames> */
 final class Gauge extends Metric
 {
-    public function __construct(private GaugeStorage $storage, MetricName $name, string $help, ?MetricLabelNames $labelNames = null)
+    public function __construct(private GaugeStorage $storage, MetricName $name, string $help, MetricLabelNames|null $labelNames = null)
     {
         parent::__construct($name, $help, $labelNames ?? MetricLabelNames::fromNames());
     }
@@ -32,21 +30,17 @@ final class Gauge extends Metric
             $value,
             $this->getHelp(),
             $this->getLabelNames(),
-            ...$labelValues
+            ...$labelValues,
         );
     }
 
-    /**
-     * @param string ...$labelValues e.g. ['status', 'opcode']
-     */
+    /** @param string ...$labelValues e.g. ['status', 'opcode'] */
     public function inc(string ...$labelValues): void
     {
         $this->incBy(1, ...$labelValues);
     }
 
-    /**
-     * @param string ...$labelValues e.g. ['status', 'opcode']
-     */
+    /** @param string ...$labelValues e.g. ['status', 'opcode'] */
     public function incBy(float $value, string ...$labelValues): void
     {
         /** @psalm-suppress UnusedMethodCall */
@@ -57,21 +51,17 @@ final class Gauge extends Metric
             $value,
             $this->getHelp(),
             $this->getLabelNames(),
-            ...$labelValues
+            ...$labelValues,
         );
     }
 
-    /**
-     * @param string ...$labelValues e.g. ['status', 'opcode']
-     */
+    /** @param string ...$labelValues e.g. ['status', 'opcode'] */
     public function dec(string ...$labelValues): void
     {
         $this->decBy(1, ...$labelValues);
     }
 
-    /**
-     * @param string ...$labelValues e.g. ['status', 'opcode']
-     */
+    /** @param string ...$labelValues e.g. ['status', 'opcode'] */
     public function decBy(float $value, string ...$labelValues): void
     {
         $this->incBy(-$value, ...$labelValues);

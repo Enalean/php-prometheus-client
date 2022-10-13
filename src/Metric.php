@@ -12,21 +12,15 @@ use function count;
 use function print_r;
 use function sprintf;
 
-/**
- * @template TLabelNames of LabelNames
- */
+/** @template TLabelNames of LabelNames */
 abstract class Metric
 {
-    /**
-     * @psalm-param TLabelNames $labelNames
-     */
+    /** @psalm-param TLabelNames $labelNames */
     public function __construct(private MetricName $name, private string $help, private LabelNames $labelNames)
     {
     }
 
-    /**
-     * @psalm-mutation-free
-     */
+    /** @psalm-mutation-free */
     public function getName(): MetricName
     {
         return $this->name;
@@ -42,17 +36,13 @@ abstract class Metric
         return $this->labelNames;
     }
 
-    /**
-     * @psalm-mutation-free
-     */
+    /** @psalm-mutation-free */
     public function getHelp(): string
     {
         return $this->help;
     }
 
-    /**
-     * @psalm-mutation-free
-     */
+    /** @psalm-mutation-free */
     final protected function assertLabelsAreDefinedCorrectly(string ...$labelValues): void
     {
         if (count($labelValues) !== count($this->labelNames)) {

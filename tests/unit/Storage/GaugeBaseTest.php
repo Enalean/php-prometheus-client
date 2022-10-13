@@ -25,14 +25,10 @@ use function reset;
  */
 abstract class GaugeBaseTest extends TestCase
 {
-    /**
-     * @return GaugeStorage&Store
-     */
+    /** @return GaugeStorage&Store */
     abstract protected function getStorage();
 
-    /**
-     * @before
-     */
+    /** @before */
     protected function flushStorage(): void
     {
         $storage = $this->getStorage();
@@ -43,9 +39,7 @@ abstract class GaugeBaseTest extends TestCase
         $storage->flush();
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldAllowSetWithLabels(): void
     {
         $storage = $this->getStorage();
@@ -53,7 +47,7 @@ abstract class GaugeBaseTest extends TestCase
             $storage,
             MetricName::fromNamespacedName('test', 'some_metric'),
             'this is for testing',
-            MetricLabelNames::fromNames('foo', 'bar')
+            MetricLabelNames::fromNames('foo', 'bar'),
         );
         $gauge->set(123, 'lalal', 'lululu');
         self::assertThat(
@@ -65,17 +59,15 @@ abstract class GaugeBaseTest extends TestCase
                         'gauge',
                         'this is for testing',
                         ['foo', 'bar'],
-                        [new Sample('test_some_metric', 123, [], ['lalal', 'lululu'])]
+                        [new Sample('test_some_metric', 123, [], ['lalal', 'lululu'])],
                     ),
-                ]
-            )
+                ],
+            ),
         );
         self::assertThat($gauge->getHelp(), self::equalTo('this is for testing'));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldAllowSetWithoutLabelWhenNoLabelsAreDefined(): void
     {
         $storage = $this->getStorage();
@@ -90,17 +82,15 @@ abstract class GaugeBaseTest extends TestCase
                         'gauge',
                         'this is for testing',
                         [],
-                        [new Sample('test_some_metric', 123, [], [])]
+                        [new Sample('test_some_metric', 123, [], [])],
                     ),
-                ]
-            )
+                ],
+            ),
         );
         self::assertThat($gauge->getHelp(), self::equalTo('this is for testing'));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldAllowSetWithAFloatValue(): void
     {
         $storage = $this->getStorage();
@@ -115,17 +105,15 @@ abstract class GaugeBaseTest extends TestCase
                         'gauge',
                         'this is for testing',
                         [],
-                        [new Sample('test_some_metric', 123.5, [], [])]
+                        [new Sample('test_some_metric', 123.5, [], [])],
                     ),
-                ]
-            )
+                ],
+            ),
         );
         self::assertThat($gauge->getHelp(), self::equalTo('this is for testing'));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldIncrementAValue(): void
     {
         $storage = $this->getStorage();
@@ -133,7 +121,7 @@ abstract class GaugeBaseTest extends TestCase
             $storage,
             MetricName::fromNamespacedName('test', 'some_metric'),
             'this is for testing',
-            MetricLabelNames::fromNames('foo', 'bar')
+            MetricLabelNames::fromNames('foo', 'bar'),
         );
         $gauge->inc('lalal', 'lululu');
         $gauge->incBy(123, 'lalal', 'lululu');
@@ -146,16 +134,14 @@ abstract class GaugeBaseTest extends TestCase
                         'gauge',
                         'this is for testing',
                         ['foo', 'bar'],
-                        [new Sample('test_some_metric', 124, [], ['lalal', 'lululu'])]
+                        [new Sample('test_some_metric', 124, [], ['lalal', 'lululu'])],
                     ),
-                ]
-            )
+                ],
+            ),
         );
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldIncrementWithFloatValue(): void
     {
         $storage = $this->getStorage();
@@ -163,7 +149,7 @@ abstract class GaugeBaseTest extends TestCase
             $storage,
             MetricName::fromNamespacedName('test', 'some_metric'),
             'this is for testing',
-            MetricLabelNames::fromNames('foo', 'bar')
+            MetricLabelNames::fromNames('foo', 'bar'),
         );
         $gauge->inc('lalal', 'lululu');
         $gauge->incBy(123.5, 'lalal', 'lululu');
@@ -176,16 +162,14 @@ abstract class GaugeBaseTest extends TestCase
                         'gauge',
                         'this is for testing',
                         ['foo', 'bar'],
-                        [new Sample('test_some_metric', 124.5, [], ['lalal', 'lululu'])]
+                        [new Sample('test_some_metric', 124.5, [], ['lalal', 'lululu'])],
                     ),
-                ]
-            )
+                ],
+            ),
         );
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldDecrementAValue(): void
     {
         $storage = $this->getStorage();
@@ -193,7 +177,7 @@ abstract class GaugeBaseTest extends TestCase
             $storage,
             MetricName::fromNamespacedName('test', 'some_metric'),
             'this is for testing',
-            MetricLabelNames::fromNames('foo', 'bar')
+            MetricLabelNames::fromNames('foo', 'bar'),
         );
         $gauge->dec('lalal', 'lululu');
         $gauge->decBy(123, 'lalal', 'lululu');
@@ -206,16 +190,14 @@ abstract class GaugeBaseTest extends TestCase
                         'gauge',
                         'this is for testing',
                         ['foo', 'bar'],
-                        [new Sample('test_some_metric', -124, [], ['lalal', 'lululu'])]
+                        [new Sample('test_some_metric', -124, [], ['lalal', 'lululu'])],
                     ),
-                ]
-            )
+                ],
+            ),
         );
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldDecrementWithFloatValue(): void
     {
         $storage = $this->getStorage();
@@ -223,7 +205,7 @@ abstract class GaugeBaseTest extends TestCase
             $storage,
             MetricName::fromNamespacedName('test', 'some_metric'),
             'this is for testing',
-            MetricLabelNames::fromNames('foo', 'bar')
+            MetricLabelNames::fromNames('foo', 'bar'),
         );
         $gauge->dec('lalal', 'lululu');
         $gauge->decBy(122.5, 'lalal', 'lululu');
@@ -236,16 +218,14 @@ abstract class GaugeBaseTest extends TestCase
                         'gauge',
                         'this is for testing',
                         ['foo', 'bar'],
-                        [new Sample('test_some_metric', -123.5, [], ['lalal', 'lululu'])]
+                        [new Sample('test_some_metric', -123.5, [], ['lalal', 'lululu'])],
                     ),
-                ]
-            )
+                ],
+            ),
         );
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldOverwriteWhenSettingTwice(): void
     {
         $storage = $this->getStorage();
@@ -253,7 +233,7 @@ abstract class GaugeBaseTest extends TestCase
             $storage,
             MetricName::fromNamespacedName('test', 'some_metric'),
             'this is for testing',
-            MetricLabelNames::fromNames('foo', 'bar')
+            MetricLabelNames::fromNames('foo', 'bar'),
         );
         $gauge->set(123, 'lalal', 'lululu');
         $gauge->set(321, 'lalal', 'lululu');
@@ -266,10 +246,10 @@ abstract class GaugeBaseTest extends TestCase
                         'gauge',
                         'this is for testing',
                         ['foo', 'bar'],
-                        [new Sample('test_some_metric', 321, [], ['lalal', 'lululu'])]
+                        [new Sample('test_some_metric', 321, [], ['lalal', 'lululu'])],
                     ),
-                ]
-            )
+                ],
+            ),
         );
     }
 
@@ -296,7 +276,7 @@ abstract class GaugeBaseTest extends TestCase
         foreach ($samples as $sample) {
             $labels = array_combine(
                 array_merge($metric->getLabelNames(), $sample->getLabelNames()),
-                $sample->getLabelValues()
+                $sample->getLabelValues(),
             );
             self::assertEquals($value, $labels[$label]);
         }
@@ -327,7 +307,7 @@ abstract class GaugeBaseTest extends TestCase
             $gauge = new Gauge(
                 $storage,
                 MetricName::fromNamespacedName('test', 'some_metric_' . $i),
-                'Some test ' . $i
+                'Some test ' . $i,
             );
             $gauge->inc();
         }

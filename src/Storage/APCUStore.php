@@ -38,9 +38,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
 {
     public const PROMETHEUS_PREFIX = 'prom';
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     public function collect(): array
     {
         $metrics = $this->collectHistograms();
@@ -50,9 +48,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
         return $metrics;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, string ...$labelValues): void
     {
         // Initialize the sum
@@ -137,9 +133,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
         return implode(':', [self::PROMETHEUS_PREFIX, $type, $name->toString(), 'meta']);
     }
 
-    /**
-     * @param string[] $labelValues
-     */
+    /** @param string[] $labelValues */
     private function valueKey(MetricName $name, string $type, array $labelValues): string
     {
         return implode(':', [
@@ -151,9 +145,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
         ]);
     }
 
-    /**
-     * @param string[] $labelValues
-     */
+    /** @param string[] $labelValues */
     private function histogramBucketValueKey(MetricName $name, array $labelValues, string $bucket): string
     {
         return implode(':', [
@@ -179,17 +171,13 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
         ];
     }
 
-    /**
-     * @return MetricFamilySamples[]
-     */
+    /** @return MetricFamilySamples[] */
     private function collectCounters(): array
     {
         $counters = [];
         /** @psalm-var array{value:string} $counter */
         foreach (new APCuIterator('/^prom:counter:.*:meta/') as $counter) {
-            /**
-             * @psalm-var array{name:string, help:string, labelNames:string[]} $metaData
-             */
+            /** @psalm-var array{name:string, help:string, labelNames:string[]} $metaData */
             $metaData   = json_decode($counter['value'], true);
             $labelNames = $metaData['labelNames'];
 
@@ -224,17 +212,13 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
         return $counters;
     }
 
-    /**
-     * @return MetricFamilySamples[]
-     */
+    /** @return MetricFamilySamples[] */
     private function collectGauges(): array
     {
         $gauges = [];
         /** @psalm-var array{value:string} $gauge */
         foreach (new APCuIterator('/^prom:gauge:.*:meta/') as $gauge) {
-            /**
-             * @psalm-var array{name:string, help:string, labelNames:string[]} $metaData
-             */
+            /** @psalm-var array{name:string, help:string, labelNames:string[]} $metaData */
             $metaData   = json_decode($gauge['value'], true);
             $labelNames = $metaData['labelNames'];
 
@@ -268,17 +252,13 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
         return $gauges;
     }
 
-    /**
-     * @return MetricFamilySamples[]
-     */
+    /** @return MetricFamilySamples[] */
     private function collectHistograms(): array
     {
         $histograms = [];
         /** @psalm-var array{value:string} $histogram */
         foreach (new APCuIterator('/^prom:histogram:.*:meta/') as $histogram) {
-            /**
-             * @psalm-var array{name:string, help:string, labelNames:string[], buckets:array<string|float>} $metaData
-             */
+            /** @psalm-var array{name:string, help:string, labelNames:string[], buckets:array<string|float>} $metaData */
             $metaData   = json_decode($histogram['value'], true);
             $labelNames = $metaData['labelNames'];
 
@@ -384,13 +364,11 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
              */
             static function (array $a, array $b): int {
                 return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
-            }
+            },
         );
     }
 
-    /**
-     * @param string[] $values
-     */
+    /** @param string[] $values */
     private function encodeLabelValues(array $values): string
     {
         $json = json_encode($values, JSON_THROW_ON_ERROR);
@@ -398,9 +376,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
         return base64_encode($json);
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     private function decodeLabelValues(string $values): array
     {
         /** @psalm-var string[] */

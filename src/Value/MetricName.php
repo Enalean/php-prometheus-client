@@ -9,9 +9,7 @@ use InvalidArgumentException;
 use function preg_match;
 use function sprintf;
 
-/**
- * @psalm-immutable
- */
+/** @psalm-immutable */
 final class MetricName
 {
     private const METRIC_NAME_REGEX = '/^[a-zA-Z_:][a-zA-Z0-9_:]*$/';
@@ -35,7 +33,7 @@ final class MetricName
         if (preg_match(self::METRIC_NAME_REGEX, $name) !== 1) {
             throw new InvalidArgumentException(sprintf(
                 'The name %s does not match the expected pattern.',
-                $name
+                $name,
             ));
         }
 

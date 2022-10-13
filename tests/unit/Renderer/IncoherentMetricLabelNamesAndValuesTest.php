@@ -9,9 +9,7 @@ use Enalean\Prometheus\Renderer\IncoherentMetricLabelNamesAndValues;
 use LogicException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers Enalean\Prometheus\Renderer\IncoherentMetricLabelNamesAndValues
- */
+/** @covers Enalean\Prometheus\Renderer\IncoherentMetricLabelNamesAndValues */
 final class IncoherentMetricLabelNamesAndValuesTest extends TestCase
 {
     public function testHasACoherentErrorMessage(): void

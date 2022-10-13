@@ -14,9 +14,7 @@ use Http\Mock\Client;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientExceptionInterface;
 
-/**
- * @covers Enalean\Prometheus\PushGateway\PSR18Pusher
- */
+/** @covers Enalean\Prometheus\PushGateway\PSR18Pusher */
 final class PSR18PusherTest extends TestCase
 {
     /**
@@ -36,7 +34,7 @@ final class PSR18PusherTest extends TestCase
             $givenAddress,
             $client,
             Psr17FactoryDiscovery::findRequestFactory(),
-            Psr17FactoryDiscovery::findStreamFactory()
+            Psr17FactoryDiscovery::findStreamFactory(),
         );
         $collector = $this->createMock(Collector::class);
 
@@ -72,7 +70,7 @@ final class PSR18PusherTest extends TestCase
             'https://example.com',
             $client,
             Psr17FactoryDiscovery::findRequestFactory(),
-            Psr17FactoryDiscovery::findStreamFactory()
+            Psr17FactoryDiscovery::findStreamFactory(),
         );
         $collector = $this->createMock(Collector::class);
         $collector->expects(self::atLeastOnce())->method('getMetricFamilySamples')
@@ -98,7 +96,7 @@ final class PSR18PusherTest extends TestCase
             'https://example.com',
             $client,
             Psr17FactoryDiscovery::findRequestFactory(),
-            Psr17FactoryDiscovery::findStreamFactory()
+            Psr17FactoryDiscovery::findStreamFactory(),
         );
         $collector = $this->createMock(Collector::class);
 
@@ -130,7 +128,7 @@ final class PSR18PusherTest extends TestCase
             'https://example.com',
             $client,
             Psr17FactoryDiscovery::findRequestFactory(),
-            Psr17FactoryDiscovery::findStreamFactory()
+            Psr17FactoryDiscovery::findStreamFactory(),
         );
 
         $this->expectException(UnexpectedPushGatewayResponse::class);
@@ -148,7 +146,7 @@ final class PSR18PusherTest extends TestCase
             'https://example.com',
             $client,
             Psr17FactoryDiscovery::findRequestFactory(),
-            Psr17FactoryDiscovery::findStreamFactory()
+            Psr17FactoryDiscovery::findStreamFactory(),
         );
 
         $this->expectException(UnexpectedPushGatewayResponse::class);

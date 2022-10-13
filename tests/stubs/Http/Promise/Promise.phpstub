@@ -4,13 +4,9 @@ declare(strict_types=1);
 
 namespace Http\Promise;
 
-/**
- * @template T
- */
+/** @template T */
 interface Promise
 {
-    /**
-     * @psalm-return ($unwrap is true ? T : null)
-     */
+    /** @psalm-return ($unwrap is true ? T : null) */
     public function wait(bool $unwrap = true): mixed;
 }

@@ -8,9 +8,7 @@ use Enalean\Prometheus\MetricFamilySamples;
 use Enalean\Prometheus\Sample;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers Enalean\Prometheus\MetricFamilySamples
- */
+/** @covers Enalean\Prometheus\MetricFamilySamples */
 final class MetricFamilySamplesTest extends TestCase
 {
     public function testMetricFamilySamplesHoldValuesWithoutModification(): void

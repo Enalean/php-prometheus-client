@@ -10,7 +10,7 @@ use Psr\Http\Message\ResponseInterface;
 
 final class PSR18UnexpectedPushGatewayResponse extends UnexpectedPushGatewayResponse
 {
-    private function __construct(private RequestInterface $request, private ?ResponseInterface $response, ?ClientExceptionInterface $clientException)
+    private function __construct(private RequestInterface $request, private ResponseInterface|null $response, ClientExceptionInterface|null $clientException)
     {
         $exceptionCode = 0;
 
@@ -37,18 +37,14 @@ final class PSR18UnexpectedPushGatewayResponse extends UnexpectedPushGatewayResp
         return new self($request, null, $clientException);
     }
 
-    /**
-     * @psalm-mutation-free
-     */
+    /** @psalm-mutation-free */
     public function getRequest(): RequestInterface
     {
         return $this->request;
     }
 
-    /**
-     * @psalm-mutation-free
-     */
-    public function getResponse(): ?ResponseInterface
+    /** @psalm-mutation-free */
+    public function getResponse(): ResponseInterface|null
     {
         return $this->response;
     }

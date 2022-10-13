@@ -25,8 +25,8 @@ final class IncoherentMetricLabelNamesAndValues extends RuntimeException
                 'Cannot render a sample of the metric %s, got %d names for %d values. Try to flush your store?',
                 $metric->getName(),
                 $nbLabelNames,
-                $nbLabelValues
-            )
+                $nbLabelValues,
+            ),
         );
         $this->metric = $metric;
     }

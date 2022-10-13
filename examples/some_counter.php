@@ -27,7 +27,7 @@ $registry = new CollectorRegistry($adapter);
 $counter = $registry->registerCounter(
     MetricName::fromNamespacedName('test', 'some_counter'),
     'it increases',
-    MetricLabelNames::fromNames('type')
+    MetricLabelNames::fromNames('type'),
 );
 $counter->incBy((float) $_GET['c'], 'blue');
 

@@ -11,19 +11,15 @@ use InvalidArgumentException;
 
 use function sprintf;
 
-/**
- * @extends Metric<MetricLabelNames>
- */
+/** @extends Metric<MetricLabelNames> */
 final class Counter extends Metric
 {
-    public function __construct(private CounterStorage $storage, MetricName $name, string $help, ?MetricLabelNames $labelNames = null)
+    public function __construct(private CounterStorage $storage, MetricName $name, string $help, MetricLabelNames|null $labelNames = null)
     {
         parent::__construct($name, $help, $labelNames ?? MetricLabelNames::fromNames());
     }
 
-    /**
-     * @param string ...$labelValues e.g. ['status', 'opcode']
-     */
+    /** @param string ...$labelValues e.g. ['status', 'opcode'] */
     public function inc(string ...$labelValues): void
     {
         $this->incBy(1, ...$labelValues);
@@ -47,7 +43,7 @@ final class Counter extends Metric
             $count,
             $this->getHelp(),
             $this->getLabelNames(),
-            ...$labelValues
+            ...$labelValues,
         );
     }
 }
