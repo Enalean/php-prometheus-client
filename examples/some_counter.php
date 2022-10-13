@@ -8,11 +8,11 @@ use Enalean\Prometheus\Registry\CollectorRegistry;
 use Enalean\Prometheus\Value\MetricLabelNames;
 use Enalean\Prometheus\Value\MetricName;
 
-$adapter = (string) $_GET['adapter'];
+$adapter = $_GET['adapter'] ?? '';
 
 if ($adapter === 'redis') {
     $redisClient = new Redis();
-    $redisClient->connect((string) ($_SERVER['REDIS_HOST'] ?? '127.0.0.1'));
+    $redisClient->connect($_SERVER['REDIS_HOST'] ?? '127.0.0.1');
     $adapter = new Enalean\Prometheus\Storage\RedisStore($redisClient);
 } elseif ($adapter === 'apcu') {
     $adapter = new Enalean\Prometheus\Storage\APCUStore();
@@ -29,6 +29,6 @@ $counter = $registry->registerCounter(
     'it increases',
     MetricLabelNames::fromNames('type'),
 );
-$counter->incBy((float) $_GET['c'], 'blue');
+$counter->incBy(is_numeric($_GET['c']) ? (float) $_GET['c'] : 0, 'blue');
 
 echo "OK\n";

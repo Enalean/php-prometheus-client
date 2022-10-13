@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$adapter = (string) ($_GET['adapter'] ?? '');
+$adapter = $_GET['adapter'] ?? '';
 
 $storage = null;
 
 if ($adapter === 'redis') {
     $redisClient = new Redis();
-    $redisClient->connect((string) ($_SERVER['REDIS_HOST'] ?? '127.0.0.1'));
+    $redisClient->connect($_SERVER['REDIS_HOST'] ?? '127.0.0.1');
 
     $storage = new Enalean\Prometheus\Storage\RedisStore($redisClient);
 }

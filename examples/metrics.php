@@ -7,11 +7,11 @@ require __DIR__ . '/../vendor/autoload.php';
 use Enalean\Prometheus\Registry\CollectorRegistry;
 use Enalean\Prometheus\Renderer\RenderTextFormat;
 
-$adapter = (string) ($_GET['adapter'] ?? '');
+$adapter = $_GET['adapter'] ?? '';
 
 if ($adapter === 'redis') {
     $redisClient = new Redis();
-    $redisClient->connect((string) ($_SERVER['REDIS_HOST'] ?? '127.0.0.1'));
+    $redisClient->connect($_SERVER['REDIS_HOST'] ?? '127.0.0.1');
     $adapter = new Enalean\Prometheus\Storage\RedisStore($redisClient);
 } elseif ($adapter === 'apcu') {
     $adapter = new Enalean\Prometheus\Storage\APCUStore();

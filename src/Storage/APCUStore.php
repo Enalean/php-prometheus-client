@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Enalean\Prometheus\Storage;
 
-use APCuIterator;
+use APCUIterator;
 use Enalean\Prometheus\MetricFamilySamples;
 use Enalean\Prometheus\Sample;
 use Enalean\Prometheus\Value\HistogramLabelNames;
@@ -125,7 +125,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
 
     public function flush(): void
     {
-        apcu_delete(new APCuIterator('/^' . self::PROMETHEUS_PREFIX . ':.*/'));
+        apcu_delete(new APCUIterator('/^' . self::PROMETHEUS_PREFIX . ':.*/'));
     }
 
     private function metaKey(MetricName $name, string $type): string
@@ -176,7 +176,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     {
         $counters = [];
         /** @psalm-var array{value:string} $counter */
-        foreach (new APCuIterator('/^prom:counter:.*:meta/') as $counter) {
+        foreach (new APCUIterator('/^prom:counter:.*:meta/') as $counter) {
             /** @psalm-var array{name:string, help:string, labelNames:string[]} $metaData */
             $metaData   = json_decode($counter['value'], true);
             $labelNames = $metaData['labelNames'];
@@ -189,7 +189,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
             ];
 
             /** @psalm-var array{key:string,value:int} $value */
-            foreach (new APCuIterator('/^prom:counter:' . $metaData['name'] . ':.*:value/') as $value) {
+            foreach (new APCUIterator('/^prom:counter:' . $metaData['name'] . ':.*:value/') as $value) {
                 $parts             = explode(':', $value['key']);
                 $labelValues       = $parts[3];
                 $data['samples'][] = [
@@ -217,7 +217,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     {
         $gauges = [];
         /** @psalm-var array{value:string} $gauge */
-        foreach (new APCuIterator('/^prom:gauge:.*:meta/') as $gauge) {
+        foreach (new APCUIterator('/^prom:gauge:.*:meta/') as $gauge) {
             /** @psalm-var array{name:string, help:string, labelNames:string[]} $metaData */
             $metaData   = json_decode($gauge['value'], true);
             $labelNames = $metaData['labelNames'];
@@ -229,7 +229,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
                 'samples' => [],
             ];
             /** @psalm-var array{key:string,value:int} $value */
-            foreach (new APCuIterator('/^prom:gauge:' . $metaData['name'] . ':.*:value/') as $value) {
+            foreach (new APCUIterator('/^prom:gauge:' . $metaData['name'] . ':.*:value/') as $value) {
                 $parts             = explode(':', $value['key']);
                 $labelValues       = $parts[3];
                 $data['samples'][] = [
@@ -257,7 +257,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
     {
         $histograms = [];
         /** @psalm-var array{value:string} $histogram */
-        foreach (new APCuIterator('/^prom:histogram:.*:meta/') as $histogram) {
+        foreach (new APCUIterator('/^prom:histogram:.*:meta/') as $histogram) {
             /** @psalm-var array{name:string, help:string, labelNames:string[], buckets:array<string|float>} $metaData */
             $metaData   = json_decode($histogram['value'], true);
             $labelNames = $metaData['labelNames'];
@@ -275,7 +275,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
 
             $histogramBuckets = [];
             /** @psalm-var array{key:string,value:int} $value */
-            foreach (new APCuIterator('/^prom:histogram:' . $metaData['name'] . ':.*:value/') as $value) {
+            foreach (new APCUIterator('/^prom:histogram:' . $metaData['name'] . ':.*:value/') as $value) {
                 $parts       = explode(':', $value['key']);
                 $labelValues = $parts[3];
                 $bucket      = $parts[4];
