@@ -18,7 +18,7 @@ trait ConfigureRedisStorage
         $redisClient = new Redis();
         $redisClient->connect(
             (string) getenv('REDIS_HOST'),
-            (int) getenv('REDIS_PORT')
+            (int) getenv('REDIS_PORT'),
         );
 
         return $redisClient;

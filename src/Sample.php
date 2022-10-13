@@ -6,9 +6,7 @@ namespace Enalean\Prometheus;
 
 use function count;
 
-/**
- * @psalm-immutable
- */
+/** @psalm-immutable */
 final class Sample
 {
     /**
@@ -24,17 +22,13 @@ final class Sample
         return $this->name;
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function getLabelNames(): array
     {
         return $this->labelNames;
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function getLabelValues(): array
     {
         return $this->labelValues;

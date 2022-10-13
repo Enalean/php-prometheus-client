@@ -16,9 +16,7 @@ use function str_replace;
 use function strcmp;
 use function usort;
 
-/**
- * @psalm-immutable
- */
+/** @psalm-immutable */
 final class RenderTextFormat implements MetricsRenderer
 {
     private const MIME_TYPE = 'text/plain; version=0.0.4';
@@ -77,9 +75,7 @@ final class RenderTextFormat implements MetricsRenderer
         return $sample->getName() . ' ' . $sample->getValue();
     }
 
-    /**
-     * @psalm-pure
-     */
+    /** @psalm-pure */
     private static function escapeLabelValue(string $v): string
     {
         return str_replace(['\\', "\n", '"'], ['\\\\', "\\n", '\\"'], $v);

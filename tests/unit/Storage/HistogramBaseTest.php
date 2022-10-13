@@ -26,14 +26,10 @@ use function reset;
  */
 abstract class HistogramBaseTest extends TestCase
 {
-    /**
-     * @return HistogramStorage&Store
-     */
+    /** @return HistogramStorage&Store */
     abstract protected function getStorage();
 
-    /**
-     * @before
-     */
+    /** @before */
     protected function flushStorage(): void
     {
         $storage = $this->getStorage();
@@ -44,9 +40,7 @@ abstract class HistogramBaseTest extends TestCase
         $storage->flush();
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldObserveWithLabels(): void
     {
         $storage   = $this->getStorage();
@@ -55,7 +49,7 @@ abstract class HistogramBaseTest extends TestCase
             MetricName::fromNamespacedName('test', 'some_metric'),
             'this is for testing',
             HistogramLabelNames::fromNames('foo', 'bar'),
-            [100, 200, 300]
+            [100, 200, 300],
         );
         $histogram->observe(123, 'lalal', 'lululu');
         $histogram->observe(245, 'lalal', 'lululu');
@@ -77,16 +71,14 @@ abstract class HistogramBaseTest extends TestCase
                             new Sample('test_some_metric_bucket', 3, ['le'], ['lalal', 'lululu', '+Inf']),
                             new Sample('test_some_metric_count', 3, [], ['lalal', 'lululu']),
                             new Sample('test_some_metric_sum', 622, [], ['lalal', 'lululu']),
-                        ]
+                        ],
                     ),
-                ]
-            )
+                ],
+            ),
         );
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldObserveWithoutLabelWhenNoLabelsAreDefined(): void
     {
         $storage   = $this->getStorage();
@@ -95,7 +87,7 @@ abstract class HistogramBaseTest extends TestCase
             MetricName::fromNamespacedName('test', 'some_metric'),
             'this is for testing',
             null,
-            [100, 200, 300]
+            [100, 200, 300],
         );
         $histogram->observe(245);
         $histogram->observe(254);
@@ -115,16 +107,14 @@ abstract class HistogramBaseTest extends TestCase
                             new Sample('test_some_metric_bucket', 2, ['le'], ['+Inf']),
                             new Sample('test_some_metric_count', 2, [], []),
                             new Sample('test_some_metric_sum', 499, [], []),
-                        ]
+                        ],
                     ),
-                ]
-            )
+                ],
+            ),
         );
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldObserveValuesOfTypeFloat(): void
     {
         $storage   = $this->getStorage();
@@ -133,7 +123,7 @@ abstract class HistogramBaseTest extends TestCase
             MetricName::fromNamespacedName('test', 'some_metric'),
             'this is for testing',
             null,
-            [0.1, 0.2, 0.3]
+            [0.1, 0.2, 0.3],
         );
         $histogram->observe(0.11);
         $histogram->observe(0.3);
@@ -153,16 +143,14 @@ abstract class HistogramBaseTest extends TestCase
                             new Sample('test_some_metric_bucket', 2, ['le'], ['+Inf']),
                             new Sample('test_some_metric_count', 2, [], []),
                             new Sample('test_some_metric_sum', 0.41, [], []),
-                        ]
+                        ],
                     ),
-                ]
-            )
+                ],
+            ),
         );
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldProvideDefaultBuckets(): void
     {
         $storage = $this->getStorage();
@@ -171,7 +159,7 @@ abstract class HistogramBaseTest extends TestCase
             $storage,
             MetricName::fromNamespacedName('test', 'some_metric'),
             'this is for testing',
-            null
+            null,
         );
         $histogram->observe(0.11);
         $histogram->observe(0.03);
@@ -202,16 +190,14 @@ abstract class HistogramBaseTest extends TestCase
                             new Sample('test_some_metric_bucket', 2, ['le'], ['+Inf']),
                             new Sample('test_some_metric_count', 2, [], []),
                             new Sample('test_some_metric_sum', 0.14, [], []),
-                        ]
+                        ],
                     ),
-                ]
-            )
+                ],
+            ),
         );
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldThrowAnExceptionWhenTheBucketSizesAreNotIncreasing(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -219,9 +205,7 @@ abstract class HistogramBaseTest extends TestCase
         new Histogram($this->getStorage(), MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing', null, [1, 1]);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldThrowAnExceptionWhenThereIsLessThanOneBucket(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -252,7 +236,7 @@ abstract class HistogramBaseTest extends TestCase
         foreach ($samples as $sample) {
             $labels = array_combine(
                 array_merge($metric->getLabelNames(), $sample->getLabelNames()),
-                $sample->getLabelValues()
+                $sample->getLabelValues(),
             );
             self::assertEquals($value, $labels[$label]);
         }

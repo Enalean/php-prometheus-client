@@ -53,9 +53,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
      */
     private array $histograms = [];
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     public function collect(): array
     {
         $metrics = $this->internalCollect('counter', $this->counters);
@@ -72,9 +70,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
         $this->histograms = [];
     }
 
-    /**
-     * @return MetricFamilySamples[]
-     */
+    /** @return MetricFamilySamples[] */
     private function collectHistograms(): array
     {
         $histograms = [];
@@ -197,7 +193,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
                  */
                 static function (array $a, array $b): int {
                     return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
-                }
+                },
             );
             $samples = [];
             foreach ($data['samples'] as $sampleData) {
@@ -210,9 +206,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
         return $result;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, string ...$labelValues): void
     {
         // Initialize the sum
@@ -299,9 +293,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
         $this->counters[$metaKey]['samples'][$valueKey] += $value;
     }
 
-    /**
-     * @param string[] $labelValues
-     */
+    /** @param string[] $labelValues */
     private function histogramBucketValueKey(MetricName $name, array $labelValues, string $bucket): string
     {
         return implode(':', [
@@ -316,14 +308,12 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
         return $name->toString() . ':meta';
     }
 
-    /**
-     * @param string[] $labelValues
-     */
+    /** @param string[] $labelValues */
     private function valueKey(MetricName $name, array $labelValues): string
     {
         return implode(
             ':',
-            [$name->toString(), $this->encodeLabelValues($labelValues), 'value']
+            [$name->toString(), $this->encodeLabelValues($labelValues), 'value'],
         );
     }
 
@@ -340,9 +330,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
         ];
     }
 
-    /**
-     * @param string[] $values
-     */
+    /** @param string[] $values */
     private function encodeLabelValues(array $values): string
     {
         $json = json_encode($values, JSON_THROW_ON_ERROR);
@@ -350,9 +338,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
         return base64_encode($json);
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     private function decodeLabelValues(string $values): array
     {
         /** @psalm-var string[] */

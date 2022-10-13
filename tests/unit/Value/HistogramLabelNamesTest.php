@@ -10,9 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 use function count;
 
-/**
- * @covers Enalean\Prometheus\Value\HistogramLabelNames
- */
+/** @covers Enalean\Prometheus\Value\HistogramLabelNames */
 final class HistogramLabelNamesTest extends TestCase
 {
         /**

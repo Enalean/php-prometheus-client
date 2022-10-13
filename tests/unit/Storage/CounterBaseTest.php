@@ -25,14 +25,10 @@ use function reset;
  */
 abstract class CounterBaseTest extends TestCase
 {
-    /**
-     * @return CounterStorage&Store
-     */
+    /** @return CounterStorage&Store */
     abstract protected function getStorage();
 
-    /**
-     * @before
-     */
+    /** @before */
     protected function flushStorage(): void
     {
         $storage = $this->getStorage();
@@ -43,9 +39,7 @@ abstract class CounterBaseTest extends TestCase
         $storage->flush();
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldIncreaseWithLabels(): void
     {
         $storage = $this->getStorage();
@@ -53,7 +47,7 @@ abstract class CounterBaseTest extends TestCase
             $storage,
             MetricName::fromNamespacedName('test', 'some_metric'),
             'this is for testing',
-            MetricLabelNames::fromNames('foo', 'bar')
+            MetricLabelNames::fromNames('foo', 'bar'),
         );
         $counter->inc('lalal', 'lululu');
         $counter->inc('lalal', 'lululu');
@@ -67,16 +61,14 @@ abstract class CounterBaseTest extends TestCase
                         'counter',
                         'this is for testing',
                         ['foo', 'bar'],
-                        [new Sample('test_some_metric', 3, [], ['lalal', 'lululu'])]
+                        [new Sample('test_some_metric', 3, [], ['lalal', 'lululu'])],
                     ),
-                ]
-            )
+                ],
+            ),
         );
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldIncreaseWithoutLabelWhenNoLabelsAreDefined(): void
     {
         $storage = $this->getStorage();
@@ -91,16 +83,14 @@ abstract class CounterBaseTest extends TestCase
                         'counter',
                         'this is for testing',
                         [],
-                        [new Sample('test_some_metric', 1, [], [])]
+                        [new Sample('test_some_metric', 1, [], [])],
                     ),
-                ]
-            )
+                ],
+            ),
         );
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldIncreaseTheCounterByAnArbitraryInteger(): void
     {
         $storage = $this->getStorage();
@@ -108,7 +98,7 @@ abstract class CounterBaseTest extends TestCase
             $storage,
             MetricName::fromNamespacedName('test', 'some_metric'),
             'this is for testing',
-            MetricLabelNames::fromNames('foo', 'bar')
+            MetricLabelNames::fromNames('foo', 'bar'),
         );
         $counter->inc('lalal', 'lululu');
         $counter->incBy(123, 'lalal', 'lululu');
@@ -121,16 +111,14 @@ abstract class CounterBaseTest extends TestCase
                         'counter',
                         'this is for testing',
                         ['foo', 'bar'],
-                        [new Sample('test_some_metric', 124, [], ['lalal', 'lululu'])]
+                        [new Sample('test_some_metric', 124, [], ['lalal', 'lululu'])],
                     ),
-                ]
-            )
+                ],
+            ),
         );
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldIncreaseTheCounterByAnArbitraryFloat(): void
     {
         $storage = $this->getStorage();
@@ -138,7 +126,7 @@ abstract class CounterBaseTest extends TestCase
             $storage,
             MetricName::fromNamespacedName('test', 'some_metric'),
             'this is for testing',
-            MetricLabelNames::fromNames('foo', 'bar')
+            MetricLabelNames::fromNames('foo', 'bar'),
         );
         $counter->inc('lalal', 'lululu');
         $counter->incBy(123.5, 'lalal', 'lululu');
@@ -151,10 +139,10 @@ abstract class CounterBaseTest extends TestCase
                         'counter',
                         'this is for testing',
                         ['foo', 'bar'],
-                        [new Sample('test_some_metric', 124.5, [], ['lalal', 'lululu'])]
+                        [new Sample('test_some_metric', 124.5, [], ['lalal', 'lululu'])],
                     ),
-                ]
-            )
+                ],
+            ),
         );
     }
 
@@ -181,7 +169,7 @@ abstract class CounterBaseTest extends TestCase
         foreach ($samples as $sample) {
             $labels = array_combine(
                 array_merge($metric->getLabelNames(), $sample->getLabelNames()),
-                $sample->getLabelValues()
+                $sample->getLabelValues(),
             );
             self::assertEquals($value, $labels[$label]);
         }
@@ -212,7 +200,7 @@ abstract class CounterBaseTest extends TestCase
             $counter = new Counter(
                 $storage,
                 MetricName::fromNamespacedName('test', 'some_metric_' . $i),
-                'Some test ' . $i
+                'Some test ' . $i,
             );
             $counter->inc();
         }

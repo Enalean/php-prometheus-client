@@ -17,7 +17,7 @@ final class BackboxPusherPSR18Test extends BlackBoxPushGatewayTest
             $address,
             Psr18ClientDiscovery::find(),
             Psr17FactoryDiscovery::findRequestFactory(),
-            Psr17FactoryDiscovery::findStreamFactory()
+            Psr17FactoryDiscovery::findStreamFactory(),
         );
     }
 }

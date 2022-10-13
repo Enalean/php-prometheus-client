@@ -10,8 +10,6 @@ use Psr\Http\Message\ResponseInterface;
 
 interface HttpAsyncClient
 {
-    /**
-     * @psalm-return Promise<ResponseInterface>
-     */
+    /** @psalm-return Promise<ResponseInterface> */
     public function sendAsyncRequest(RequestInterface $request): Promise;
 }

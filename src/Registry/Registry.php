@@ -21,18 +21,16 @@ interface Registry
      *
      * @throws MetricsRegistrationException
      */
-    public function registerGauge(MetricName $name, string $help, ?MetricLabelNames $labelNames = null): Gauge;
+    public function registerGauge(MetricName $name, string $help, MetricLabelNames|null $labelNames = null): Gauge;
 
-    /**
-     * @throws MetricNotFoundException
-     */
+    /** @throws MetricNotFoundException */
     public function getGauge(MetricName $name): Gauge;
 
     /**
      * @param string                $help       e.g. The duration something took in seconds.
      * @param MetricLabelNames|null $labelNames e.g. ['controller', 'action']
      */
-    public function getOrRegisterGauge(MetricName $name, string $help, ?MetricLabelNames $labelNames = null): Gauge;
+    public function getOrRegisterGauge(MetricName $name, string $help, MetricLabelNames|null $labelNames = null): Gauge;
 
     /**
      * @param string                $help       e.g. The number of requests made.
@@ -40,18 +38,16 @@ interface Registry
      *
      * @throws MetricsRegistrationException
      */
-    public function registerCounter(MetricName $name, string $help, ?MetricLabelNames $labelNames = null): Counter;
+    public function registerCounter(MetricName $name, string $help, MetricLabelNames|null $labelNames = null): Counter;
 
-    /**
-     * @throws MetricNotFoundException
-     */
+    /** @throws MetricNotFoundException */
     public function getCounter(MetricName $name): Counter;
 
     /**
      * @param string                $help       e.g. The number of requests made.
      * @param MetricLabelNames|null $labelNames e.g. ['controller', 'action']
      */
-    public function getOrRegisterCounter(MetricName $name, string $help, ?MetricLabelNames $labelNames = null): Counter;
+    public function getOrRegisterCounter(MetricName $name, string $help, MetricLabelNames|null $labelNames = null): Counter;
 
     /**
      * @param string                   $help       e.g. A histogram of the duration in seconds.
@@ -60,11 +56,9 @@ interface Registry
      *
      * @throws MetricsRegistrationException
      */
-    public function registerHistogram(MetricName $name, string $help, ?HistogramLabelNames $labelNames = null, ?array $buckets = null): Histogram;
+    public function registerHistogram(MetricName $name, string $help, HistogramLabelNames|null $labelNames = null, array|null $buckets = null): Histogram;
 
-    /**
-     * @throws MetricNotFoundException
-     */
+    /** @throws MetricNotFoundException */
     public function getHistogram(MetricName $name): Histogram;
 
     /**
@@ -72,5 +66,5 @@ interface Registry
      * @param HistogramLabelNames|null $labelNames e.g. ['controller', 'action']
      * @param float[]                  $buckets    e.g. [100, 200, 300]
      */
-    public function getOrRegisterHistogram(MetricName $name, string $help, ?HistogramLabelNames $labelNames = null, ?array $buckets = null): Histogram;
+    public function getOrRegisterHistogram(MetricName $name, string $help, HistogramLabelNames|null $labelNames = null, array|null $buckets = null): Histogram;
 }

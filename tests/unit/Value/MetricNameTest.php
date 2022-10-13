@@ -8,9 +8,7 @@ use Enalean\Prometheus\Value\MetricName;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers Enalean\Prometheus\Value\MetricName
- */
+/** @covers Enalean\Prometheus\Value\MetricName */
 final class MetricNameTest extends TestCase
 {
     /**

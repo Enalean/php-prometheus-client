@@ -10,17 +10,13 @@ use Enalean\Prometheus\Value\MetricName;
 
 final class NullStore implements Store, CounterStorage, GaugeStorage, HistogramStorage, FlushableStorage
 {
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     public function collect(): array
     {
         return [];
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, string ...$labelValues): void
     {
         return;

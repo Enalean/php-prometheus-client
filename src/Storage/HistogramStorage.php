@@ -9,8 +9,6 @@ use Enalean\Prometheus\Value\MetricName;
 
 interface HistogramStorage
 {
-    /**
-     * @param float[] $buckets
-     */
+    /** @param float[] $buckets */
     public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, string ...$labelValues): void;
 }

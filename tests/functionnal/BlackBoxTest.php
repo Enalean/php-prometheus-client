@@ -27,13 +27,11 @@ final class BlackBoxTest extends TestCase
         $this->client         = HttpAsyncClientDiscovery::find();
         $this->requestFactory = Psr17FactoryDiscovery::findRequestFactory();
         $this->client->sendAsyncRequest(
-            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/flush_adapter.php?adapter=' . $this->adapter)
+            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/flush_adapter.php?adapter=' . $this->adapter),
         )->wait();
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function gaugesShouldBeOverwritten(): void
     {
         $requests = [
@@ -51,21 +49,19 @@ final class BlackBoxTest extends TestCase
         }
 
         $metricsResult = $this->client->sendAsyncRequest(
-            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/metrics.php?adapter=' . $this->adapter)
+            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/metrics.php?adapter=' . $this->adapter),
         )->wait();
         self::assertThat(
             $metricsResult->getBody()->getContents(),
             self::logicalOr(
                 self::stringContains('test_some_gauge{type="blue"} 0'),
                 self::stringContains('test_some_gauge{type="blue"} 1'),
-                self::stringContains('test_some_gauge{type="blue"} 2')
-            )
+                self::stringContains('test_some_gauge{type="blue"} 2'),
+            ),
         );
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function countersShouldIncrementAtomically(): void
     {
         $promises = [];
@@ -81,15 +77,13 @@ final class BlackBoxTest extends TestCase
         }
 
         $metricsResult = $this->client->sendAsyncRequest(
-            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/metrics.php?adapter=' . $this->adapter)
+            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/metrics.php?adapter=' . $this->adapter),
         )->wait();
 
         self::assertThat($metricsResult->getBody()->getContents(), self::stringContains('test_some_counter{type="blue"} ' . $sum));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function histogramsShouldIncrementAtomically(): void
     {
         $requests = [
@@ -114,10 +108,10 @@ final class BlackBoxTest extends TestCase
         }
 
         $metricsResult = $this->client->sendAsyncRequest(
-            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/metrics.php?adapter=' . $this->adapter)
+            $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/metrics.php?adapter=' . $this->adapter),
         )->wait();
 
-        self::assertThat($metricsResult->getBody()->getContents(), self::stringContains(<<<EOF
+        self::assertThat($metricsResult->getBody()->getContents(), self::stringContains(<<<'EOF'
 test_some_histogram_bucket{type="blue",le="0.1"} 1
 test_some_histogram_bucket{type="blue",le="1"} 2
 test_some_histogram_bucket{type="blue",le="2"} 3
@@ -131,7 +125,6 @@ test_some_histogram_bucket{type="blue",le="9"} 10
 test_some_histogram_bucket{type="blue",le="+Inf"} 10
 test_some_histogram_count{type="blue"} 10
 test_some_histogram_sum{type="blue"} 45
-EOF
-        ));
+EOF));
     }
 }

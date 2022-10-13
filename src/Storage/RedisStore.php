@@ -60,9 +60,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
         $redis->exec();
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     public function collect(): array
     {
         $metrics = $this->collectHistograms();
@@ -82,9 +80,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
         return $familySamples;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, string ...$labelValues): void
     {
         $bucketToIncrease = '+Inf';
@@ -120,9 +116,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
         $this->updateGauge($name, $value, $help, $labelNames, $labelValues, true);
     }
 
-    /**
-     * @param string[] $labelValues
-     */
+    /** @param string[] $labelValues */
     private function updateGauge(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, array $labelValues, bool $isIncrement): void
     {
         $metaData = [
@@ -285,7 +279,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
                  */
                 static function (array $a, array $b): int {
                     return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
-                }
+                },
             );
             $gauges[] = $gauge;
         }
@@ -331,7 +325,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
                  */
                 static function (array $a, array $b): int {
                     return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
-                }
+                },
             );
             $counters[] = $counter;
         }

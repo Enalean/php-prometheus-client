@@ -27,7 +27,7 @@ $registry = new CollectorRegistry($adapter);
 $gauge = $registry->registerGauge(
     MetricName::fromNamespacedName('test', 'some_gauge'),
     'it sets',
-    MetricLabelNames::fromNames('type')
+    MetricLabelNames::fromNames('type'),
 );
 $gauge->set((float) $_GET['c'], 'blue');
 

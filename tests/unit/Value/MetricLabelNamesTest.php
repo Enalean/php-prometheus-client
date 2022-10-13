@@ -10,9 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 use function count;
 
-/**
- * @covers Enalean\Prometheus\Value\MetricLabelNames
- */
+/** @covers Enalean\Prometheus\Value\MetricLabelNames */
 final class MetricLabelNamesTest extends TestCase
 {
     /**

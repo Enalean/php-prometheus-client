@@ -6,9 +6,7 @@ namespace Enalean\Prometheus;
 
 use function count;
 
-/**
- * @psalm-immutable
- */
+/** @psalm-immutable */
 final class MetricFamilySamples
 {
     /**
@@ -34,17 +32,13 @@ final class MetricFamilySamples
         return $this->help;
     }
 
-    /**
-     * @return Sample[]
-     */
+    /** @return Sample[] */
     public function getSamples(): array
     {
         return $this->samples;
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function getLabelNames(): array
     {
         return $this->labelNames;

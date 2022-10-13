@@ -11,9 +11,7 @@ use InvalidArgumentException;
 
 use function count;
 
-/**
- * @extends Metric<HistogramLabelNames>
- */
+/** @extends Metric<HistogramLabelNames> */
 final class Histogram extends Metric
 {
     /**
@@ -39,10 +37,8 @@ final class Histogram extends Metric
     /** @var float[] */
     private array $buckets;
 
-    /**
-     * @param float[] $buckets
-     */
-    public function __construct(private HistogramStorage $storage, MetricName $name, string $help, ?HistogramLabelNames $labelNames = null, ?array $buckets = null)
+    /** @param float[] $buckets */
+    public function __construct(private HistogramStorage $storage, MetricName $name, string $help, HistogramLabelNames|null $labelNames = null, array|null $buckets = null)
     {
         parent::__construct($name, $help, $labelNames ?? HistogramLabelNames::fromNames());
 
@@ -58,7 +54,7 @@ final class Histogram extends Metric
             if ($buckets[$i] >= $buckets[$i + 1]) {
                 throw new InvalidArgumentException(
                     'Histogram buckets must be in increasing order: ' .
-                    $buckets[$i] . ' >= ' . $buckets[$i + 1]
+                    $buckets[$i] . ' >= ' . $buckets[$i + 1],
                 );
             }
         }
@@ -81,7 +77,7 @@ final class Histogram extends Metric
             $this->buckets,
             $this->getHelp(),
             $this->getLabelNames(),
-            ...$labelValues
+            ...$labelValues,
         );
     }
 }

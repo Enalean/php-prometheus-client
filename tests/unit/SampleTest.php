@@ -7,9 +7,7 @@ namespace Enalean\PrometheusTest;
 use Enalean\Prometheus\Sample;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers Enalean\Prometheus\Sample
- */
+/** @covers Enalean\Prometheus\Sample */
 final class SampleTest extends TestCase
 {
     public function testSampleHoldValuesWithoutModification(): void

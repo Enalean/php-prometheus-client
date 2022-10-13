@@ -23,9 +23,7 @@ final class HistogramTest extends TestCase
             /** @var float[] */
             public $observedValues = [];
 
-            /**
-             * @inheritdoc
-             */
+            /** @inheritdoc */
             public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, string ...$labelValues): void
             {
                 $this->observedValues[] = $value;
@@ -85,9 +83,7 @@ final class HistogramTest extends TestCase
     private function getEmptyStorage(): HistogramStorage
     {
         return new class implements HistogramStorage {
-            /**
-             * @inheritdoc
-             */
+            /** @inheritdoc */
             public function updateHistogram(MetricName $name, float $value, array $buckets, string $help, HistogramLabelNames $labelNames, string ...$labelValues): void
             {
             }

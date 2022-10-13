@@ -30,9 +30,7 @@ final class CollectorRegistryTest extends CollectorRegistryBaseTest
         $this->getRedisClient()->flushDB();
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function itShouldOnlyFlushMetricData(): void
     {
         $redis = $this->getRedisClient();
@@ -55,7 +53,7 @@ final class CollectorRegistryTest extends CollectorRegistryBaseTest
             MetricName::fromNamespacedName('test', 'some_histogram'),
             'this is for testing',
             HistogramLabelNames::fromNames('foo', 'bar'),
-            [0.1, 1, 5, 10]
+            [0.1, 1, 5, 10],
         );
         $histogram->observe(2, 'cat', 'meow');
         $histogramRedisKey = 'PROMETHEUS_histogram' . RedisStore::PROMETHEUS_METRIC_KEYS_SUFFIX;

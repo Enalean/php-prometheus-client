@@ -37,15 +37,13 @@ final class CollectorRegistry implements Registry, Collector
         $this->storageAdapter = $storage;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     public function getMetricFamilySamples(): array
     {
         return $this->storageAdapter->collect();
     }
 
-    public function registerGauge(MetricName $name, string $help, ?MetricLabelNames $labelNames = null): Gauge
+    public function registerGauge(MetricName $name, string $help, MetricLabelNames|null $labelNames = null): Gauge
     {
         $metricIdentifier = $name->toString();
         if (isset($this->gauges[$metricIdentifier])) {
@@ -56,7 +54,7 @@ final class CollectorRegistry implements Registry, Collector
             $this->storageAdapter,
             $name,
             $help,
-            $labelNames
+            $labelNames,
         );
 
         return $this->gauges[$metricIdentifier];
@@ -72,18 +70,18 @@ final class CollectorRegistry implements Registry, Collector
         return $this->gauges[$metricIdentifier];
     }
 
-    public function getOrRegisterGauge(MetricName $name, string $help, ?MetricLabelNames $labelNames = null): Gauge
+    public function getOrRegisterGauge(MetricName $name, string $help, MetricLabelNames|null $labelNames = null): Gauge
     {
         try {
             $gauge = $this->getGauge($name);
-        } catch (MetricNotFoundException $e) {
+        } catch (MetricNotFoundException) {
             $gauge = $this->registerGauge($name, $help, $labelNames);
         }
 
         return $gauge;
     }
 
-    public function registerCounter(MetricName $name, string $help, ?MetricLabelNames $labelNames = null): Counter
+    public function registerCounter(MetricName $name, string $help, MetricLabelNames|null $labelNames = null): Counter
     {
         $metricIdentifier = $name->toString();
         if (isset($this->counters[$metricIdentifier])) {
@@ -94,7 +92,7 @@ final class CollectorRegistry implements Registry, Collector
             $this->storageAdapter,
             $name,
             $help,
-            $labelNames
+            $labelNames,
         );
 
         return $this->counters[$metricIdentifier];
@@ -110,18 +108,18 @@ final class CollectorRegistry implements Registry, Collector
         return $this->counters[$metricIdentifier];
     }
 
-    public function getOrRegisterCounter(MetricName $name, string $help, ?MetricLabelNames $labelNames = null): Counter
+    public function getOrRegisterCounter(MetricName $name, string $help, MetricLabelNames|null $labelNames = null): Counter
     {
         try {
             $counter = $this->getCounter($name);
-        } catch (MetricNotFoundException $e) {
+        } catch (MetricNotFoundException) {
             $counter = $this->registerCounter($name, $help, $labelNames);
         }
 
         return $counter;
     }
 
-    public function registerHistogram(MetricName $name, string $help, ?HistogramLabelNames $labelNames = null, ?array $buckets = null): Histogram
+    public function registerHistogram(MetricName $name, string $help, HistogramLabelNames|null $labelNames = null, array|null $buckets = null): Histogram
     {
         $metricIdentifier = $name->toString();
         if (isset($this->histograms[$metricIdentifier])) {
@@ -133,7 +131,7 @@ final class CollectorRegistry implements Registry, Collector
             $name,
             $help,
             $labelNames,
-            $buckets
+            $buckets,
         );
 
         return $this->histograms[$metricIdentifier];
@@ -149,11 +147,11 @@ final class CollectorRegistry implements Registry, Collector
         return $this->histograms[$metricIdentifier];
     }
 
-    public function getOrRegisterHistogram(MetricName $name, string $help, ?HistogramLabelNames $labelNames = null, ?array $buckets = null): Histogram
+    public function getOrRegisterHistogram(MetricName $name, string $help, HistogramLabelNames|null $labelNames = null, array|null $buckets = null): Histogram
     {
         try {
             $histogram = $this->getHistogram($name);
-        } catch (MetricNotFoundException $e) {
+        } catch (MetricNotFoundException) {
             $histogram = $this->registerHistogram($name, $help, $labelNames, $buckets);
         }
 
