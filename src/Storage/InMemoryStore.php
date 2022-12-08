@@ -188,8 +188,8 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
             usort(
                 $data['samples'],
                 /**
-                 * @psalm-param array{labelValues: string[]} $a
-                 * @psalm-param array{labelValues: string[]} $b
+                 * @psalm-param array{labelNames: never[], labelValues: string[], name: string, value: float} $a
+                 * @psalm-param array{labelNames: never[], labelValues: string[], name: string, value: float} $b
                  */
                 static function (array $a, array $b): int {
                     return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
