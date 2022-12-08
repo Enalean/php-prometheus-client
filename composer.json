@@ -3,7 +3,7 @@
     "description": "Prometheus instrumentation library",
     "license": "Apache-2.0",
     "require": {
-        "php": "~8.0.0|~8.1.0",
+        "php": "~8.0.0|~8.1.0|~8.2.0",
         "ext-json": "*",
         "psr/http-client": "^1.0",
         "psr/http-factory": "^1.0",
