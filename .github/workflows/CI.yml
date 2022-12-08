@@ -139,10 +139,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-      - name: Roave BC Check
-        uses: docker://nyholm/roave-bc-check-ga
-        with:
-          args: roave-backwards-compatibility-check:assert-backwards-compatible --from=v1.0.0
+      # Disable (temporarily) CI check with Roave BC check
+      # See https://github.com/Nyholm/roave-bc-check-docker/issues/32
+      #- name: Roave BC Check
+      #  uses: docker://nyholm/roave-bc-check-ga
+      #  with:
+      #    args: roave-backwards-compatibility-check:assert-backwards-compatible --from=v1.0.0
   nix-shell:
     name: Working Nix Shell
     runs-on: ubuntu-20.04
