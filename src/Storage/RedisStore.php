@@ -156,7 +156,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
 
     /**
      * @return array<int,array<string,mixed>>
-     * @psalm-return array<array{name:string, help:string, labelNames: string[], type:'histogram', samples: list<array{name:string, labelNames:list<string>, labelValues: string[], value: int}>}>
+     * @psalm-return list<array{name:string, help:string, labelNames: string[], type:'histogram', samples: list<array{name:string, labelNames:list<string>, labelValues: string[], value: int}>, buckets: array<'+Inf'|float>}>
      */
     private function collectHistograms(): array
     {
@@ -274,8 +274,8 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
             usort(
                 $gauge['samples'],
                 /**
-                 * @psalm-param array{labelValues: string[]} $a
-                 * @psalm-param array{labelValues: string[]} $b
+                 * @psalm-param array{labelNames: never[], labelValues: string[], name: string, value: float} $a
+                 * @psalm-param array{labelNames: never[], labelValues: string[], name: string, value: float} $b
                  */
                 static function (array $a, array $b): int {
                     return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
@@ -320,8 +320,8 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
             usort(
                 $counter['samples'],
                 /**
-                 * @psalm-param array{labelValues: string[]} $a
-                 * @psalm-param array{labelValues: string[]} $b
+                 * @psalm-param array{labelNames: never[], labelValues: string[], name: string, value: float} $a
+                 * @psalm-param array{labelNames: never[], labelValues: string[], name: string, value: float} $b
                  */
                 static function (array $a, array $b): int {
                     return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));

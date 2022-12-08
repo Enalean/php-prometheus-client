@@ -352,15 +352,15 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
 
     /**
      * @param string[][]|float[][]|string[][][] $samples
-     * @psalm-param array<array{labelValues: string[]}> $samples
+     * @psalm-param array<array{labelNames: never[], labelValues: string[], name: string, value: float}> $samples
      */
     private static function sortSamples(array &$samples): void
     {
         usort(
             $samples,
             /**
-             * @psalm-param array{labelValues: string[]} $a
-             * @psalm-param array{labelValues: string[]} $b
+             * @psalm-param array{labelNames: never[], labelValues: string[], name: string, value: float} $a
+             * @psalm-param array{labelNames: never[], labelValues: string[], name: string, value: float} $b
              */
             static function (array $a, array $b): int {
                 return strcmp(implode('', $a['labelValues']), implode('', $b['labelValues']));
