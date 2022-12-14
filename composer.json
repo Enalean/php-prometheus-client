@@ -10,7 +10,7 @@
         "psr/http-message": "^1.0"
     },
     "require-dev": {
-        "doctrine/coding-standard": "^10.0",
+        "doctrine/coding-standard": "^11.0",
         "guzzlehttp/psr7": "^2.0",
         "infection/infection": "^0.26",
         "php-http/discovery": "^1.12",
