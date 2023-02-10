@@ -28,6 +28,7 @@ final class IncoherentMetricLabelNamesAndValues extends RuntimeException
                 $nbLabelValues,
             ),
         );
+
         $this->metric = $metric;
     }
 
