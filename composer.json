@@ -12,7 +12,7 @@
     "require-dev": {
         "doctrine/coding-standard": "^12.0",
         "guzzlehttp/psr7": "^2.0",
-        "infection/infection": "^0.26",
+        "infection/infection": "^0.27",
         "php-http/discovery": "^1.12",
         "php-http/guzzle7-adapter": "^1.0.0",
         "php-http/mock-client": "^1.3",
