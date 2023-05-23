@@ -11,7 +11,7 @@ on:
 jobs:
   tests:
     name: Tests on PHP ${{ matrix.php }} ${{ matrix.dependencies }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     services:
       redis:
         image: redis
@@ -46,7 +46,7 @@ jobs:
           file: ./coverage.xml
   mutation_testing:
     name: Mutation testing
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     services:
       redis:
         image: redis
@@ -75,7 +75,7 @@ jobs:
           path: infection.log
   integration:
     name: Integration tests on PHP ${{ matrix.php }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         php: ['8.1', '8.2']
@@ -101,7 +101,7 @@ jobs:
           PHP_VERSION: ${{ matrix.php }}
   code_quality:
     name: Code quality
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -120,7 +120,7 @@ jobs:
         run: ./vendor/bin/phpstan analyse
   dependencies:
     name: Dependencies state
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -134,7 +134,7 @@ jobs:
         uses: docker://icanhazstring/composer-unused-ga
   backward_compatible_changes:
     name: Backward Compatible Changes
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -147,7 +147,7 @@ jobs:
       #    args: roave-backwards-compatibility-check:assert-backwards-compatible --from=v1.0.0
   nix-shell:
     name: Working Nix Shell
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3
