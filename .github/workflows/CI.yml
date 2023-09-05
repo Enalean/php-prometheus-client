@@ -23,7 +23,7 @@ jobs:
         dependencies: ['', '--prefer-lowest --prefer-stable']
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: shivammathur/setup-php@2.25.5
         with:
           php-version: ${{ matrix.php }}
@@ -54,7 +54,7 @@ jobs:
           - 6379/tcp
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: shivammathur/setup-php@2.25.5
         with:
           php-version: '8.1'
@@ -81,7 +81,7 @@ jobs:
         php: ['8.1', '8.2']
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
       - name: Start stack
@@ -104,7 +104,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: shivammathur/setup-php@2.25.5
         with:
           php-version: '8.1'
@@ -123,7 +123,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
       - name: Composer Require Checker
@@ -137,7 +137,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
       # Disable (temporarily) CI check with Roave BC check
       # See https://github.com/Nyholm/roave-bc-check-docker/issues/32
@@ -150,7 +150,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install nix
         uses: cachix/install-nix-action@v23
         with:
