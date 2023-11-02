@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - uses: shivammathur/setup-php@2.26.0
+      - uses: shivammathur/setup-php@2.27.0
         with:
           php-version: '8.3'
           extensions: mbstring, redis, apcu
