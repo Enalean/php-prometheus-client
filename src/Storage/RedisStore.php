@@ -341,7 +341,6 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
     private function redisMulti(): Redis
     {
         $redis = $this->redis->multi(Redis::MULTI);
-        /** @phpstan-ignore-next-line */
         assert($redis instanceof Redis);
 
         return $redis;
