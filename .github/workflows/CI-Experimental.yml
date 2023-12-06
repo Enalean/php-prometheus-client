@@ -10,7 +10,7 @@ on:
 
 jobs:
   tests:
-    name: Tests on PHP 8.3 nightly
+    name: Tests on PHP 8.4 nightly
     runs-on: ubuntu-22.04
     services:
       redis:
@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v4
       - uses: shivammathur/setup-php@2.28.0
         with:
-          php-version: '8.3'
+          php-version: '8.4'
           extensions: mbstring, redis, apcu
           ini-values: apc.enable_cli=1, zend.assertions=1
           coverage: none
