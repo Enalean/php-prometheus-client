@@ -14,13 +14,13 @@ final class PSR18UnexpectedPushGatewayResponse extends UnexpectedPushGatewayResp
     {
         $exceptionCode = 0;
 
-        $message = 'Cannot connect PushGateway server to ' . $request->getUri()->__toString() . ':';
+        $message = 'Cannot connect PushGateway server to ' . $request->getUri()->__toString();
         if ($response !== null) {
-            $message = ' ' . $response->getStatusCode() . ' ' . $response->getReasonPhrase();
+            $message .= ': ' . $response->getStatusCode() . ' ' . $response->getReasonPhrase();
         }
 
         if ($clientException !== null) {
-            $message       = ' ' . $clientException->getMessage();
+            $message      .= ': ' . $clientException->getMessage();
             $exceptionCode = $clientException->getCode();
         }
 
