@@ -86,17 +86,17 @@ jobs:
         run: composer install --no-interaction --prefer-dist
       - name: Start stack
         run: |
-          docker-compose up -d
+          docker compose up -d
           sleep 10
           docker ps -a
         env:
           PHP_VERSION: ${{ matrix.php }}
       - name: Tests with Redis
-        run: docker-compose exec -T phpunit env ADAPTER=redis vendor/bin/phpunit --testsuite=functionnal
+        run: docker compose exec -T phpunit env ADAPTER=redis vendor/bin/phpunit --testsuite=functionnal
         env:
           PHP_VERSION: ${{ matrix.php }}
       - name: Tests with APCU
-        run: docker-compose exec -T phpunit env ADAPTER=apcu vendor/bin/phpunit --testsuite=functionnal
+        run: docker compose exec -T phpunit env ADAPTER=apcu vendor/bin/phpunit --testsuite=functionnal
         env:
           PHP_VERSION: ${{ matrix.php }}
   code_quality:
