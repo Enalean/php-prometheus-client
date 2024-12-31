@@ -1,6 +1,6 @@
 name: CI Experimental
 
-permissions: read-all
+permissions: {}
 
 on:
   push:
@@ -19,8 +19,10 @@ jobs:
           - 6379/tcp
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      - uses: shivammathur/setup-php@2.32.0
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401 # 2.32.0
         with:
           php-version: '8.5'
           extensions: mbstring, redis, apcu
