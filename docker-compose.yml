@@ -14,12 +14,12 @@ services:
     volumes:
       - .:/var/www/html
     environment:
-      - REDIS_HOST=redis
+      - REDIS_HOST=valkey
     depends_on:
-      - redis
+      - valkey
       - pushgateway
-  redis:
-    image: redis
+  valkey:
+    image: valkey/valkey
   pushgateway:
     image: prom/pushgateway
   phpunit:
@@ -30,8 +30,8 @@ services:
     volumes:
       - .:/var/www/html
     environment:
-      - REDIS_HOST=redis
+      - REDIS_HOST=valkey
     depends_on:
       - nginx
       - pushgateway
-      - redis
+      - valkey

@@ -15,8 +15,8 @@ jobs:
     permissions:
       contents: read
     services:
-      redis:
-        image: redis
+      valkey:
+        image: valkey/valkey
         ports:
           - 6379/tcp
     strategy:
@@ -43,7 +43,7 @@ jobs:
       - name: Run tests
         run: ./vendor/bin/phpunit --verbose --colors --coverage-clover=coverage.xml
         env:
-          REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
+          REDIS_PORT: ${{ job.services.valkey.ports['6379'] }}
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24 # v5.4.3
         with:
@@ -52,8 +52,8 @@ jobs:
     name: Mutation testing
     runs-on: ubuntu-24.04
     services:
-      redis:
-        image: redis
+      valkey:
+        image: valkey/valkey
         ports:
           - 6379/tcp
     steps:
@@ -72,7 +72,7 @@ jobs:
       - name: Run Infection
         run: ./vendor/bin/infection --min-msi=90 --min-covered-msi=90
         env:
-          REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
+          REDIS_PORT: ${{ job.services.valkey.ports['6379'] }}
       - name: Archive report
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
