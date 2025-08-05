@@ -13,8 +13,8 @@ jobs:
     name: Tests on PHP 8.5 nightly
     runs-on: ubuntu-24.04
     services:
-      redis:
-        image: redis
+      valkey:
+        image: valkey/valkey
         ports:
           - 6379/tcp
     steps:
@@ -39,4 +39,4 @@ jobs:
         continue-on-error: true
         run: ./vendor/bin/phpunit --verbose --colors
         env:
-          REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
+          REDIS_PORT: ${{ job.services.valkey.ports['6379'] }}
