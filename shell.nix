@@ -1,10 +1,10 @@
 { pkgs ? import (fetchTarball {
-  url = "https://github.com/NixOS/nixpkgs/archive/6d97d419e5a9b36e6293887a89a078cf85f5a61b.tar.gz";
-  sha256 = "10y6ply5jhg9pwq13zldmipxh8dscmawx5syi1i6rb773xnnr452";
+  url = "https://github.com/NixOS/nixpkgs/archive/ebc94f855ef25347c314258c10393a92794e7ab9.tar.gz";
+  sha256 = "sha256-UMVihg0OQ980YqmOAPz+zkuCEb9hpE5Xj2v+ZGNjQ+M=";
 }) {} }:
 
 let
-  php = pkgs.php82.withExtensions ({ enabled, all }: with all; enabled ++ [ redis apcu ]);
+  php = pkgs.php84.withExtensions ({ enabled, all }: with all; enabled ++ [ redis apcu ]);
 in
 pkgs.mkShell {
   nativeBuildInputs = [
