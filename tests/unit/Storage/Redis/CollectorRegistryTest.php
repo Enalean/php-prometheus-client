@@ -10,27 +10,27 @@ use Enalean\Prometheus\Storage\RedisStore;
 use Enalean\Prometheus\Value\HistogramLabelNames;
 use Enalean\Prometheus\Value\MetricLabelNames;
 use Enalean\Prometheus\Value\MetricName;
-use Enalean\PrometheusTest\Storage\CollectorRegistryBaseTest;
+use Enalean\PrometheusTest\Storage\CollectorRegistryTestBase;
+use PHPUnit\Framework\Attributes\After;
+use PHPUnit\Framework\Attributes\Before;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @requires extension redis
- * @covers \Enalean\Prometheus\Registry\CollectorRegistry
- * @covers \Enalean\Prometheus\Storage\RedisStore
- */
-final class CollectorRegistryTest extends CollectorRegistryBaseTest
+/** @requires extension redis */
+#[CoversClass(RedisStore::class)]
+#[CoversClass(CollectorRegistry::class)]
+final class CollectorRegistryTest extends CollectorRegistryTestBase
 {
     use ConfigureRedisStorage;
 
-    /**
-     * @before
-     * @after
-     */
+    #[Before]
+    #[After]
     public function flushRedis(): void
     {
         $this->getRedisClient()->flushDB();
     }
 
-    /** @test */
+    #[Test]
     public function itShouldOnlyFlushMetricData(): void
     {
         $redis = $this->getRedisClient();

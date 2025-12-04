@@ -7,9 +7,10 @@ namespace Enalean\PrometheusTest\Renderer;
 use Enalean\Prometheus\MetricFamilySamples;
 use Enalean\Prometheus\Renderer\IncoherentMetricLabelNamesAndValues;
 use LogicException;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/** @covers Enalean\Prometheus\Renderer\IncoherentMetricLabelNamesAndValues */
+#[CoversClass(IncoherentMetricLabelNamesAndValues::class)]
 final class IncoherentMetricLabelNamesAndValuesTest extends TestCase
 {
     public function testHasACoherentErrorMessage(): void

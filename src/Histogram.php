@@ -54,7 +54,7 @@ final class Histogram extends Metric
             if ($buckets[$i] >= $buckets[$i + 1]) {
                 throw new InvalidArgumentException(
                     'Histogram buckets must be in increasing order: ' .
-                    $buckets[$i] . ' >= ' . $buckets[$i + 1],
+                    (string) $buckets[$i] . ' >= ' . (string) $buckets[$i + 1],
                 );
             }
         }

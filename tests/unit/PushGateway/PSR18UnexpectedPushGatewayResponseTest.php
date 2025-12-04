@@ -7,10 +7,11 @@ namespace Enalean\PrometheusTest\PushGateway;
 use Enalean\Prometheus\PushGateway\PSR18UnexpectedPushGatewayResponse;
 use Exception;
 use Http\Discovery\Psr17FactoryDiscovery;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientExceptionInterface;
 
-/** @covers Enalean\Prometheus\PushGateway\PSR18UnexpectedPushGatewayResponse */
+#[CoversClass(PSR18UnexpectedPushGatewayResponse::class)]
 final class PSR18UnexpectedPushGatewayResponseTest extends TestCase
 {
     public function testInvalidResponse(): void

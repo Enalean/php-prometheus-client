@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace Enalean\PrometheusTest;
 
 use Enalean\Prometheus\Histogram;
+use Enalean\Prometheus\Metric;
 use Enalean\Prometheus\Storage\HistogramStorage;
 use Enalean\Prometheus\Value\HistogramLabelNames;
 use Enalean\Prometheus\Value\MetricName;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers Enalean\Prometheus\Histogram
- * @covers Enalean\Prometheus\Metric
- */
+#[CoversClass(Metric::class)]
+#[CoversClass(Histogram::class)]
 final class HistogramTest extends TestCase
 {
     public function testStorageIsUpdatedWithObservedValues(): void

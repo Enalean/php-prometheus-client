@@ -9,9 +9,10 @@ use Enalean\Prometheus\Gauge;
 use Enalean\Prometheus\Histogram;
 use Enalean\Prometheus\Storage\NullStore;
 use Enalean\Prometheus\Value\MetricName;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/** @covers Enalean\Prometheus\Storage\NullStore */
+#[CoversClass(NullStore::class)]
 final class NullStoreTest extends TestCase
 {
     public function testNothingIsStored(): void

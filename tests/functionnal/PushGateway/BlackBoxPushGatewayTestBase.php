@@ -11,13 +11,14 @@ use Enalean\Prometheus\Value\MetricLabelNames;
 use Enalean\Prometheus\Value\MetricName;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Discovery\Psr18ClientDiscovery;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-abstract class BlackBoxPushGatewayTest extends TestCase
+abstract class BlackBoxPushGatewayTestBase extends TestCase
 {
     abstract public function getPusher(string $address): Pusher;
 
-    /** @test */
+    #[Test]
     public function pushGatewayShouldWork(): void
     {
         $adapter  = new APCUStore();

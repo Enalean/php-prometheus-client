@@ -13,6 +13,9 @@ use Enalean\Prometheus\Storage\Store;
 use Enalean\Prometheus\Value\HistogramLabelNames;
 use Enalean\Prometheus\Value\MetricName;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\Before;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 use function array_combine;
@@ -24,12 +27,12 @@ use function reset;
 /**
  * See https://prometheus.io/docs/instrumenting/exposition_formats/
  */
-abstract class HistogramBaseTest extends TestCase
+abstract class HistogramTestBase extends TestCase
 {
     /** @return HistogramStorage&Store */
     abstract protected function getStorage();
 
-    /** @before */
+    #[Before]
     protected function flushStorage(): void
     {
         $storage = $this->getStorage();
@@ -40,7 +43,7 @@ abstract class HistogramBaseTest extends TestCase
         $storage->flush();
     }
 
-    /** @test */
+    #[Test]
     public function itShouldObserveWithLabels(): void
     {
         $storage   = $this->getStorage();
@@ -78,7 +81,7 @@ abstract class HistogramBaseTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function itShouldObserveWithoutLabelWhenNoLabelsAreDefined(): void
     {
         $storage   = $this->getStorage();
@@ -114,7 +117,7 @@ abstract class HistogramBaseTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function itShouldObserveValuesOfTypeFloat(): void
     {
         $storage   = $this->getStorage();
@@ -150,7 +153,7 @@ abstract class HistogramBaseTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function itShouldProvideDefaultBuckets(): void
     {
         $storage = $this->getStorage();
@@ -197,7 +200,7 @@ abstract class HistogramBaseTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function itShouldThrowAnExceptionWhenTheBucketSizesAreNotIncreasing(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -205,7 +208,7 @@ abstract class HistogramBaseTest extends TestCase
         new Histogram($this->getStorage(), MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing', null, [1, 1]);
     }
 
-    /** @test */
+    #[Test]
     public function itShouldThrowAnExceptionWhenThereIsLessThanOneBucket(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -213,10 +216,8 @@ abstract class HistogramBaseTest extends TestCase
         new Histogram($this->getStorage(), MetricName::fromNamespacedName('test', 'some_metric'), 'this is for testing', null, []);
     }
 
-    /**
-     * @test
-     * @dataProvider labelValuesDataProvider
-     */
+    #[Test]
+    #[DataProvider('labelValuesDataProvider')]
     public function isShouldAcceptAnySequenceOfBasicLatinCharactersForLabelValues(string $value): void
     {
         $storage   = $this->getStorage();
@@ -247,7 +248,7 @@ abstract class HistogramBaseTest extends TestCase
      *
      * @return array<string,string[]>
      */
-    public function labelValuesDataProvider(): array
+    public static function labelValuesDataProvider(): array
     {
         $cases = [];
         // Basic Latin

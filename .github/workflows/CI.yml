@@ -41,7 +41,7 @@ jobs:
       - name: Configure PHPUnit matchers
         run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
       - name: Run tests
-        run: ./vendor/bin/phpunit --verbose --colors --coverage-clover=coverage.xml
+        run: ./vendor/bin/phpunit --colors --coverage-clover=coverage.xml
         env:
           REDIS_PORT: ${{ job.services.valkey.ports['6379'] }}
       - name: Upload coverage to Codecov
@@ -91,7 +91,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
+        run: composer install --no-interaction --prefer-dist --ignore-platform-req=php
       - name: Start stack
         run: |
           docker compose up -d

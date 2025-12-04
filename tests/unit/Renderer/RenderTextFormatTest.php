@@ -8,11 +8,12 @@ use Enalean\Prometheus\MetricFamilySamples;
 use Enalean\Prometheus\Renderer\IncoherentMetricLabelNamesAndValues;
 use Enalean\Prometheus\Renderer\RenderTextFormat;
 use Enalean\Prometheus\Sample;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(RenderTextFormat::class)]
 final class RenderTextFormatTest extends TestCase
 {
-    /** @covers Enalean\Prometheus\Renderer\RenderTextFormat */
     public function testRendering(): void
     {
         $renderer = new RenderTextFormat();
@@ -60,7 +61,6 @@ test_some_metric_gauge 0
         );
     }
 
-    /** @covers Enalean\Prometheus\Renderer\RenderTextFormat */
     public function testRenderingDoesNotSucceedWhenAllSamplesDoesNotHaveAllTheDefinedLabels(): void
     {
         $renderer = new RenderTextFormat();
@@ -82,7 +82,6 @@ test_some_metric_gauge 0
         self::assertEmpty($renderer->render($metrics));
     }
 
-    /** @covers Enalean\Prometheus\Renderer\RenderTextFormat::getMimeType */
     public function testType(): void
     {
         $renderer = new RenderTextFormat();

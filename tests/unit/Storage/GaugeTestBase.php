@@ -12,6 +12,9 @@ use Enalean\Prometheus\Storage\GaugeStorage;
 use Enalean\Prometheus\Storage\Store;
 use Enalean\Prometheus\Value\MetricLabelNames;
 use Enalean\Prometheus\Value\MetricName;
+use PHPUnit\Framework\Attributes\Before;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 use function array_combine;
@@ -23,12 +26,12 @@ use function reset;
 /**
  * See https://prometheus.io/docs/instrumenting/exposition_formats/
  */
-abstract class GaugeBaseTest extends TestCase
+abstract class GaugeTestBase extends TestCase
 {
     /** @return GaugeStorage&Store */
     abstract protected function getStorage();
 
-    /** @before */
+    #[Before]
     protected function flushStorage(): void
     {
         $storage = $this->getStorage();
@@ -39,7 +42,7 @@ abstract class GaugeBaseTest extends TestCase
         $storage->flush();
     }
 
-    /** @test */
+    #[Test]
     public function itShouldAllowSetWithLabels(): void
     {
         $storage = $this->getStorage();
@@ -67,7 +70,7 @@ abstract class GaugeBaseTest extends TestCase
         self::assertThat($gauge->getHelp(), self::equalTo('this is for testing'));
     }
 
-    /** @test */
+    #[Test]
     public function itShouldAllowSetWithoutLabelWhenNoLabelsAreDefined(): void
     {
         $storage = $this->getStorage();
@@ -90,7 +93,7 @@ abstract class GaugeBaseTest extends TestCase
         self::assertThat($gauge->getHelp(), self::equalTo('this is for testing'));
     }
 
-    /** @test */
+    #[Test]
     public function itShouldAllowSetWithAFloatValue(): void
     {
         $storage = $this->getStorage();
@@ -113,7 +116,7 @@ abstract class GaugeBaseTest extends TestCase
         self::assertThat($gauge->getHelp(), self::equalTo('this is for testing'));
     }
 
-    /** @test */
+    #[Test]
     public function itShouldIncrementAValue(): void
     {
         $storage = $this->getStorage();
@@ -141,7 +144,7 @@ abstract class GaugeBaseTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function itShouldIncrementWithFloatValue(): void
     {
         $storage = $this->getStorage();
@@ -169,7 +172,7 @@ abstract class GaugeBaseTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function itShouldDecrementAValue(): void
     {
         $storage = $this->getStorage();
@@ -197,7 +200,7 @@ abstract class GaugeBaseTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function itShouldDecrementWithFloatValue(): void
     {
         $storage = $this->getStorage();
@@ -225,7 +228,7 @@ abstract class GaugeBaseTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function itShouldOverwriteWhenSettingTwice(): void
     {
         $storage = $this->getStorage();
@@ -253,10 +256,8 @@ abstract class GaugeBaseTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     * @dataProvider labelValuesDataProvider
-     */
+    #[Test]
+    #[DataProvider('labelValuesDataProvider')]
     public function isShouldAcceptAnySequenceOfBasicLatinCharactersForLabelValues(string $value): void
     {
         $storage   = $this->getStorage();
@@ -287,7 +288,7 @@ abstract class GaugeBaseTest extends TestCase
      *
      * @return array<string,string[]>
      */
-    public function labelValuesDataProvider(): array
+    public static function labelValuesDataProvider(): array
     {
         $cases = [];
         // Basic Latin

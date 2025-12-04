@@ -6,9 +6,10 @@ namespace Enalean\PrometheusTest;
 
 use Enalean\Prometheus\MetricFamilySamples;
 use Enalean\Prometheus\Sample;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/** @covers Enalean\Prometheus\MetricFamilySamples */
+#[CoversClass(MetricFamilySamples::class)]
 final class MetricFamilySamplesTest extends TestCase
 {
     public function testMetricFamilySamplesHoldValuesWithoutModification(): void

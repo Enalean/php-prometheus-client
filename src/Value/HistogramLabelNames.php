@@ -9,7 +9,10 @@ use InvalidArgumentException;
 use function count;
 use function sprintf;
 
-/** @psalm-immutable */
+/**
+ * @psalm-immutable
+ * @psalm-api
+ */
 final class HistogramLabelNames implements LabelNames
 {
     private const RESERVED_LABEL_HISTOGRAM = 'le';

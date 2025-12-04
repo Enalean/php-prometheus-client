@@ -4,15 +4,17 @@ declare(strict_types=1);
 
 namespace Enalean\PrometheusTest\Storage\Redis;
 
-use Enalean\PrometheusTest\Storage\HistogramBaseTest;
+use Enalean\Prometheus\Storage\RedisStore;
+use Enalean\PrometheusTest\Storage\HistogramTestBase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * See https://prometheus.io/docs/instrumenting/exposition_formats/
  *
  * @requires extension redis
- * @covers Enalean\Prometheus\Storage\RedisStore
  */
-final class HistogramTest extends HistogramBaseTest
+#[CoversClass(RedisStore::class)]
+final class HistogramTest extends HistogramTestBase
 {
     use ConfigureRedisStorage;
 }

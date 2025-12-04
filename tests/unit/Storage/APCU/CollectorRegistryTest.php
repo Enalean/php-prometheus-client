@@ -7,29 +7,29 @@ namespace Enalean\PrometheusTest\Storage\APCU;
 use APCUIterator;
 use Enalean\Prometheus\Registry\CollectorRegistry;
 use Enalean\Prometheus\Renderer\RenderTextFormat;
+use Enalean\Prometheus\Storage\APCUStore;
 use Enalean\Prometheus\Value\HistogramLabelNames;
 use Enalean\Prometheus\Value\MetricLabelNames;
 use Enalean\Prometheus\Value\MetricName;
-use Enalean\PrometheusTest\Storage\CollectorRegistryBaseTest;
+use Enalean\PrometheusTest\Storage\CollectorRegistryTestBase;
+use PHPUnit\Framework\Attributes\After;
+use PHPUnit\Framework\Attributes\Before;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 use function apcu_clear_cache;
 use function apcu_delete;
 use function apcu_fetch;
 use function apcu_store;
 
-/**
- * @requires extension apcu
- * @covers \Enalean\Prometheus\Registry\CollectorRegistry
- * @covers \Enalean\Prometheus\Storage\APCUStore
- */
-final class CollectorRegistryTest extends CollectorRegistryBaseTest
+/** @requires extension apcu */
+#[CoversClass(APCUStore::class)]
+#[CoversClass(CollectorRegistry::class)]
+final class CollectorRegistryTest extends CollectorRegistryTestBase
 {
     use ConfigureAPCUStorage;
 
-    /**
-     * @before
-     * @after
-     */
+    #[Before]
+    #[After]
     public function flushAPCu(): void
     {
         apcu_clear_cache();
