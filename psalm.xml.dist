@@ -21,4 +21,17 @@
         <file name="tests/stubs/Http/Promise/Promise.phpstub" />
         <file name="tests/stubs/Http/Client/HttpAsyncClient.phpstub" />
     </stubs>
+    <issueHandlers>
+        <MissingOverrideAttribute>
+            <errorLevel type="suppress">
+                <directory name="src"/>
+                <directory name="tests"/>
+            </errorLevel>
+        </MissingOverrideAttribute>
+        <PossiblyUnusedMethod>
+            <errorLevel type="suppress">
+                <directory name="tests"/>
+            </errorLevel>
+        </PossiblyUnusedMethod>
+    </issueHandlers>
 </psalm>

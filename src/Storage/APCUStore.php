@@ -287,7 +287,7 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
             $labels = array_keys($histogramBuckets);
             sort($labels);
             foreach ($labels as $labelValues) {
-                $acc                = 0;
+                $acc                = 0.0;
                 $decodedLabelValues = $this->decodeLabelValues($labelValues);
                 foreach ($data['buckets'] as $bucket) {
                     $bucket = (string) $bucket;
@@ -340,13 +340,19 @@ final class APCUStore implements Store, CounterStorage, GaugeStorage, HistogramS
 
     private function toInteger(float $val): int
     {
-        /** @phpstan-ignore-next-line */
+        /**
+         * @psalm-suppress PossiblyInvalidArrayAccess
+         * @phpstan-ignore-next-line
+         */
         return (int) unpack('Q', pack('d', $val))[1];
     }
 
     private function fromInteger(int $val): float
     {
-        /** @phpstan-ignore-next-line */
+        /**
+         * @psalm-suppress PossiblyInvalidArrayAccess
+         * @phpstan-ignore-next-line
+         */
         return (float) unpack('d', pack('Q', $val))[1];
     }
 

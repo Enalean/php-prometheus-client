@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Enalean\PrometheusTest;
 
 use Enalean\Prometheus\Sample;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/** @covers Enalean\Prometheus\Sample */
+#[CoversClass(Sample::class)]
 final class SampleTest extends TestCase
 {
     public function testSampleHoldValuesWithoutModification(): void

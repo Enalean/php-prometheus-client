@@ -11,10 +11,11 @@ use Enalean\Prometheus\Registry\Collector;
 use Exception;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Mock\Client;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientExceptionInterface;
 
-/** @covers Enalean\Prometheus\PushGateway\PSR18Pusher */
+#[CoversClass(PSR18Pusher::class)]
 final class PSR18PusherTest extends TestCase
 {
     /**

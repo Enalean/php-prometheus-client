@@ -37,6 +37,6 @@ jobs:
         run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
       - name: Run tests
         continue-on-error: true
-        run: ./vendor/bin/phpunit --verbose --colors
+        run: ./vendor/bin/phpunit --colors
         env:
           REDIS_PORT: ${{ job.services.valkey.ports['6379'] }}

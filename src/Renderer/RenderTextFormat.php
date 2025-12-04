@@ -69,10 +69,10 @@ final class RenderTextFormat implements MetricsRenderer
                 $escapedLabels[] = $labelName . '="' . self::escapeLabelValue($labelValue) . '"';
             }
 
-            return $sample->getName() . '{' . implode(',', $escapedLabels) . '} ' . $sample->getValue();
+            return $sample->getName() . '{' . implode(',', $escapedLabels) . '} ' . (string) $sample->getValue();
         }
 
-        return $sample->getName() . ' ' . $sample->getValue();
+        return $sample->getName() . ' ' . (string) $sample->getValue();
     }
 
     /** @psalm-pure */

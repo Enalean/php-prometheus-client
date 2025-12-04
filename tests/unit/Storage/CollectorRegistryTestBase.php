@@ -16,9 +16,10 @@ use Enalean\Prometheus\Storage\Store;
 use Enalean\Prometheus\Value\HistogramLabelNames;
 use Enalean\Prometheus\Value\MetricLabelNames;
 use Enalean\Prometheus\Value\MetricName;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-abstract class CollectorRegistryBaseTest extends TestCase
+abstract class CollectorRegistryTestBase extends TestCase
 {
     private RenderTextFormat $renderer;
 
@@ -36,7 +37,7 @@ abstract class CollectorRegistryBaseTest extends TestCase
         $storage->flush();
     }
 
-    /** @test */
+    #[Test]
     public function itShouldSaveGauges(): void
     {
         $storage  = $this->getStorage();
@@ -67,7 +68,7 @@ EOF),
         );
     }
 
-    /** @test */
+    #[Test]
     public function itShouldSaveCounters(): void
     {
         $storage    = $this->getStorage();
@@ -95,7 +96,7 @@ EOF),
         );
     }
 
-    /** @test */
+    #[Test]
     public function itShouldSaveHistograms(): void
     {
         $storage    = $this->getStorage();
@@ -145,7 +146,7 @@ EOF),
         );
     }
 
-    /** @test */
+    #[Test]
     public function itShouldSaveHistogramsWithoutLabels(): void
     {
         $storage    = $this->getStorage();
@@ -184,7 +185,7 @@ EOF),
         );
     }
 
-    /** @test */
+    #[Test]
     public function itShouldIncreaseACounterWithoutNamespace(): void
     {
         $registry = new CollectorRegistry($this->getStorage());
@@ -203,7 +204,7 @@ EOF),
         );
     }
 
-    /** @test */
+    #[Test]
     public function itShouldForbidRegisteringTheSameCounterTwice(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
@@ -213,7 +214,7 @@ EOF),
         $registry->registerCounter($metricName, 'help');
     }
 
-    /** @test */
+    #[Test]
     public function itShouldForbidRegisteringTheSameCounterWithDifferentLabels(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
@@ -223,7 +224,7 @@ EOF),
         $registry->registerCounter($metricName, 'help', MetricLabelNames::fromNames('spam', 'eggs'));
     }
 
-    /** @test */
+    #[Test]
     public function itShouldForbidRegisteringTheSameHistogramTwice(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
@@ -233,7 +234,7 @@ EOF),
         $registry->registerHistogram($metricName, 'help');
     }
 
-    /** @test */
+    #[Test]
     public function itShouldForbidRegisteringTheSameHistogramWithDifferentLabels(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
@@ -243,7 +244,7 @@ EOF),
         $registry->registerHistogram($metricName, 'help', HistogramLabelNames::fromNames('spam', 'eggs'));
     }
 
-    /** @test */
+    #[Test]
     public function itShouldForbidRegisteringTheSameGaugeTwice(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
@@ -253,7 +254,7 @@ EOF),
         $registry->registerGauge($metricName, 'help');
     }
 
-    /** @test */
+    #[Test]
     public function itShouldForbidRegisteringTheSameGaugeWithDifferentLabels(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
@@ -263,7 +264,7 @@ EOF),
         $registry->registerGauge($metricName, 'help', MetricLabelNames::fromNames('spam', 'eggs'));
     }
 
-    /** @test */
+    #[Test]
     public function itShouldThrowAnExceptionWhenGettingANonExistentMetric(): void
     {
         $registry = new CollectorRegistry($this->getStorage());
@@ -271,7 +272,7 @@ EOF),
         $registry->getGauge(MetricName::fromNamespacedName('not_here', 'go_away'));
     }
 
-    /** @test */
+    #[Test]
     public function itShouldNotRegisterACounterTwice(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
@@ -282,7 +283,7 @@ EOF),
         self::assertSame($counterA, $counterB);
     }
 
-    /** @test */
+    #[Test]
     public function itShouldNotRegisterAGaugeTwice(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());
@@ -293,7 +294,7 @@ EOF),
         self::assertSame($gaugeA, $gaugeB);
     }
 
-    /** @test */
+    #[Test]
     public function itShouldNotRegisterAHistogramTwice(): void
     {
         $registry   = new CollectorRegistry($this->getStorage());

@@ -6,19 +6,16 @@ namespace Enalean\PrometheusTest\Value;
 
 use Enalean\Prometheus\Value\MetricLabelNames;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 use function count;
 
-/** @covers Enalean\Prometheus\Value\MetricLabelNames */
+#[CoversClass(MetricLabelNames::class)]
 final class MetricLabelNamesTest extends TestCase
 {
-    /**
-     * @testWith ["label"]
-     *           ["label01"]
-     *           ["label_1"]
-     *           ["le"]
-     */
+    #[TestWith(['label', 'label01', 'label_1', 'le'])]
     public function testValidLabelNames(string $name): void
     {
         $labelNames = MetricLabelNames::fromNames($name);
@@ -27,10 +24,7 @@ final class MetricLabelNamesTest extends TestCase
         self::assertCount(1, $labelNames);
     }
 
-    /**
-     * @testWith ["__label"]
-     *           ["label test"]
-     */
+    #[TestWith(['__label', 'label test'])]
     public function testInvalidLabelNames(string $name): void
     {
         $this->expectException(InvalidArgumentException::class);

@@ -7,6 +7,7 @@ namespace Enalean\PrometheusTestE2E;
 use Http\Client\HttpAsyncClient;
 use Http\Discovery\HttpAsyncClientDiscovery;
 use Http\Discovery\Psr17FactoryDiscovery;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestFactoryInterface;
 
@@ -31,7 +32,7 @@ final class BlackBoxTest extends TestCase
         )->wait();
     }
 
-    /** @test */
+    #[Test]
     public function gaugesShouldBeOverwritten(): void
     {
         $requests = [
@@ -61,7 +62,7 @@ final class BlackBoxTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function countersShouldIncrementAtomically(): void
     {
         $promises = [];
@@ -83,7 +84,7 @@ final class BlackBoxTest extends TestCase
         self::assertThat($metricsResult->getBody()->getContents(), self::stringContains('test_some_counter{type="blue"} ' . $sum));
     }
 
-    /** @test */
+    #[Test]
     public function histogramsShouldIncrementAtomically(): void
     {
         $requests = [

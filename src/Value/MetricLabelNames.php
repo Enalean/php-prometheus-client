@@ -11,7 +11,10 @@ use function preg_match;
 use function sprintf;
 use function strpos;
 
-/** @psalm-immutable */
+/**
+ * @psalm-immutable
+ * @psalm-api
+ */
 final class MetricLabelNames implements LabelNames
 {
     private const LABEL_NAME_REGEX      = '/^[a-zA-Z_][a-zA-Z0-9_]*$/';

@@ -101,7 +101,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
             $labels = array_keys($histogramBuckets);
             sort($labels);
             foreach ($labels as $labelValues) {
-                $acc                = 0;
+                $acc                = 0.0;
                 $decodedLabelValues = $this->decodeLabelValues($labelValues);
                 foreach ($data['buckets'] as $bucket) {
                     $bucket = (string) $bucket;
@@ -222,7 +222,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
 
         $sumKey = $this->histogramBucketValueKey($name, $labelValues, 'sum');
         if (array_key_exists($sumKey, $this->histograms[$metaKey]['samples']) === false) {
-            $this->histograms[$metaKey]['samples'][$sumKey] = 0;
+            $this->histograms[$metaKey]['samples'][$sumKey] = 0.0;
         }
 
         $this->histograms[$metaKey]['samples'][$sumKey] += $value;
@@ -237,10 +237,10 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
 
         $bucketKey = $this->histogramBucketValueKey($name, $labelValues, (string) $bucketToIncrease);
         if (array_key_exists($bucketKey, $this->histograms[$metaKey]['samples']) === false) {
-            $this->histograms[$metaKey]['samples'][$bucketKey] = 0;
+            $this->histograms[$metaKey]['samples'][$bucketKey] = 0.0;
         }
 
-        $this->histograms[$metaKey]['samples'][$bucketKey] += 1;
+        $this->histograms[$metaKey]['samples'][$bucketKey] += 1.0;
     }
 
     public function setGaugeTo(MetricName $name, float $value, string $help, MetricLabelNames $labelNames, string ...$labelValues): void
@@ -256,7 +256,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
         $metaKey  = $this->initializeGaugeIfNecessary($name, $help, $labelNames);
         $valueKey = $this->valueKey($name, $labelValues);
 
-        $oldValue                                     = $this->gauges[$metaKey]['samples'][$valueKey] ?? 0;
+        $oldValue                                     = $this->gauges[$metaKey]['samples'][$valueKey] ?? 0.0;
         $this->gauges[$metaKey]['samples'][$valueKey] = $oldValue + $value;
     }
 
@@ -287,7 +287,7 @@ final class InMemoryStore implements Store, CounterStorage, GaugeStorage, Histog
         }
 
         if (array_key_exists($valueKey, $this->counters[$metaKey]['samples']) === false) {
-            $this->counters[$metaKey]['samples'][$valueKey] = 0;
+            $this->counters[$metaKey]['samples'][$valueKey] = 0.0;
         }
 
         $this->counters[$metaKey]['samples'][$valueKey] += $value;

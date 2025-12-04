@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace Enalean\PrometheusTest;
 
 use Enalean\Prometheus\Gauge;
+use Enalean\Prometheus\Metric;
 use Enalean\Prometheus\Storage\GaugeStorage;
 use Enalean\Prometheus\Value\MetricLabelNames;
 use Enalean\Prometheus\Value\MetricName;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers Enalean\Prometheus\Gauge
- * @covers Enalean\Prometheus\Metric
- */
+#[CoversClass(Metric::class)]
+#[CoversClass(Gauge::class)]
 final class GaugeTest extends TestCase
 {
     public function testStorageIsUpdatedByGaugeModifications(): void

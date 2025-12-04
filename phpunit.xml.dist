@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit
-    colors="true"
-    bootstrap="vendor/autoload.php"
-    defaultTestSuite="unit"
-    beStrictAboutOutputDuringTests="true"
-    beStrictAboutChangesToGlobalState="true"
-    forceCoversAnnotation="true"
->
+<phpunit colors="true" bootstrap="vendor/autoload.php" defaultTestSuite="unit" beStrictAboutOutputDuringTests="true"
+         beStrictAboutChangesToGlobalState="true" cacheDirectory=".phpunit.cache" displayDetailsOnPhpunitDeprecations="true">
     <testsuites>
         <testsuite name="unit">
             <directory>./tests/unit/</directory>
@@ -15,15 +9,15 @@
             <directory>./tests/functionnal/</directory>
         </testsuite>
     </testsuites>
-    <coverage processUncoveredFiles="true">
+    <php>
+        <ini name="error_reporting" value="-1"/>
+        <ini name="assert.exception" value="1"/>
+        <env name="REDIS_HOST" value="127.0.0.1"/>
+        <env name="REDIS_PORT" value="6379"/>
+    </php>
+    <source>
         <include>
             <directory suffix=".php">src/</directory>
         </include>
-    </coverage>
-    <php>
-        <ini name="error_reporting" value="-1" />
-        <ini name="assert.exception" value="1" />
-        <env name="REDIS_HOST" value="127.0.0.1" />
-        <env name="REDIS_PORT" value="6379" />
-    </php>
+    </source>
 </phpunit>

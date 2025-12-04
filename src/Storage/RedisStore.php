@@ -15,7 +15,6 @@ use function array_keys;
 use function array_map;
 use function array_merge;
 use function array_unique;
-use function assert;
 use function implode;
 use function json_decode;
 use function json_encode;
@@ -340,9 +339,6 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
 
     private function redisMulti(): Redis
     {
-        $redis = $this->redis->multi(Redis::MULTI);
-        assert($redis instanceof Redis);
-
-        return $redis;
+        return $this->redis->multi(Redis::MULTI);
     }
 }

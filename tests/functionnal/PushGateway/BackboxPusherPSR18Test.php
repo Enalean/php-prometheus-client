@@ -9,7 +9,7 @@ use Enalean\Prometheus\PushGateway\Pusher;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Discovery\Psr18ClientDiscovery;
 
-final class BackboxPusherPSR18Test extends BlackBoxPushGatewayTest
+final class BackboxPusherPSR18Test extends BlackBoxPushGatewayTestBase
 {
     public function getPusher(string $address): Pusher
     {

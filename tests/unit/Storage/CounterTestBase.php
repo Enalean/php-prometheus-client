@@ -12,6 +12,9 @@ use Enalean\Prometheus\Storage\FlushableStorage;
 use Enalean\Prometheus\Storage\Store;
 use Enalean\Prometheus\Value\MetricLabelNames;
 use Enalean\Prometheus\Value\MetricName;
+use PHPUnit\Framework\Attributes\Before;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 use function array_combine;
@@ -23,12 +26,12 @@ use function reset;
 /**
  * See https://prometheus.io/docs/instrumenting/exposition_formats/
  */
-abstract class CounterBaseTest extends TestCase
+abstract class CounterTestBase extends TestCase
 {
     /** @return CounterStorage&Store */
     abstract protected function getStorage();
 
-    /** @before */
+    #[Before]
     protected function flushStorage(): void
     {
         $storage = $this->getStorage();
@@ -39,7 +42,7 @@ abstract class CounterBaseTest extends TestCase
         $storage->flush();
     }
 
-    /** @test */
+    #[Test]
     public function itShouldIncreaseWithLabels(): void
     {
         $storage = $this->getStorage();
@@ -68,7 +71,7 @@ abstract class CounterBaseTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function itShouldIncreaseWithoutLabelWhenNoLabelsAreDefined(): void
     {
         $storage = $this->getStorage();
@@ -90,7 +93,7 @@ abstract class CounterBaseTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function itShouldIncreaseTheCounterByAnArbitraryInteger(): void
     {
         $storage = $this->getStorage();
@@ -118,7 +121,7 @@ abstract class CounterBaseTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function itShouldIncreaseTheCounterByAnArbitraryFloat(): void
     {
         $storage = $this->getStorage();
@@ -146,10 +149,8 @@ abstract class CounterBaseTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     * @dataProvider labelValuesDataProvider
-     */
+    #[Test]
+    #[DataProvider('labelValuesDataProvider')]
     public function isShouldAcceptAnySequenceOfBasicLatinCharactersForLabelValues(string $value): void
     {
         $storage = $this->getStorage();
@@ -180,7 +181,7 @@ abstract class CounterBaseTest extends TestCase
      *
      * @return array<string,string[]>
      */
-    public function labelValuesDataProvider(): array
+    public static function labelValuesDataProvider(): array
     {
         $cases = [];
         // Basic Latin

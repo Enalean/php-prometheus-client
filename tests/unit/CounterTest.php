@@ -5,16 +5,17 @@ declare(strict_types=1);
 namespace Enalean\PrometheusTest;
 
 use Enalean\Prometheus\Counter;
+use Enalean\Prometheus\Metric;
 use Enalean\Prometheus\Storage\CounterStorage;
 use Enalean\Prometheus\Value\MetricLabelNames;
 use Enalean\Prometheus\Value\MetricName;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers Enalean\Prometheus\Counter
- * @covers Enalean\Prometheus\Metric
- */
+#[CoversClass(Metric::class)]
+#[CoversClass(Counter::class)]
 final class CounterTest extends TestCase
 {
     public function testStorageIsIncremented(): void
@@ -40,10 +41,7 @@ final class CounterTest extends TestCase
         self::assertEquals($storage->value, 5.123);
     }
 
-    /**
-     * @testWith [-1]
-     *           [0]
-     */
+    #[TestWith([-1, 0])]
     public function testCounterCanOnlyBeIncremented(int $value): void
     {
         $counter = new Counter($this->getEmptyStorage(), MetricName::fromName('name'), 'help');
