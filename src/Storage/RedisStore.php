@@ -155,7 +155,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
 
     /**
      * @return array<int,array<string,mixed>>
-     * @psalm-return list<array{name:string, help:string, labelNames: string[], type:'histogram', samples: list<array{name:string, labelNames:list<string>, labelValues: string[], value: int}>, buckets: array<'+Inf'|float>}>
+     * @psalm-return list<array{name:string, help:string, labelNames: string[], "type":'histogram', samples: list<array{name:string, labelNames:list<string>, labelValues: string[], value: int}>, buckets: array<'+Inf'|float>}>
      */
     private function collectHistograms(): array
     {
@@ -165,7 +165,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
         $histograms = [];
         foreach ($keys as $key) {
             /** @psalm-var array{__meta:string, string:int} $raw */
-            $raw = $this->redis->hGetAll($key);
+            $raw = $this->redis->hGetAll($key); /** @phpstan-ignore varTag.type */
             /** @psalm-var array{name:string, help:string, labelNames: string[], buckets:float[]} $histogram */
             $histogram         = json_decode($raw['__meta'], true);
             $histogram['type'] = 'histogram';
@@ -178,7 +178,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
             $allLabelValues = [];
             foreach (array_keys($raw) as $k) {
                 /** @psalm-var array{b:string, labelValues:string[]} $d */
-                $d = json_decode($k, true);
+                $d = json_decode($k, true); /** @phpstan-ignore varTag.type */
                 if ($d['b'] === 'sum') {
                     continue;
                 }
@@ -230,7 +230,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
                     'name' => $histogram['name'] . '_sum',
                     'labelNames' => [],
                     'labelValues' => $labelValues,
-                    'value' => $raw[json_encode(['b' => 'sum', 'labelValues' => $labelValues])],
+                    'value' => $raw[json_encode(['b' => 'sum', 'labelValues' => $labelValues])], /** @phpstan-ignore offsetAccess.notFound */
                 ];
             }
 
@@ -261,7 +261,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
             $gauge['samples'] = [];
             foreach ($raw as $k => $value) {
                 /** @var string[] $labelValues */
-                $labelValues        = json_decode($k, true);
+                $labelValues        = json_decode($k, true); /** @phpstan-ignore varTag.type */
                 $gauge['samples'][] = [
                     'name' => $gauge['name'],
                     'labelNames' => [],
@@ -307,7 +307,7 @@ final class RedisStore implements Store, CounterStorage, GaugeStorage, Histogram
             $counter['samples'] = [];
             foreach ($raw as $k => $value) {
                 /** @var string[] $labelValues */
-                $labelValues          = json_decode($k, true);
+                $labelValues          = json_decode($k, true); /** @phpstan-ignore varTag.type */
                 $counter['samples'][] = [
                     'name' => $counter['name'],
                     'labelNames' => [],

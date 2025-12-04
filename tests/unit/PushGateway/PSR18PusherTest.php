@@ -12,17 +12,24 @@ use Exception;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Mock\Client;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Http\Message\RequestInterface;
+
+use function assert;
 
 #[CoversClass(PSR18Pusher::class)]
 final class PSR18PusherTest extends TestCase
 {
-    /**
-     * @testWith ["http://example.com", "example.com"]
-     *           ["http://example.com", "http://example.com"]
-     *           ["https://example.com", "https://example.com"]
-     */
+    #[TestWith([
+        'http://example.com',
+        'example.com',
+        'http://example.com',
+        'http://example.com',
+        'https://example.com',
+        'https://example.com',
+    ])]
     public function testServerURIIsCorrectlyConstructed(string $expectedServerURIStart, string $givenAddress): void
     {
         $client = new Client();
@@ -40,11 +47,17 @@ final class PSR18PusherTest extends TestCase
         $collector = $this->createMock(Collector::class);
 
         $pusher->push($collector, 'myjob');
-        self::assertEquals('PUT', $client->getLastRequest()->getMethod());
+        $lastRequest = $client->getLastRequest();
+        assert($lastRequest instanceof RequestInterface);
+        self::assertEquals('PUT', $lastRequest->getMethod());
         $pusher->pushAdd($collector, 'myjob');
-        self::assertEquals('POST', $client->getLastRequest()->getMethod());
+        $lastRequest = $client->getLastRequest();
+        assert($lastRequest instanceof RequestInterface);
+        self::assertEquals('POST', $lastRequest->getMethod());
         $pusher->delete('myjob');
-        self::assertEquals('DELETE', $client->getLastRequest()->getMethod());
+        $lastRequest = $client->getLastRequest();
+        assert($lastRequest instanceof RequestInterface);
+        self::assertEquals('DELETE', $lastRequest->getMethod());
 
         $sentRequests = $client->getRequests();
         self::assertCount(3, $sentRequests);
@@ -78,11 +91,17 @@ final class PSR18PusherTest extends TestCase
             ->willReturn([new MetricFamilySamples('name', 'type', 'help', [], [])]);
 
         $pusher->push($collector, 'myjob');
-        self::assertNotEmpty($client->getLastRequest()->getBody()->getContents());
+        $lastRequest = $client->getLastRequest();
+        assert($lastRequest instanceof RequestInterface);
+        self::assertNotEmpty($lastRequest->getBody()->getContents());
         $pusher->pushAdd($collector, 'myjob');
-        self::assertNotEmpty($client->getLastRequest()->getBody()->getContents());
+        $lastRequest = $client->getLastRequest();
+        assert($lastRequest instanceof RequestInterface);
+        self::assertNotEmpty($lastRequest->getBody()->getContents());
         $pusher->delete('myjob');
-        self::assertEmpty($client->getLastRequest()->getBody()->getContents());
+        $lastRequest = $client->getLastRequest();
+        assert($lastRequest instanceof RequestInterface);
+        self::assertEmpty($lastRequest->getBody()->getContents());
     }
 
     public function testPushedInformationCanBeGrouped(): void

@@ -12,8 +12,6 @@ interface MetricsRenderer
      * @param MetricFamilySamples[] $metrics
      *
      * @throws IncoherentMetricLabelNamesAndValues
-     *
-     * @psalm-pure
      */
     public function render(array $metrics): string;
 

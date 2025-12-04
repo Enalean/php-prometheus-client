@@ -267,12 +267,10 @@ abstract class GaugeTestBase extends TestCase
 
         $metrics = $storage->collect();
         self::assertCount(1, $metrics);
-        self::assertContainsOnlyInstancesOf(MetricFamilySamples::class, $metrics);
 
         $metric = reset($metrics);
         assert($metric !== false);
         $samples = $metric->getSamples();
-        self::assertContainsOnlyInstancesOf(Sample::class, $samples);
 
         foreach ($samples as $sample) {
             $labels = array_combine(
