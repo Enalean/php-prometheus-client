@@ -16,7 +16,6 @@ use function str_replace;
 use function strcmp;
 use function usort;
 
-/** @psalm-immutable */
 final class RenderTextFormat implements MetricsRenderer
 {
     private const MIME_TYPE = 'text/plain; version=0.0.4';
@@ -25,18 +24,17 @@ final class RenderTextFormat implements MetricsRenderer
      * @param MetricFamilySamples[] $metrics
      *
      * @throws IncoherentMetricLabelNamesAndValues
-     *
-     * @psalm-pure
      */
     public function render(array $metrics): string
     {
-        usort($metrics, static function (MetricFamilySamples $a, MetricFamilySamples $b): int {
+        $sortableMetrics = [...$metrics];
+        usort($sortableMetrics, static function (MetricFamilySamples $a, MetricFamilySamples $b): int {
             return strcmp($a->getName(), $b->getName());
         });
 
         $lines = [];
 
-        foreach ($metrics as $metric) {
+        foreach ($sortableMetrics as $metric) {
             $lines[] = sprintf('# HELP %s %s', $metric->getName(), $metric->getHelp());
             $lines[] = sprintf('# TYPE %s %s', $metric->getName(), $metric->getType());
             foreach ($metric->getSamples() as $sample) {
@@ -47,11 +45,7 @@ final class RenderTextFormat implements MetricsRenderer
         return implode("\n", $lines) . "\n";
     }
 
-    /**
-     * @throws IncoherentMetricLabelNamesAndValues
-     *
-     * @psalm-pure
-     */
+    /** @throws IncoherentMetricLabelNamesAndValues */
     private static function renderSample(MetricFamilySamples $metric, Sample $sample): string
     {
         $escapedLabels = [];
@@ -75,7 +69,6 @@ final class RenderTextFormat implements MetricsRenderer
         return $sample->getName() . ' ' . (string) $sample->getValue();
     }
 
-    /** @psalm-pure */
     private static function escapeLabelValue(string $v): string
     {
         return str_replace(['\\', "\n", '"'], ['\\\\', "\\n", '\\"'], $v);

@@ -10,7 +10,9 @@ use Http\Discovery\Psr17FactoryDiscovery;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\ResponseInterface;
 
+use function assert;
 use function getenv;
 
 final class BlackBoxTest extends TestCase
@@ -52,6 +54,9 @@ final class BlackBoxTest extends TestCase
         $metricsResult = $this->client->sendAsyncRequest(
             $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/metrics.php?adapter=' . $this->adapter),
         )->wait();
+
+        assert($metricsResult instanceof ResponseInterface);
+
         self::assertThat(
             $metricsResult->getBody()->getContents(),
             self::logicalOr(
@@ -80,6 +85,8 @@ final class BlackBoxTest extends TestCase
         $metricsResult = $this->client->sendAsyncRequest(
             $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/metrics.php?adapter=' . $this->adapter),
         )->wait();
+
+        assert($metricsResult instanceof ResponseInterface);
 
         self::assertThat($metricsResult->getBody()->getContents(), self::stringContains('test_some_counter{type="blue"} ' . $sum));
     }
@@ -111,6 +118,8 @@ final class BlackBoxTest extends TestCase
         $metricsResult = $this->client->sendAsyncRequest(
             $this->requestFactory->createRequest('GET', self::BASE_URI . '/examples/metrics.php?adapter=' . $this->adapter),
         )->wait();
+
+        assert($metricsResult instanceof ResponseInterface);
 
         self::assertThat($metricsResult->getBody()->getContents(), self::stringContains(<<<'EOF'
 test_some_histogram_bucket{type="blue",le="0.1"} 1

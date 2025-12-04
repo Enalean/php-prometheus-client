@@ -16,7 +16,6 @@ final class MetricName
 
     private function __construct(private string $name)
     {
-        $this->name = $name;
     }
 
     /**
