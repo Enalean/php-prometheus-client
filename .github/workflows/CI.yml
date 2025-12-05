@@ -21,7 +21,7 @@ jobs:
           - 6379/tcp
     strategy:
       matrix:
-        php: ['8.2', '8.3', '8.4']
+        php: ['8.2', '8.3', '8.4', '8.5']
         dependencies: ['--ignore-platform-req=php', '--prefer-lowest --prefer-stable --ignore-platform-req=php']
     steps:
       - name: Checkout
@@ -84,7 +84,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        php: ['8.2', '8.3', '8.4']
+        php: ['8.2', '8.3', '8.4', '8.5']
     steps:
       - name: Checkout
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
