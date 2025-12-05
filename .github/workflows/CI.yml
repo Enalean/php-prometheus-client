@@ -70,7 +70,7 @@ jobs:
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
       - name: Run Infection
-        run: ./vendor/bin/infection --min-msi=90 --min-covered-msi=90
+        run: ./vendor/bin/infection --min-msi=90 --min-covered-msi=90 --static-analysis-tool=phpstan
         env:
           REDIS_PORT: ${{ job.services.valkey.ports['6379'] }}
       - name: Archive report
